@@ -66,6 +66,20 @@ test('worker decodes all real observations and preserves every published score',
  for(const m of models)assert.equal(m.score,report.published_default_model_scores[m.model_canonical]);
  assert.equal(s.seen.filter(([p])=>p.endsWith('.bin')).length,manifest.parts.length);
  assert(messages.filter(m=>m.type==='progress').length>=4);
+ const V=require('./site/radar-viz.js');V.setModelRegistry(data.model_registry);
+ const chart=V.modelData(V.visitorSnapshot(data),''),visitor=V.visitorChartData(chart);
+ assert.strictEqual(visitor.rows,chart.rows);assert.strictEqual(visitor.cells,chart.cells);
+ for(const row of visitor.rows.filter(r=>Number.isFinite(r.score)))assert.equal(row.score,report.published_default_model_scores[row.name]);
+ assert(!/收缩|正则|拟合|半衰期|PAPER_V1_PROXY|专项修正/.test(visitor.note));
+ const selected=new Set(JSON.parse(fs.readFileSync(__dirname+'/performance-validation.json')).models.map(m=>m.name));
+ const summaryCsv=V.csv(visitor,selected),sourceCsv=V.sourceCsv(visitor,selected);
+ assert(summaryCsv.split('\r\n')[0].includes('参考区间下界'));
+ assert(!/base_fit|rank|strength|weight|point_estimate|prior|contrast|reference_mean/.test(summaryCsv.split('\r\n')[0]+sourceCsv.split('\r\n')[0]));
+ const parse=text=>{const rows=[];let row=[],cell='',quoted=false;for(let i=1;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}else if(!quoted&&c===','){row.push(cell);cell='';}else if(!quoted&&c==='\r'&&text[i+1]==='\n'){row.push(cell);rows.push(row);row=[];cell='';i++;}else cell+=c;}row.push(cell);rows.push(row);return rows;};
+ const records=parse(sourceCsv);assert.deepEqual(records.shift(),['模型','实验设置','评测','指标','论文原值','论文标识','评测标识','来源表','来源行']);
+ const proofs=chart.cells.filter(c=>selected.has(c.name)).flatMap(c=>(c.proof||[]).map(p=>[c.name,p.metric,p.raw,p.paper,p.benchmark,p.table,p.row].map(x=>x==null?'':String(x))));
+ assert.deepEqual(records.map(r=>[r[0],r[3],r[4],...r.slice(5)]),proofs);
+ assert(V.csv(chart,selected).split('\r\n')[0].includes('base_fit_score'),'Management export retains calculation fields');
 });
 test('project detail document resolves scripts and navigation within the project',()=>{
  const html=fs.readFileSync(site+'benchmark/index.html','utf8');assert(html.includes('<base href="../">'));assert(html.includes("document.querySelector('script[src$=\"snapshot-adapter.js\"]')"));

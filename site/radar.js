@@ -71,7 +71,7 @@
       for(const [id,panel] of panels){panel.hidden=id!==key;const tab=tabButtons.get(id);tab.setAttribute('aria-selected',String(id===key));tab.tabIndex=id===key?0:-1;}
       if(key==='score'){const breakdown=scoreContent.querySelector('.score-breakdown');if(breakdown)breakdown.open=true;}
     }
-    for(const [key,text] of [['overview','概览'],['sources','评测成绩'],['score','评分依据']]){
+    for(const [key,text] of [['overview','概览'],['sources','评测成绩'],['score',visitorEdition?'评分说明':'评分依据']]){
       const tab=el('button',text);tab.type='button';tab.id='model-tab-'+key;tab.setAttribute('role','tab');tab.setAttribute('aria-controls','model-panel-'+key);panels.get(key).id='model-panel-'+key;panels.get(key).setAttribute('role','tabpanel');panels.get(key).setAttribute('aria-labelledby',tab.id);tab.onclick=()=>activateTab(key);
       tab.addEventListener('keydown',event=>{const keys=[...panels.keys()],index=keys.indexOf(key),next=event.key==='ArrowRight'?keys[(index+1)%keys.length]:event.key==='ArrowLeft'?keys[(index+keys.length-1)%keys.length]:event.key==='Home'?keys[0]:event.key==='End'?keys.at(-1):null;if(next){event.preventDefault();activateTab(next);tabButtons.get(next).focus();}});
       tabs.append(tab);tabButtons.set(key,tab);
@@ -104,7 +104,17 @@
       for(const [value,text] of [[published,scored?.score_unit==='z_score'?'相对参考分':'综合分 · 0–100'],[scored?.scored_benchmarks??scored?.n_benchmarks??null,'计分评测'],[benchmarks.size,'可比评测'],[rows.length,'来源记录']]){const item=el('div',null,'model-stat'),number=el('strong',fmt(value));item.append(el('span',text),number);stats.append(item);}
       scoreContext.textContent=published===null?Viz.publicationLabel(scored||{}):'数据更新 '+date(state.snapshot.generated_at);
 
-      if(scored){
+      if(scored&&visitorEdition){
+        const overview=el('section',null,'visitor-score-overview');
+        overview.append(el('h3','综合评分概览'),el('p',published===null?'当前实验设置尚无综合评分，可查看已有的单项评测成绩。':'综合评分汇总当前版本中的已测表现，范围为 0–100。','visitor-score-intro'));
+        const facts=el('dl',null,'visitor-score-facts');
+        for(const [label,value]of [['综合分',fmt(published)],['计分评测',(scored.scored_benchmarks??scored.n_benchmarks??0)+' 项'],['参考区间',published!==null&&scored.score_interval?.length===2?scored.score_interval.map(fmt).join('–'):'—']]){
+          const fact=el('div');fact.append(el('dt',label),el('dd',value));facts.append(fact);
+        }
+        overview.append(facts);
+        if(published!==null)overview.append(el('p','参考区间表示评分的不确定范围。不同模型的评测覆盖可能不同，应结合共同参测项目和原始成绩比较。','visitor-score-note'));
+        const sources=el('button','查看评测成绩','visitor-score-source');sources.type='button';sources.onclick=()=>activateTab('sources');overview.append(sources);scoreContent.append(overview);
+      }else if(scored){
         const breakdown=el('details',null,'explanation score-breakdown');breakdown.append(el('summary','综合评分计算明细 · '+Viz.publicationLabel(scored)));
         breakdown.addEventListener('toggle',()=>{if(!breakdown.open||breakdown.dataset.loaded)return;breakdown.dataset.loaded='true';
           if(state.snapshot.index.method?.opponent_adjusted){
@@ -596,6 +606,12 @@
       const published=data.rows.filter(r=>r.score!==null).length;
       $('scoring-readiness').textContent=`统一综合评分（估计顺序）· ${published} 个模型已发布 · ${benchmarks.size} 项${visitorEdition?'可展示':'可计分'} Benchmark。模型筛选仅改变展示，不改变分数；${visitorEdition?'可展开下方评测覆盖查看各模型的测试量。':'每个模型的测试覆盖量见右图。'}`;
       $('scoring-scope').hidden=false;const body=$('scoring-scope-body');body.replaceChildren();
+      if(visitorEdition){
+        $('scoring-readiness').textContent=`${published} 个模型已有综合评分 · ${benchmarks.size} 项评测。可查看各模型的评测覆盖和原始成绩。`;
+        $('scoring-scope').querySelector('summary').textContent='评分与数据说明';
+        body.append(el('p','综合评分汇总当前版本中的已测表现，范围为 0–100。筛选模型仅改变展示范围。'),el('p','细线表示参考区间。评测覆盖和实验设置可能不同，请结合共同参测项目比较；成绩来源可在模型详情中查询。'));
+        modelVisuals.update(data);return;
+      }
       if(snap.index.method.version>=8&&snap.index.method.version!==9)body.append(el('p','综合分使用跨任务共享强度，而不是将全部任务都视为同一种能力。同场来源成绩用于拟合对应任务的表现，任务专项强度与自身共享强度通过对称的部分共享正则项联合估计；这些正则项不算真实比较、不建立跨模型证据连接，也不增加 Benchmark 数。'),el('p',`基础共享强度正则 ${snap.index.method.prior_strength}；任务共享系数 ${snap.index.method.task_coupling_strength}，按同一来源任务预算比例缩放。系数用隐藏整类任务的预测损失选择，不按预期型号顺序选择。未观测任务不增加来源记录，模型详情可查看已有任务的专项修正。`,'method-note'));
       if(snap.index.method.version>=11)body.append(el('p','仅将最终任务表现纳入综合分；来源明确定义的提示或干预增益、统计诊断量保留原值另列。中性收缩参数经来源家族留出验证保留为0.3，型号新旧及厂商不参与拟合。'));
       if(snap.index.method.version>=10)body.append(el('p','同条件成绩按模型对分摊论文及评测来源预算；任务类别内采用温和时间衰减，联合拟合任务表现与综合强度。取消硬排序校正，任务之间可以互有胜负。'),el('p',`评分基准日期 ${snap.index.method.temporal_scoring?.as_of||'未指定'}；半衰期 ${snap.index.method.temporal_scoring?.half_life_days??'停用'} 天，权重下限0.5。论文首次提交日期代理单独记录；筛选模型不改变得分。区间由当前拟合重新计算，尚不能消除选择性报告偏差。`,'method-note'));
