@@ -11,12 +11,12 @@
 4. 使用 Pages 设置页或成功任务返回的真实网址访问。仅浏览网站不需要 GitHub 账号。
 
 支持个人站点根目录和项目站点 /仓库名/ 子路径；Benchmark 独立详情使用 benchmark/ 目录。
-网页展示固定快照，任务画像分析与重新评分仍需要后端连接，页面保留明确说明。
+网页展示固定快照。任务分析与评分通过独立的任务后端提供，连接配置与运行方式见 `backend/README.md`。
 发布仓库：https://github.com/niuxuwen/papermeta-analysis。GitHub Pages 地址：https://niuxuwen.github.io/papermeta-analysis/。
 
 ## 验证
 
-node --test test-pages.cjs
+node --test test-pages.cjs test-task-connection.cjs
 
 该检查读取整份真实快照，验证根目录及项目子路径下的数据完整性、原分数、日期和详情身份。
 第三方图标许可见 site/vendor-logos/。
@@ -34,3 +34,5 @@ node --test test-pages.cjs
 
 模型详情展示评分、参考区间、评测覆盖、实验设置与原始来源。拟合参数、来源预算、校准诊断和内部处理状态仅用于管理展示，不进入访问者页面或访问者 CSV。
 访客来源导出保留论文原值与来源坐标；这项展示调整不修改快照、综合评分或原始成绩。
+
+任务后端当前通过本机临时 HTTPS 隧道连接，依赖本机任务服务与隧道进程运行。没有后台服务时，页面会显示不可用并保留成绩浏览；不会以演示结果代替任务计算。

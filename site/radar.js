@@ -496,7 +496,7 @@
     (!state.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(state.query.toLocaleLowerCase())))
   ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
   let uiReady=false;
-  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&!['home','tasks'].includes(view)&&state.snapshot?.detail_loaded===false)refresh({details:true});if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
+  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&(view!=='home'&&view!=='tasks'||view==='tasks'&&window.RadarTaskConnected)&&state.snapshot?.detail_loaded===false)refresh({details:true});if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
   function sourceLabel(paper,table) {return Viz.publicLabel(table,'论文来源');}
   function renderCounts() {
     const d=state.snapshot;
@@ -830,7 +830,7 @@
     lastRefreshAt=Date.now();state.loading=true;$('refresh').disabled=true;let overviewLoaded=false;const previous=state.snapshot;setLoadingUI(true);
     const node=$('connection');node.className='connection';node.textContent=previous?'正在更新 · 保留当前内容':'正在加载目录与图表…';
     try {
-      if(window.RadarHomeSnapshot&&!details&&!requestedModel&&['home','tasks'].includes(state.view)){
+      if(window.RadarHomeSnapshot&&!details&&!requestedModel&&(state.view==='home'||state.view==='tasks'&&!window.RadarTaskConnected)){
         if(!previous||previous.detail_loaded===false)state.snapshot=validate(window.RadarHomeSnapshot);
         render();resumeInteractive();node.textContent='固定快照 · 数据截至 '+date(state.snapshot.generated_at);return;
       }
@@ -864,6 +864,7 @@
     } finally {state.loading=false;$('refresh').disabled=false;setLoadingUI(false);}
   }
   for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',refresh);$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('model-sort').addEventListener('change',e=>{state.sort=e.target.value;state.modelLimit=100;renderModels();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
+  window.addEventListener('radar:task-connected',()=>{if(state.view==='tasks')refresh({details:true});});
   const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   if(document.modelContext?.registerTool){
     const register=t=>Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});
