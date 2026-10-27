@@ -486,7 +486,7 @@
     (!state.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(state.query.toLocaleLowerCase())))
   ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
   let uiReady=false;
-  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
+  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&!['home','tasks'].includes(view)&&state.snapshot?.detail_loaded===false)refresh({details:true});if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
   function sourceLabel(paper,table) {return Viz.publicLabel(table,'论文来源');}
   function renderCounts() {
     const d=state.snapshot;
@@ -777,6 +777,10 @@
   async function fetchSnapshotJSON(path,timeoutMs,waitForPublication=false) {
     const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeoutMs);
     try {
+      if(window.RadarSnapshotMode&&window.RadarLoadWorkspace&&['api/workspace','api/snapshot'].includes(path)){
+        const data=await window.RadarLoadWorkspace({signal:ctrl.signal,onProgress:text=>{$('connection').textContent=text;}});
+        return validate(decodeSnapshot(data));
+      }
       for(let attempt=0;;attempt++){
         ctrl.signal.throwIfAborted();
         const res=await fetch(new URL(path,radarBase),{cache:'no-store',signal:ctrl.signal});
@@ -799,18 +803,31 @@
     document.body.dataset.detailReady=String(Boolean(state.snapshot&&state.snapshot.detail_loaded!==false));
     for(const root of document.querySelectorAll('.viz-card,.paired-values'))root.setAttribute('aria-busy',String(loading&&(!state.snapshot||state.snapshot.detail_loaded===false)));
   }
-  async function refresh() {
+  let refreshInFlight=null;
+  function refresh(options={}) {
+    if(refreshInFlight)return refreshInFlight;
+    refreshInFlight=refreshData(options).finally(()=>{refreshInFlight=null;});
+    return refreshInFlight;
+  }
+  async function refreshData({details=false}={}) {
     if(state.loading)return;
     lastRefreshAt=Date.now();state.loading=true;$('refresh').disabled=true;let overviewLoaded=false;const previous=state.snapshot;setLoadingUI(true);
     const node=$('connection');node.className='connection';node.textContent=previous?'正在更新 · 保留当前内容':'正在加载目录与图表…';
     try {
-      try {
+      if(window.RadarHomeSnapshot&&!details&&!requestedModel&&['home','tasks'].includes(state.view)){
+        if(!previous||previous.detail_loaded===false)state.snapshot=validate(window.RadarHomeSnapshot);
+        render();resumeInteractive();node.textContent='固定快照 · 数据截至 '+date(state.snapshot.generated_at);return;
+      }
+      if(window.RadarHomeSnapshot){
+        if(!previous){state.snapshot=validate(window.RadarHomeSnapshot);render();resumeInteractive();}
+        overviewLoaded=true;
+      }else try {
         const overview=await fetchSnapshotJSON('api/overview',15000);
         if(taskState.result&&taskState.evidenceRevision!==overview.status.task_evidence_revision){taskState.result=null;$('task-results').hidden=true;}
         overviewLoaded=true;if(!previous||previous.detail_loaded===false){state.snapshot=overview;render();resumeInteractive();setLoadingUI(true);}
         node.textContent=previous?.detail_loaded!==false&&previous?'正在更新 · 保留当前图表':'目录已就绪 · 正在加载图表…';
       } catch {}
-      const d=await fetchSnapshotJSON('api/workspace',60000,true);
+      const d=await fetchSnapshotJSON('api/workspace',120000,true);
       state.snapshot=d;Viz.setModelRegistry(d.model_registry);render();resumeInteractive();
       if(taskState.confirmed&&!taskState.busy&&taskState.evidenceRevision!==d.status.task_evidence_revision)scoreTask(true);
       const preview=d.status.preview_note,stale=d.status.stale;
@@ -820,7 +837,7 @@
       if(!overviewLoaded&&!previous){state.snapshot=null;taskState.result=null;state.selected=null;render();}
       node.className='connection '+(overviewLoaded||previous?'warning':'error');
       const retry='页面按 10 分钟间隔自动刷新，也可点击“刷新数据”。';
-      node.textContent=err.name==='AbortError'?(overviewLoaded?'目录已加载；图表和来源成绩读取超过 60 秒。':'完整快照读取超过 60 秒。')+retry:
+      node.textContent=err.name==='AbortError'?(overviewLoaded?'首页可用；完整图表和来源成绩读取超时。':'完整快照读取超时。')+retry:
         err.message==='snapshot_initializing'?'后台正在生成首批快照。'+retry:
         err.message==='snapshot_refreshing'?'当前日期窗口的榜单正在更新。'+retry:
         err.message==='snapshot_unavailable'?'完整快照生成失败，请检查服务日志。'+retry:
@@ -839,7 +856,7 @@
   }
   if(visitorEdition)window.RadarApp=Object.freeze({
     navigate(view){setView(view);window.scrollTo({top:0,behavior:'instant'});},
-    openModel(name,setting){openModel(name,setting);},
+    async openModel(name,setting){if(!state.snapshot||state.snapshot.detail_loaded===false)await refresh({details:true});openModel(name,setting);},
     openBenchmark(paperId,benchmarkId){const benchmark=state.snapshot?.benchmarks.find(b=>b.paper_id===paperId&&b.benchmark_id===benchmarkId);if(benchmark&&state.snapshot.detail_loaded!==false){selectBenchmark(benchmark);return true;}return false;},
     useTemplate(id){const template=TASK_DEFAULTS.templates[id];if(!template)return;applyProfile(template);taskState.refsInitialized=false;setView('tasks');renderReferences();window.scrollTo({top:0,behavior:'instant'});}
   });

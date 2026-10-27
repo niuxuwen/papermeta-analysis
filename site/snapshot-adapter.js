@@ -3,19 +3,22 @@
   'use strict';
   const originalFetch=window.fetch.bind(window),base=new URL('./',document.currentScript.src);
   let manifestPromise,workspacePromise;
+  const embedded=document.getElementById?.('snapshot-bootstrap');
+  const bootstrap=embedded?JSON.parse(embedded.textContent):null;
+  if(bootstrap)window.RadarHomeSnapshot=bootstrap.snapshot;
   window.RadarSnapshotMode=true;
   const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json; charset=utf-8'}});
   const safePath=path=>typeof path==='string'&&/^snapshot\/[a-zA-Z0-9._/-]+$/.test(path)&&!path.split('/').includes('..');
   const abort=signal=>{if(signal?.aborted)throw signal.reason||new DOMException('Aborted','AbortError');};
   async function bytes(path,signal){
     if(!safePath(path))throw Error('INVALID_SNAPSHOT_PATH');
-    const response=await originalFetch(new URL(path,base),{signal,cache:path==='snapshot/manifest.json'?'no-store':'force-cache'});
-    if(!response.ok)throw Error('SNAPSHOT_ASSET_UNAVAILABLE');
+    const response=await originalFetch(new URL(path,base),{signal,cache:['snapshot/manifest.json','snapshot/current.json'].includes(path)?'no-store':'force-cache'});
+    if(!response.ok)throw Object.assign(Error('SNAPSHOT_ASSET_UNAVAILABLE'),{status:response.status});
     return new Uint8Array(await response.arrayBuffer());
   }
   async function manifest(){
     return manifestPromise||(manifestPromise=(async()=>{
-      const data=JSON.parse(new TextDecoder().decode(await bytes('snapshot/manifest.json')));
+      const data=bootstrap?.manifest||JSON.parse(new TextDecoder().decode(await bytes('snapshot/current.json')));
       if(data.format!=='radar-static-snapshot-v1'||!Array.isArray(data.parts)||!data.parts.every(p=>safePath(p.path)))throw Error('INVALID_SNAPSHOT_MANIFEST');
       return data;
     })().catch(e=>{manifestPromise=null;throw e;}));
@@ -38,6 +41,25 @@
     })().catch(e=>{workspacePromise=null;throw e;});
     return workspacePromise;
   }
+  let decodedPromise;
+  window.RadarLoadWorkspace=function({signal,onProgress}={}){
+    if(decodedPromise)return decodedPromise;
+    decodedPromise=(async()=>{
+      const m=await manifest();abort(signal);
+      if(typeof Worker!=='function')return JSON.parse(new TextDecoder().decode(await loadWorkspace()));
+      return new Promise((resolve,reject)=>{
+        const worker=new Worker(new URL('snapshot-worker.js',base));
+        const finish=(error,data)=>{signal?.removeEventListener('abort',cancel);worker.terminate();error?reject(error):resolve(data);};
+        const cancel=()=>finish(signal.reason||new DOMException('Aborted','AbortError'));
+        worker.onmessage=event=>{const message=event.data;if(message.type==='progress')onProgress?.(message.text);else if(message.type==='ready')finish(null,message.snapshot);else finish(Error(message.error||'SNAPSHOT_DECODE_FAILED'));};
+        worker.onerror=()=>finish(Error('SNAPSHOT_WORKER_FAILED'));
+        signal?.addEventListener('abort',cancel,{once:true});
+        if(signal?.aborted){cancel();return;}
+        worker.postMessage({manifest:m,base:base.href});
+      });
+    })().catch(error=>{decodedPromise=null;throw error;});
+    return decodedPromise;
+  };
   window.fetch=async function(input,init={}){
     const url=new URL(typeof input==='string'||input instanceof URL?input:input.url,location.href);
     const route=url.origin===base.origin&&url.pathname.startsWith(base.pathname)?'/'+url.pathname.slice(base.pathname.length):'';
@@ -51,9 +73,11 @@
     else if(route==='/api/benchmark'){
       if([...url.searchParams.keys()].some(k=>!['paper_id','benchmark_id'].includes(k))||['paper_id','benchmark_id'].some(k=>url.searchParams.getAll(k).length!==1))return json({error:'invalid_benchmark_identity'},400);
       const key=JSON.stringify([url.searchParams.get('paper_id'),url.searchParams.get('benchmark_id')]);
-      const path=(await manifest()).details[key];
+      const m=await manifest();
+      const digest=m.details_root?Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(key))),b=>b.toString(16).padStart(2,'0')).join('').slice(0,32):null;
+      const path=digest?m.details_root+digest+'.json.gz':m.details?.[key];
       if(!path)return json({error:'not_found'},404);
-      data=await gunzip(await bytes(path,init.signal));
+      try{data=await gunzip(await bytes(path,init.signal));}catch(error){if(error.status===404)return json({error:'not_found'},404);throw error;}
     }else return json({error:'SNAPSHOT_READ_ONLY'},404);
     abort(init.signal);
     return new Response(method==='HEAD'?null:data,{headers:{'Content-Type':'application/json; charset=utf-8','X-Radar-Mode':'frozen-snapshot'}});

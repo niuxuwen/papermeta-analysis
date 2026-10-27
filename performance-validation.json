@@ -1,0 +1,70 @@
+{
+  "snapshot_id": "28e1296cda118c5b688dc0ca",
+  "generated_at": "2026-10-27T11:42:12.646556Z",
+  "source_sha256": "cf950cbf6425dca3d7cc93f9d010b632df76d57613960e5f7495881586936de3",
+  "initial_snapshot_download_bytes": 0,
+  "previous_required_snapshot_bytes": 14399491,
+  "embedded_bootstrap_bytes": 3448,
+  "compact_manifest_bytes": 748,
+  "models": [
+    {
+      "name": "GPT-6-Astra",
+      "score": 75.508301,
+      "nBenchmarks": 20,
+      "vendor": "OpenAI"
+    },
+    {
+      "name": "Claude 5.5 Sonnet",
+      "score": 73.035766,
+      "nBenchmarks": 3,
+      "vendor": "Anthropic"
+    },
+    {
+      "name": "GPT-6.1-Sol",
+      "score": 71.156073,
+      "nBenchmarks": 8,
+      "vendor": "OpenAI"
+    },
+    {
+      "name": "Claude 5.5 Opus",
+      "score": 70.944897,
+      "nBenchmarks": 11,
+      "vendor": "Anthropic"
+    },
+    {
+      "name": "Claude 5 Opus",
+      "score": 68.891128,
+      "nBenchmarks": 19,
+      "vendor": "Anthropic"
+    },
+    {
+      "name": "Claude Fable 5.1",
+      "score": 67.999307,
+      "nBenchmarks": 3,
+      "vendor": "Anthropic"
+    }
+  ],
+  "featured": [
+    {
+      "paper_id": "recent-bdf7aada48e51d20",
+      "benchmark_id": "bench-7c16dc512da8d463",
+      "name": "Rynn-VP"
+    },
+    {
+      "paper_id": "recent-ec2772298e919db9",
+      "benchmark_id": "bench-ced155881fa9799d",
+      "name": "LOOM"
+    },
+    {
+      "paper_id": "recent-d3e3e0026979a51e",
+      "benchmark_id": "bench-fcbd123d7e8eb19f",
+      "name": "Interactive GUI Grounding (IGG)"
+    },
+    {
+      "paper_id": "recent-efefa742e3aea15e",
+      "benchmark_id": "bench-e46ff13d64ecb14b",
+      "name": "PCFBench"
+    }
+  ],
+  "observations": 30594
+}

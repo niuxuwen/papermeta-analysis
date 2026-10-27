@@ -75,6 +75,12 @@
   new MutationObserver(syncProfile).observe($('capability-weights'),{childList:true,subtree:true,characterData:true});
   new MutationObserver(syncProfile).observe($('reference-count'),{childList:true,subtree:true,characterData:true});
   let lastSnapshot=null;
+  $('visitor-top-models').addEventListener('click',async event=>{
+    const button=event.target.closest('[data-home-model]');if(!button||button.disabled)return;
+    button.disabled=true;button.setAttribute('aria-busy','true');
+    try{await window.RadarApp.openModel(button.dataset.homeModel,'');}
+    finally{button.disabled=false;button.removeAttribute('aria-busy');}
+  });
   window.addEventListener('radar:render',event=>{
     const {snapshot,view}=event.detail;
     document.body.dataset.visitorView=view;
