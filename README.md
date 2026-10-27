@@ -12,7 +12,7 @@
 
 支持个人站点根目录和项目站点 /仓库名/ 子路径；Benchmark 独立详情使用 benchmark/ 目录。
 网页展示固定快照，任务画像分析与重新评分仍需要后端连接，页面保留明确说明。
-发布仓库：https://github.com/niuxuwen/papermeta-analysis。Pages 正在配置，最终访问地址以 GitHub 部署结果为准。
+发布仓库：https://github.com/niuxuwen/papermeta-analysis。GitHub Pages 地址：https://niuxuwen.github.io/papermeta-analysis/。
 
 ## 验证
 
