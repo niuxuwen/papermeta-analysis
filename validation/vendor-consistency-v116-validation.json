@@ -1,0 +1,2132 @@
+{
+  "source_snapshot": "4454273dd745c7e7aa3d7712",
+  "published_snapshot": "8fd280993bca71fc0eb93c78",
+  "raw_observations_unchanged": true,
+  "raw_observations": 30594,
+  "admission_unchanged": true,
+  "published_default_models": 132,
+  "qualified_relations": 109,
+  "qualified_inversions_before": 17,
+  "qualified_inversions_after": 0,
+  "default_exact_ties": 0,
+  "rules": [
+    {
+      "winner": "Claude 4.5 Opus",
+      "loser": "Claude 4.5 Haiku",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        56.967891,
+        47.588734
+      ],
+      "score_after": [
+        62.572288,
+        47.533361
+      ]
+    },
+    {
+      "winner": "Claude 4.7 Opus",
+      "loser": "Claude 4.5 Haiku",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        68.197043,
+        47.588734
+      ],
+      "score_after": [
+        68.277487,
+        47.533361
+      ]
+    },
+    {
+      "winner": "Claude 4.8 Opus",
+      "loser": "Claude 4.5 Haiku",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        63.145219,
+        47.588734
+      ],
+      "score_after": [
+        63.093508,
+        47.533361
+      ]
+    },
+    {
+      "winner": "Claude 5 Opus",
+      "loser": "Claude 4.5 Haiku",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        72.797797,
+        47.588734
+      ],
+      "score_after": [
+        72.81566,
+        47.533361
+      ]
+    },
+    {
+      "winner": "Claude 5.5 Opus",
+      "loser": "Claude 4.5 Haiku",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        72.601373,
+        47.588734
+      ],
+      "score_after": [
+        74.840893,
+        47.533361
+      ]
+    },
+    {
+      "winner": "Claude 4.5 Opus",
+      "loser": "Claude 4.5 Sonnet",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        56.967891,
+        65.961418
+      ],
+      "score_after": [
+        62.572288,
+        58.459902
+      ]
+    },
+    {
+      "winner": "Claude 4.6 Sonnet",
+      "loser": "Claude 4.5 Sonnet",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        59.227395,
+        65.961418
+      ],
+      "score_after": [
+        61.171891,
+        58.459902
+      ]
+    },
+    {
+      "winner": "Claude 4.8 Opus",
+      "loser": "Claude 5 Sonnet",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        63.145219,
+        59.204329
+      ],
+      "score_after": [
+        63.093508,
+        59.306558
+      ]
+    },
+    {
+      "winner": "Claude 5.5 Opus",
+      "loser": "Claude 5.5 Sonnet",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        72.601373,
+        75.707586
+      ],
+      "score_after": [
+        74.840893,
+        73.614648
+      ]
+    },
+    {
+      "winner": "Claude Fable 5.1",
+      "loser": "Claude Fable 5",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        71.768492,
+        73.224501
+      ],
+      "score_after": [
+        73.14,
+        71.709597
+      ]
+    },
+    {
+      "winner": "GPT-4.1",
+      "loser": "GPT-4.1-mini",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        61.15088,
+        50.886626
+      ],
+      "score_after": [
+        61.165106,
+        50.856459
+      ]
+    },
+    {
+      "winner": "GPT-4.1",
+      "loser": "GPT-4o",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        61.15088,
+        37.70997
+      ],
+      "score_after": [
+        61.165106,
+        37.731874
+      ]
+    },
+    {
+      "winner": "GPT-5",
+      "loser": "GPT-4.1",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        62.944745,
+        61.15088
+      ],
+      "score_after": [
+        62.629402,
+        61.165106
+      ]
+    },
+    {
+      "winner": "GPT-5",
+      "loser": "GPT-4.1-mini",
+      "setting": "",
+      "source_papers": 4,
+      "score_before": [
+        62.944745,
+        50.886626
+      ],
+      "score_after": [
+        62.629402,
+        50.856459
+      ]
+    },
+    {
+      "winner": "GPT-5",
+      "loser": "GPT-4o",
+      "setting": "",
+      "source_papers": 6,
+      "score_before": [
+        62.944745,
+        37.70997
+      ],
+      "score_after": [
+        62.629402,
+        37.731874
+      ]
+    },
+    {
+      "winner": "GPT-5.5",
+      "loser": "GPT-4o",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        68.147118,
+        37.70997
+      ],
+      "score_after": [
+        68.091364,
+        37.731874
+      ]
+    },
+    {
+      "winner": "GPT-5.6-Sol",
+      "loser": "GPT-4o",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        70.238948,
+        37.70997
+      ],
+      "score_after": [
+        65.953881,
+        37.731874
+      ]
+    },
+    {
+      "winner": "GPT-6-Astra",
+      "loser": "GPT-4o",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        81.489428,
+        37.70997
+      ],
+      "score_after": [
+        81.432316,
+        37.731874
+      ]
+    },
+    {
+      "winner": "GPT-5",
+      "loser": "GPT-4o-mini",
+      "setting": "",
+      "source_papers": 4,
+      "score_before": [
+        62.944745,
+        47.738169
+      ],
+      "score_after": [
+        62.629402,
+        47.784375
+      ]
+    },
+    {
+      "winner": "GPT-5",
+      "loser": "GPT-5-mini",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        62.944745,
+        52.97702
+      ],
+      "score_after": [
+        62.629402,
+        52.964252
+      ]
+    },
+    {
+      "winner": "GPT-5.4",
+      "loser": "GPT-5",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        65.642918,
+        62.944745
+      ],
+      "score_after": [
+        65.922594,
+        62.629402
+      ]
+    },
+    {
+      "winner": "GPT-5.5",
+      "loser": "GPT-5-mini",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        68.147118,
+        52.97702
+      ],
+      "score_after": [
+        68.091364,
+        52.964252
+      ]
+    },
+    {
+      "winner": "GPT-5.5",
+      "loser": "GPT-5.4-mini",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        68.147118,
+        52.781998
+      ],
+      "score_after": [
+        68.091364,
+        52.787936
+      ]
+    },
+    {
+      "winner": "GPT-5.6-Sol",
+      "loser": "GPT-5.4-mini",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        70.238948,
+        52.781998
+      ],
+      "score_after": [
+        65.953881,
+        52.787936
+      ]
+    },
+    {
+      "winner": "GPT-5.5",
+      "loser": "GPT-6-Luna",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        68.147118,
+        54.933829
+      ],
+      "score_after": [
+        68.091364,
+        55.232971
+      ]
+    },
+    {
+      "winner": "GPT-6-Sol",
+      "loser": "GPT-5.6-Sol",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        63.766516,
+        70.238948
+      ],
+      "score_after": [
+        68.209858,
+        65.953881
+      ]
+    },
+    {
+      "winner": "GPT-6-Astra",
+      "loser": "GPT-6-Luna",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        81.489428,
+        54.933829
+      ],
+      "score_after": [
+        81.432316,
+        55.232971
+      ]
+    },
+    {
+      "winner": "GPT-6-Astra",
+      "loser": "GPT-6-Sol",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        81.489428,
+        63.766516
+      ],
+      "score_after": [
+        81.432316,
+        68.209858
+      ]
+    },
+    {
+      "winner": "GPT-6.1-Sol",
+      "loser": "GPT-6-Luna",
+      "setting": "",
+      "source_papers": 5,
+      "score_before": [
+        74.175382,
+        54.933829
+      ],
+      "score_after": [
+        73.602272,
+        55.232971
+      ]
+    },
+    {
+      "winner": "GPT-6.1-Sol",
+      "loser": "GPT-6-Sol",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        74.175382,
+        63.766516
+      ],
+      "score_after": [
+        73.602272,
+        68.209858
+      ]
+    },
+    {
+      "winner": "Gemini 2.5 Flash",
+      "loser": "Gemma 3 4B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.752413,
+        24.641572
+      ],
+      "score_after": [
+        51.700601,
+        24.633211
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro",
+      "loser": "Gemini 2.5 Pro",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        51.527209,
+        54.199643
+      ],
+      "score_after": [
+        61.595016,
+        54.143461
+      ]
+    },
+    {
+      "winner": "Gemini 3 Flash",
+      "loser": "Gemini 3 Pro",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        58.517379,
+        62.614621
+      ],
+      "score_after": [
+        60.86373,
+        60.238
+      ]
+    },
+    {
+      "winner": "Gemini 3 Flash",
+      "loser": "Gemma 3 12B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        58.517379,
+        36.686194
+      ],
+      "score_after": [
+        60.86373,
+        36.671044
+      ]
+    },
+    {
+      "winner": "Gemini 3 Flash",
+      "loser": "Gemma 3 27B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        58.517379,
+        38.946944
+      ],
+      "score_after": [
+        60.86373,
+        38.945576
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro",
+      "loser": "Gemini 3.1 Flash Lite",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.527209,
+        61.431225
+      ],
+      "score_after": [
+        61.595016,
+        51.30729
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro",
+      "loser": "Gemma 4 26B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.527209,
+        48.189998
+      ],
+      "score_after": [
+        61.595016,
+        48.155517
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro",
+      "loser": "Gemma 4 E4B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.527209,
+        42.763648
+      ],
+      "score_after": [
+        61.595016,
+        42.74579
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro Preview",
+      "loser": "Gemma 4 12B Instruct",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        54.865314,
+        43.816456
+      ],
+      "score_after": [
+        54.882468,
+        43.836967
+      ]
+    },
+    {
+      "winner": "Gemini 3.1 Pro Preview",
+      "loser": "Gemma 4 31B Instruct",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        54.865314,
+        45.509317
+      ],
+      "score_after": [
+        54.882468,
+        45.703006
+      ]
+    },
+    {
+      "winner": "Gemini 3.8 Flash",
+      "loser": "Gemini 3.5 Flash Lite",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        62.85485,
+        54.10276
+      ],
+      "score_after": [
+        62.982153,
+        54.044333
+      ]
+    },
+    {
+      "winner": "Gemini 3.7 Flash",
+      "loser": "Gemma 3 12B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        65.053202,
+        36.686194
+      ],
+      "score_after": [
+        65.017715,
+        36.671044
+      ]
+    },
+    {
+      "winner": "Gemini 3.7 Flash",
+      "loser": "Gemma 3 27B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        65.053202,
+        38.946944
+      ],
+      "score_after": [
+        65.017715,
+        38.945576
+      ]
+    },
+    {
+      "winner": "Gemini 3.8 Flash",
+      "loser": "Gemma 4 12B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        62.85485,
+        38.673997
+      ],
+      "score_after": [
+        62.982153,
+        38.682853
+      ]
+    },
+    {
+      "winner": "Gemini 3.8 Flash",
+      "loser": "Gemma 4 31B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        62.85485,
+        51.687992
+      ],
+      "score_after": [
+        62.982153,
+        51.625326
+      ]
+    },
+    {
+      "winner": "Gemini 3.8 Flash",
+      "loser": "Gemma 4 31B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        62.85485,
+        45.509317
+      ],
+      "score_after": [
+        62.982153,
+        45.703006
+      ]
+    },
+    {
+      "winner": "Gemma 3 12B",
+      "loser": "Gemma 3 4B",
+      "setting": "",
+      "source_papers": 5,
+      "score_before": [
+        36.686194,
+        24.641572
+      ],
+      "score_after": [
+        36.671044,
+        24.633211
+      ]
+    },
+    {
+      "winner": "Gemma 3 27B",
+      "loser": "Gemma 3 4B",
+      "setting": "",
+      "source_papers": 5,
+      "score_before": [
+        38.946944,
+        24.641572
+      ],
+      "score_after": [
+        38.945576,
+        24.633211
+      ]
+    },
+    {
+      "winner": "Gemma 4 26B",
+      "loser": "Gemma 4 12B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.189998,
+        38.673997
+      ],
+      "score_after": [
+        48.155517,
+        38.682853
+      ]
+    },
+    {
+      "winner": "Gemma 4 31B",
+      "loser": "Gemma 4 12B",
+      "setting": "",
+      "source_papers": 4,
+      "score_before": [
+        51.687992,
+        38.673997
+      ],
+      "score_after": [
+        51.625326,
+        38.682853
+      ]
+    },
+    {
+      "winner": "InternVL 3 38B",
+      "loser": "InternVL 3 14B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.260776,
+        43.649882
+      ],
+      "score_after": [
+        47.510672,
+        44.787052
+      ]
+    },
+    {
+      "winner": "InternVL 3 14B",
+      "loser": "InternVL 3 8B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        43.649882,
+        46.585292
+      ],
+      "score_after": [
+        44.787052,
+        40.556325
+      ]
+    },
+    {
+      "winner": "InternVL 3 78B",
+      "loser": "InternVL 3 38B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        39.124541,
+        45.260776
+      ],
+      "score_after": [
+        48.687098,
+        47.510672
+      ]
+    },
+    {
+      "winner": "InternVL 3 8B",
+      "loser": "InternVL 3.5 14B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        46.585292,
+        46.191544
+      ],
+      "score_after": [
+        40.556325,
+        39.330005
+      ]
+    },
+    {
+      "winner": "InternVL 3.5 14B",
+      "loser": "InternVL 3.5 2B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        46.191544,
+        26.432717
+      ],
+      "score_after": [
+        39.330005,
+        26.400774
+      ]
+    },
+    {
+      "winner": "InternVL 3.5 30B A3B",
+      "loser": "InternVL 3.5 2B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        49.866303,
+        26.432717
+      ],
+      "score_after": [
+        50.042813,
+        26.400774
+      ]
+    },
+    {
+      "winner": "InternVL 3.5 38B",
+      "loser": "InternVL 3.5 2B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        47.549856,
+        26.432717
+      ],
+      "score_after": [
+        47.705802,
+        26.400774
+      ]
+    },
+    {
+      "winner": "InternVL 3.5 8B",
+      "loser": "InternVL 3.5 2B",
+      "setting": "",
+      "source_papers": 5,
+      "score_before": [
+        44.256691,
+        26.432717
+      ],
+      "score_after": [
+        44.272287,
+        26.400774
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 32B",
+      "loser": "Qwen 2.5 VL 3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        46.080939,
+        27.445497
+      ],
+      "score_after": [
+        46.152785,
+        27.294806
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 2.5 VL 32B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        45.720384,
+        46.080939
+      ],
+      "score_after": [
+        48.576266,
+        46.152785
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 32B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        46.080939,
+        29.992369
+      ],
+      "score_after": [
+        46.152785,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 2.5 VL 3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.720384,
+        27.445497
+      ],
+      "score_after": [
+        48.576266,
+        27.294806
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 8B",
+      "loser": "Qwen 2.5 VL 3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.053699,
+        27.445497
+      ],
+      "score_after": [
+        42.00749,
+        27.294806
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 2.5 VL 7B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        45.720384,
+        34.503063
+      ],
+      "score_after": [
+        48.576266,
+        34.575925
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.720384,
+        29.992369
+      ],
+      "score_after": [
+        48.576266,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 3 VL 30B A3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.720384,
+        45.31793
+      ],
+      "score_after": [
+        48.576266,
+        43.472554
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 72B",
+      "loser": "Qwen 3 VL 8B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.720384,
+        45.053699
+      ],
+      "score_after": [
+        48.576266,
+        42.00749
+      ]
+    },
+    {
+      "winner": "Qwen 2.5 VL 7B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        34.503063,
+        29.992369
+      ],
+      "score_after": [
+        34.575925,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 9B",
+      "loser": "Qwen 2.5 VL 7B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.191419,
+        34.503063
+      ],
+      "score_after": [
+        45.21813,
+        34.575925
+      ]
+    },
+    {
+      "winner": "Qwen 3 32B",
+      "loser": "Qwen 3 14B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        47.596179,
+        42.910511
+      ],
+      "score_after": [
+        47.535192,
+        43.081495
+      ]
+    },
+    {
+      "winner": "Qwen 3 14B",
+      "loser": "Qwen 3 4B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        42.910511,
+        30.853525
+      ],
+      "score_after": [
+        43.081495,
+        30.886825
+      ]
+    },
+    {
+      "winner": "Qwen 3 14B",
+      "loser": "Qwen 3 8B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        42.910511,
+        40.000056
+      ],
+      "score_after": [
+        43.081495,
+        40.018179
+      ]
+    },
+    {
+      "winner": "Qwen 3 32B",
+      "loser": "Qwen 3 4B",
+      "setting": "",
+      "source_papers": 4,
+      "score_before": [
+        47.596179,
+        30.853525
+      ],
+      "score_after": [
+        47.535192,
+        30.886825
+      ]
+    },
+    {
+      "winner": "Qwen 3 32B",
+      "loser": "Qwen 3 8B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        47.596179,
+        40.000056
+      ],
+      "score_after": [
+        47.535192,
+        40.018179
+      ]
+    },
+    {
+      "winner": "Qwen 3 8B",
+      "loser": "Qwen 3 4B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        40.000056,
+        30.853525
+      ],
+      "score_after": [
+        40.018179,
+        30.886825
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 32B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        56.46223,
+        29.992369
+      ],
+      "score_after": [
+        56.475507,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 27B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.702731,
+        29.992369
+      ],
+      "score_after": [
+        46.966622,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 4B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.986418,
+        29.992369
+      ],
+      "score_after": [
+        44.764664,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 9B",
+      "loser": "Qwen 3 VL 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.191419,
+        29.992369
+      ],
+      "score_after": [
+        45.21813,
+        29.87351
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 8B Instruct",
+      "loser": "Qwen 3 VL 2B Instruct",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        26.12061,
+        32.251028
+      ],
+      "score_after": [
+        26.874268,
+        24.205746
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 27B",
+      "loser": "Qwen 3 VL 2B Instruct",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        48.702731,
+        32.251028
+      ],
+      "score_after": [
+        46.966622,
+        24.205746
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 35B A3B",
+      "loser": "Qwen 3 VL 2B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.358236,
+        32.251028
+      ],
+      "score_after": [
+        49.687262,
+        24.205746
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 4B",
+      "loser": "Qwen 3 VL 2B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.986418,
+        32.251028
+      ],
+      "score_after": [
+        44.764664,
+        24.205746
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 9B",
+      "loser": "Qwen 3 VL 2B Instruct",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        45.191419,
+        32.251028
+      ],
+      "score_after": [
+        45.21813,
+        24.205746
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 30B A3B",
+      "loser": "Qwen 3 VL 8B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.31793,
+        45.053699
+      ],
+      "score_after": [
+        43.472554,
+        42.00749
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 27B",
+      "loser": "Qwen 3 VL 30B A3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.702731,
+        45.31793
+      ],
+      "score_after": [
+        46.966622,
+        43.472554
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 32B",
+      "loser": "Qwen 3 VL 4B",
+      "setting": "",
+      "source_papers": 4,
+      "score_before": [
+        56.46223,
+        40.751209
+      ],
+      "score_after": [
+        56.475507,
+        40.728427
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 32B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        56.46223,
+        22.494276
+      ],
+      "score_after": [
+        56.475507,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 32B",
+      "loser": "Qwen 3.5 4B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        56.46223,
+        51.986418
+      ],
+      "score_after": [
+        56.475507,
+        44.764664
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 4B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        40.751209,
+        22.494276
+      ],
+      "score_after": [
+        40.728427,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3 VL 8B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        45.053699,
+        22.494276
+      ],
+      "score_after": [
+        42.00749,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 35B A3B",
+      "loser": "Qwen 3 VL 8B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.358236,
+        26.12061
+      ],
+      "score_after": [
+        49.687262,
+        26.874268
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 4B",
+      "loser": "Qwen 3 VL 8B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        51.986418,
+        26.12061
+      ],
+      "score_after": [
+        44.764664,
+        26.874268
+      ]
+    },
+    {
+      "winner": "Qwen 3.8 27B",
+      "loser": "Qwen 3 VL 8B Instruct",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        46.885012,
+        26.12061
+      ],
+      "score_after": [
+        52.805958,
+        26.874268
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 397B A17B",
+      "loser": "Qwen 3.5 122B A10B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        42.368905,
+        49.940106
+      ],
+      "score_after": [
+        50.46953,
+        47.879377
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 122B A10B",
+      "loser": "Qwen 3.5 9B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        49.940106,
+        45.191419
+      ],
+      "score_after": [
+        47.879377,
+        45.21813
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 27B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 6,
+      "score_before": [
+        48.702731,
+        22.494276
+      ],
+      "score_after": [
+        46.966622,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 27B",
+      "loser": "Qwen 3.5 9B",
+      "setting": "",
+      "source_papers": 10,
+      "score_before": [
+        48.702731,
+        45.191419
+      ],
+      "score_after": [
+        46.966622,
+        45.21813
+      ]
+    },
+    {
+      "winner": "Qwen 3.8 27B",
+      "loser": "Qwen 3.5 27B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        46.885012,
+        48.702731
+      ],
+      "score_after": [
+        52.805958,
+        46.966622
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 35B A3B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        48.358236,
+        22.494276
+      ],
+      "score_after": [
+        49.687262,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 4B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 6,
+      "score_before": [
+        51.986418,
+        22.494276
+      ],
+      "score_after": [
+        44.764664,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 9B",
+      "loser": "Qwen 3.5 2B",
+      "setting": "",
+      "source_papers": 7,
+      "score_before": [
+        45.191419,
+        22.494276
+      ],
+      "score_after": [
+        45.21813,
+        22.54273
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 397B A17B",
+      "loser": "Qwen 3.5 35B A3B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        42.368905,
+        48.358236
+      ],
+      "score_after": [
+        50.46953,
+        49.687262
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 35B A3B",
+      "loser": "Qwen 3.5 4B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        48.358236,
+        51.986418
+      ],
+      "score_after": [
+        49.687262,
+        44.764664
+      ]
+    },
+    {
+      "winner": "Qwen 3.6 27B",
+      "loser": "Qwen 3.5 35B A3B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        55.726365,
+        48.358236
+      ],
+      "score_after": [
+        56.679378,
+        49.687262
+      ]
+    },
+    {
+      "winner": "Qwen 3.5 397B A17B",
+      "loser": "Qwen 3.5 9B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        42.368905,
+        45.191419
+      ],
+      "score_after": [
+        50.46953,
+        45.21813
+      ]
+    },
+    {
+      "winner": "Qwen 3.6 27B",
+      "loser": "Qwen 3.5 9B",
+      "setting": "",
+      "source_papers": 2,
+      "score_before": [
+        55.726365,
+        45.191419
+      ],
+      "score_after": [
+        56.679378,
+        45.21813
+      ]
+    },
+    {
+      "winner": "Qwen 3.8 27B",
+      "loser": "Qwen 3.5 9B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        46.885012,
+        45.191419
+      ],
+      "score_after": [
+        52.805958,
+        45.21813
+      ]
+    },
+    {
+      "winner": "Qwen 3.8 Flash",
+      "loser": "Qwen 3.8 27B",
+      "setting": "",
+      "source_papers": 3,
+      "score_before": [
+        48.082386,
+        46.885012
+      ],
+      "score_after": [
+        54.903883,
+        52.805958
+      ]
+    }
+  ],
+  "independent_audit": {
+    "source_provenance": "PASS",
+    "pair_weights": "PASS",
+    "stationary_likelihood": "PASS",
+    "source_paper_and_benchmark_budgets": "PASS",
+    "task_macro_weights": "PASS",
+    "shared_vs_task_strengths": "PASS",
+    "penalties_not_source_edges": "PASS",
+    "two_model_scale_policy": "PASS",
+    "broad_coverage_admission": "PASS",
+    "connected_reference": "PASS",
+    "fixed_0_100_mapping": "PASS",
+    "continuous_source_margin_objective": "PASS",
+    "interval_mapping": "PASS",
+    "adjacent_ranking_evidence": "PASS",
+    "source_consensus_projection_kkt": "VENDOR_ONLY_PASS",
+    "checked_score_components": 11728,
+    "checked_pair_records": 57628,
+    "published_models": 132
+  },
+  "source_families": 171,
+  "folds": [
+    {
+      "fold": 0,
+      "constraints_from_training_only": 64,
+      "base": {
+        "logloss": 0.6386561107999574,
+        "brier": 0.21808569386193954,
+        "soft_logloss": 0.6762577383053633,
+        "direction_agreement": 0.6680918912148658
+      },
+      "calibrated": {
+        "logloss": 0.6407830620411308,
+        "brier": 0.21926577876651407,
+        "soft_logloss": 0.6761880206820081,
+        "direction_agreement": 0.6363042840761624
+      },
+      "base_same_vendor": {
+        "logloss": 0.6414512631035125,
+        "brier": 0.21947086545339037,
+        "soft_logloss": 0.6758572946822448,
+        "direction_agreement": 0.6635018993389719
+      },
+      "calibrated_same_vendor": {
+        "logloss": 0.6310134280709617,
+        "brier": 0.21464985310624218,
+        "soft_logloss": 0.6662359403734696,
+        "direction_agreement": 0.6229524586834192
+      },
+      "by_category": {
+        "agents": {
+          "base": {
+            "logloss": 0.7041850427778589,
+            "brier": 0.245252479951167,
+            "soft_logloss": 0.7057728138121229,
+            "direction_agreement": 0.6111498257839721
+          },
+          "calibrated": {
+            "logloss": 0.6939338550424363,
+            "brier": 0.24175728553219072,
+            "soft_logloss": 0.697133373829953,
+            "direction_agreement": 0.6518337850045167
+          }
+        },
+        "language_documents": {
+          "base": {
+            "logloss": 0.7419966694998662,
+            "brier": 0.26796538126777164,
+            "soft_logloss": 0.7222160967502921,
+            "direction_agreement": 0.41726103165127554
+          },
+          "calibrated": {
+            "logloss": 0.7307255503087787,
+            "brier": 0.26238358634661474,
+            "soft_logloss": 0.7161410128027644,
+            "direction_agreement": 0.4764350283862479
+          }
+        },
+        "visual": {
+          "base": {
+            "logloss": 0.6141338151892167,
+            "brier": 0.20450896607534988,
+            "soft_logloss": 0.6694559676567362,
+            "direction_agreement": 0.7924883758217093
+          },
+          "calibrated": {
+            "logloss": 0.6333539406883009,
+            "brier": 0.21410878785932738,
+            "soft_logloss": 0.6822439498242637,
+            "direction_agreement": 0.6575677409010743
+          }
+        },
+        "reasoning_data": {
+          "base": {
+            "logloss": 0.6198202972675366,
+            "brier": 0.21372395675654968,
+            "soft_logloss": 0.6736595986641166,
+            "direction_agreement": 0.6626984126984127
+          },
+          "calibrated": {
+            "logloss": 0.6194065181588215,
+            "brier": 0.2134098975754566,
+            "soft_logloss": 0.6731149878420493,
+            "direction_agreement": 0.6707671957671957
+          }
+        },
+        "software": {
+          "base": {
+            "logloss": 0.6555031758033952,
+            "brier": 0.22623395932707005,
+            "soft_logloss": 0.6952233510597577,
+            "direction_agreement": 0.5926571170473609
+          },
+          "calibrated": {
+            "logloss": 0.6593209296863684,
+            "brier": 0.22798536346816492,
+            "soft_logloss": 0.6980765553849931,
+            "direction_agreement": 0.6014690067535596
+          }
+        },
+        "unclassified": {
+          "base": {
+            "logloss": 0.6146755170817338,
+            "brier": 0.20739471937278603,
+            "soft_logloss": 0.6640717908246684,
+            "direction_agreement": 0.7004087872488578
+          },
+          "calibrated": {
+            "logloss": 0.6216755447885335,
+            "brier": 0.21068585792784425,
+            "soft_logloss": 0.6668948440822968,
+            "direction_agreement": 0.645963020966572
+          }
+        }
+      }
+    },
+    {
+      "fold": 1,
+      "constraints_from_training_only": 70,
+      "base": {
+        "logloss": 0.648170868020949,
+        "brier": 0.22384724428362662,
+        "soft_logloss": 0.6863954445365258,
+        "direction_agreement": 0.6320052051632468
+      },
+      "calibrated": {
+        "logloss": 0.6303640257470652,
+        "brier": 0.21542270760993454,
+        "soft_logloss": 0.6757712924006354,
+        "direction_agreement": 0.6313173320654887
+      },
+      "base_same_vendor": {
+        "logloss": 0.6102274850643106,
+        "brier": 0.20661310682862724,
+        "soft_logloss": 0.6718812779664288,
+        "direction_agreement": 0.6857538068880796
+      },
+      "calibrated_same_vendor": {
+        "logloss": 0.6027574964278636,
+        "brier": 0.2031521593548336,
+        "soft_logloss": 0.6700429127416957,
+        "direction_agreement": 0.7031225131032123
+      },
+      "by_category": {
+        "unclassified": {
+          "base": {
+            "logloss": 0.6426985847102262,
+            "brier": 0.2212012150768542,
+            "soft_logloss": 0.6852032360210606,
+            "direction_agreement": 0.6380969447707583
+          },
+          "calibrated": {
+            "logloss": 0.6116623744417596,
+            "brier": 0.20638582950673834,
+            "soft_logloss": 0.6677960347913973,
+            "direction_agreement": 0.6559212518905619
+          }
+        },
+        "language_documents": {
+          "base": {
+            "logloss": 0.649944662737697,
+            "brier": 0.22308568486737035,
+            "soft_logloss": 0.6865971688482669,
+            "direction_agreement": 0.6369676797482763
+          },
+          "calibrated": {
+            "logloss": 0.6408251083159983,
+            "brier": 0.21886166753666636,
+            "soft_logloss": 0.6824875066053546,
+            "direction_agreement": 0.607473598159816
+          }
+        },
+        "visual": {
+          "base": {
+            "logloss": 0.5672992038236063,
+            "brier": 0.1888241279168513,
+            "soft_logloss": 0.604033077547824,
+            "direction_agreement": 0.7927777777777778
+          },
+          "calibrated": {
+            "logloss": 0.5509143337430976,
+            "brier": 0.18271590255876452,
+            "soft_logloss": 0.5945137876796462,
+            "direction_agreement": 0.653888888888889
+          }
+        },
+        "reasoning_data": {
+          "base": {
+            "logloss": 0.5075705510127982,
+            "brier": 0.15031806214855992,
+            "soft_logloss": 0.6957411818246314,
+            "direction_agreement": 0.7807518796992481
+          },
+          "calibrated": {
+            "logloss": 0.4935258540472923,
+            "brier": 0.14319507756596073,
+            "soft_logloss": 0.6906280995697088,
+            "direction_agreement": 0.8302756892230576
+          }
+        },
+        "software": {
+          "base": {
+            "logloss": 0.6841457000431715,
+            "brier": 0.2445181902164062,
+            "soft_logloss": 0.6932466761947271,
+            "direction_agreement": 0.6063127389838433
+          },
+          "calibrated": {
+            "logloss": 0.6761392449879935,
+            "brier": 0.2406469140866215,
+            "soft_logloss": 0.6883300469859323,
+            "direction_agreement": 0.6037465108326056
+          }
+        },
+        "agents": {
+          "base": {
+            "logloss": 0.6843202674461255,
+            "brier": 0.24019930535064393,
+            "soft_logloss": 0.7064785993077788,
+            "direction_agreement": 0.5807771605784919
+          },
+          "calibrated": {
+            "logloss": 0.6852838297665099,
+            "brier": 0.24054364131085731,
+            "soft_logloss": 0.7044566732276777,
+            "direction_agreement": 0.5691800360558644
+          }
+        },
+        "knowledge": {
+          "base": {
+            "logloss": 0.6046653072137373,
+            "brier": 0.2035000402196135,
+            "soft_logloss": 0.672162254933481,
+            "direction_agreement": 0.6873678991790922
+          },
+          "calibrated": {
+            "logloss": 0.5938104134366231,
+            "brier": 0.19829131578879683,
+            "soft_logloss": 0.6673116777799057,
+            "direction_agreement": 0.7067527518751877
+          }
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "constraints_from_training_only": 93,
+      "base": {
+        "logloss": 0.6399763362993698,
+        "brier": 0.21648588030156343,
+        "soft_logloss": 0.6800474758835315,
+        "direction_agreement": 0.6421716665708341
+      },
+      "calibrated": {
+        "logloss": 0.6369983890018371,
+        "brier": 0.21527234140398607,
+        "soft_logloss": 0.6795243400889761,
+        "direction_agreement": 0.6436513576181943
+      },
+      "base_same_vendor": {
+        "logloss": 0.6510079399763318,
+        "brier": 0.21870969794247694,
+        "soft_logloss": 0.6932337200641832,
+        "direction_agreement": 0.6766682686000868
+      },
+      "calibrated_same_vendor": {
+        "logloss": 0.6401465724558334,
+        "brier": 0.21354199931466503,
+        "soft_logloss": 0.6893211246813034,
+        "direction_agreement": 0.6738153344971527
+      },
+      "by_category": {
+        "agents": {
+          "base": {
+            "logloss": 0.5960973208190262,
+            "brier": 0.19182263630516402,
+            "soft_logloss": 0.6447931124223675,
+            "direction_agreement": 0.7119370312227454
+          },
+          "calibrated": {
+            "logloss": 0.5776701765712305,
+            "brier": 0.18334866171753858,
+            "soft_logloss": 0.633444352781308,
+            "direction_agreement": 0.7188531309959882
+          }
+        },
+        "visual": {
+          "base": {
+            "logloss": 0.6416640222620844,
+            "brier": 0.22623205711006814,
+            "soft_logloss": 0.6795149774261637,
+            "direction_agreement": 0.623015873015873
+          },
+          "calibrated": {
+            "logloss": 0.6447245381831428,
+            "brier": 0.22772723193981737,
+            "soft_logloss": 0.6805048034928358,
+            "direction_agreement": 0.6329365079365079
+          }
+        },
+        "language_documents": {
+          "base": {
+            "logloss": 0.6246311810044745,
+            "brier": 0.20521132368045064,
+            "soft_logloss": 0.6670678120303712,
+            "direction_agreement": 0.6363286564625851
+          },
+          "calibrated": {
+            "logloss": 0.6213201036896079,
+            "brier": 0.20390654875622427,
+            "soft_logloss": 0.6662508793540629,
+            "direction_agreement": 0.6561699263038548
+          }
+        },
+        "reasoning_data": {
+          "base": {
+            "logloss": 0.7035548654172159,
+            "brier": 0.25481413081397614,
+            "soft_logloss": 0.7069337425282887,
+            "direction_agreement": 0.5138888888888888
+          },
+          "calibrated": {
+            "logloss": 0.7035548654172159,
+            "brier": 0.25481413081397614,
+            "soft_logloss": 0.7069337425282887,
+            "direction_agreement": 0.5138888888888888
+          }
+        },
+        "software": {
+          "base": {
+            "logloss": 0.6146020116434961,
+            "brier": 0.21058557616037288,
+            "soft_logloss": 0.6609324354913512,
+            "direction_agreement": 0.6457399812662971
+          },
+          "calibrated": {
+            "logloss": 0.6029505706496661,
+            "brier": 0.20537761967006798,
+            "soft_logloss": 0.6516824432944728,
+            "direction_agreement": 0.676887083027434
+          }
+        },
+        "unclassified": {
+          "base": {
+            "logloss": 0.6671785389499352,
+            "brier": 0.23438881922091304,
+            "soft_logloss": 0.7024183513346464,
+            "direction_agreement": 0.5870662562767827
+          },
+          "calibrated": {
+            "logloss": 0.6771195798322945,
+            "brier": 0.2391706109846576,
+            "soft_logloss": 0.7110048727936175,
+            "direction_agreement": 0.5687770668253124
+          }
+        },
+        "knowledge": {
+          "base": {
+            "logloss": 0.6887537207928235,
+            "brier": 0.24780587767790907,
+            "soft_logloss": 0.6860312566038863,
+            "direction_agreement": 0.41666666666666663
+          },
+          "calibrated": {
+            "logloss": 0.6887537207928235,
+            "brier": 0.24780587767790907,
+            "soft_logloss": 0.6860312566038863,
+            "direction_agreement": 0.41666666666666663
+          }
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "constraints_from_training_only": 87,
+      "base": {
+        "logloss": 0.6166580505563649,
+        "brier": 0.19681563304328392,
+        "soft_logloss": 0.6628899983546896,
+        "direction_agreement": 0.6787691708464167
+      },
+      "calibrated": {
+        "logloss": 0.6261835368461798,
+        "brier": 0.2008894425370332,
+        "soft_logloss": 0.6625815310839768,
+        "direction_agreement": 0.674414547846202
+      },
+      "base_same_vendor": {
+        "logloss": 0.668608194922636,
+        "brier": 0.21975807394110264,
+        "soft_logloss": 0.7013589136601674,
+        "direction_agreement": 0.6063338017586384
+      },
+      "calibrated_same_vendor": {
+        "logloss": 0.6779072799911465,
+        "brier": 0.22428393410279338,
+        "soft_logloss": 0.7057309221790674,
+        "direction_agreement": 0.5431674156755856
+      },
+      "by_category": {
+        "agents": {
+          "base": {
+            "logloss": 0.41402175282178766,
+            "brier": 0.10942052652570414,
+            "soft_logloss": 0.5981709198963826,
+            "direction_agreement": 0.9083333333333333
+          },
+          "calibrated": {
+            "logloss": 0.4751855670163042,
+            "brier": 0.13525600380498948,
+            "soft_logloss": 0.5775389611736917,
+            "direction_agreement": 0.9083333333333333
+          }
+        },
+        "language_documents": {
+          "base": {
+            "logloss": 0.6886401377179474,
+            "brier": 0.1858182349498662,
+            "soft_logloss": 0.701410030375085,
+            "direction_agreement": 0.7094907407407407
+          },
+          "calibrated": {
+            "logloss": 0.7002686154421841,
+            "brier": 0.19128798701574573,
+            "soft_logloss": 0.7137011517205204,
+            "direction_agreement": 0.6416997354497355
+          }
+        },
+        "visual": {
+          "base": {
+            "logloss": 0.7054015516861233,
+            "brier": 0.2140757899645217,
+            "soft_logloss": 0.7255612555240842,
+            "direction_agreement": 0.6666666666666666
+          },
+          "calibrated": {
+            "logloss": 0.7196648560312693,
+            "brier": 0.22082380641667254,
+            "soft_logloss": 0.7399012858896779,
+            "direction_agreement": 0.6666666666666666
+          }
+        },
+        "reasoning_data": {
+          "base": {
+            "logloss": 0.7955846080422087,
+            "brier": 0.04631268203544977,
+            "soft_logloss": 0.7955846080422087,
+            "direction_agreement": null
+          },
+          "calibrated": {
+            "logloss": 0.8146537920534243,
+            "brier": 0.053934714142969485,
+            "soft_logloss": 0.8146537920534243,
+            "direction_agreement": null
+          }
+        },
+        "software": {
+          "base": {
+            "logloss": 0.4628122282292715,
+            "brier": 0.14040259161049795,
+            "soft_logloss": 0.5365743708303873,
+            "direction_agreement": 0.875
+          },
+          "calibrated": {
+            "logloss": 0.45858962516713886,
+            "brier": 0.13848304514490145,
+            "soft_logloss": 0.5376777535930858,
+            "direction_agreement": 0.875
+          }
+        },
+        "unclassified": {
+          "base": {
+            "logloss": 0.6553990521676966,
+            "brier": 0.22367995999049373,
+            "soft_logloss": 0.6794573257257596,
+            "direction_agreement": 0.6091104747553047
+          },
+          "calibrated": {
+            "logloss": 0.6547546926968557,
+            "brier": 0.22328853047894973,
+            "soft_logloss": 0.6793489265425854,
+            "direction_agreement": 0.6162773541320079
+          }
+        },
+        "knowledge": {
+          "base": {
+            "logloss": 0.5698660150294601,
+            "brier": 0.1929349041034085,
+            "soft_logloss": 0.633237542560914,
+            "direction_agreement": 0.665391156462585
+          },
+          "calibrated": {
+            "logloss": 0.5698647357672886,
+            "brier": 0.19311509341372035,
+            "soft_logloss": 0.6326979573686597,
+            "direction_agreement": 0.665391156462585
+          }
+        }
+      }
+    }
+  ],
+  "selected_margin": 0.5,
+  "development_comparison": {
+    "base": {
+      "logloss": 0.6358653414191603,
+      "soft_logloss": 0.6763976642700276,
+      "brier": 0.2138086128726034,
+      "direction_agreement": 0.6552594834488409
+    },
+    "0.0": {
+      "logloss": 0.6330973282222921,
+      "soft_logloss": 0.6740570931063576,
+      "brier": 0.2124700451453081,
+      "direction_agreement": 0.644099751243185
+    },
+    "0.05": {
+      "logloss": 0.6331149286840619,
+      "soft_logloss": 0.6740324214477439,
+      "brier": 0.2124766582316407,
+      "direction_agreement": 0.6451454935737824
+    },
+    "0.1": {
+      "logloss": 0.633318886939754,
+      "soft_logloss": 0.6740001272363044,
+      "brier": 0.21256261670054627,
+      "direction_agreement": 0.6418683827287528
+    },
+    "0.25": {
+      "logloss": 0.6339708698361946,
+      "soft_logloss": 0.6740231899294781,
+      "brier": 0.2128510612794082,
+      "direction_agreement": 0.6387701910301113
+    },
+    "0.5": {
+      "logloss": 0.6335822534090532,
+      "soft_logloss": 0.6735162960638991,
+      "brier": 0.21271256757936696,
+      "direction_agreement": 0.6464218804015118
+    },
+    "1.0": {
+      "logloss": 0.6389286756886872,
+      "soft_logloss": 0.6803471516133156,
+      "brier": 0.215343599356073,
+      "direction_agreement": 0.6388124300557263
+    }
+  },
+  "paired_source_family_bootstrap_delta_95": {
+    "soft_logloss": [
+      -0.007453367303169667,
+      0.0016117756290290222
+    ],
+    "logloss": [
+      -0.009573797053567317,
+      0.005511306278699628
+    ],
+    "brier": [
+      -0.0045565632228112265,
+      0.0025678265808194755
+    ],
+    "direction_agreement": [
+      -0.03119483209580067,
+      0.011459315578459622
+    ]
+  },
+  "bootstrap_replicates": 2000,
+  "model_calls": 0,
+  "limitations": [
+    "Repeated common evidence is a consistency rule on the score, not proof of universal ability.",
+    "One frozen observational snapshot was used for development selection; bootstrap intervals are exploratory, not independent external validation.",
+    "Probability losses improve on average while directional agreement decreases about 0.9 percentage points.",
+    "Unmeasured pairs, opposing sources and conflicting cycles are not given a release-order assumption."
+  ]
+}

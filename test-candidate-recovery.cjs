@@ -48,14 +48,13 @@ test('requesting task evidence during the lightweight home load actually starts 
 });
 
 test('coding preview matches the source-scoped backend replay on the same real snapshot',()=>{
- const report=JSON.parse(fs.readFileSync(__dirname+'/validation/task-score-v5-real.json','utf8'));
+ const report=JSON.parse(fs.readFileSync(__dirname+'/validation/task-score-v7-multidomain.json','utf8'));
+ const rules=JSON.parse(fs.readFileSync(__dirname+'/validation/task-measurements-v7-real.json','utf8'));
  assert.equal(report.snapshot_id,manifest.snapshot_id);
- const preview=V.taskMatchPreview(snapshot,report.profile);assert.equal(preview.benchmarks,report.primary_benchmarks);
- for(const c of report.capabilities){assert.equal(preview.capabilities.find(x=>x.id===c.capability_id).nBenchmarks,c.n_benchmarks);}
- const benches=new Map(snapshot.benchmarks.map(b=>[JSON.stringify([b.paper_id,b.benchmark_id]),b]));
- for(const g of snapshot.index.groups){
-  const expected=report.groups[g.group_id];if(!expected)continue;
-  const b=benches.get(JSON.stringify([g.paper_id,g.benchmark_id]));
-  assert.deepEqual(V.taskMetricCaps(g,b,report.profile).sort(),expected.slice().sort());
- }
+ const expected=report.profiles['code-development'];V.setTaskMeasurements(rules);
+ try{
+  const preview=V.taskMatchPreview(snapshot,expected.profile);assert.equal(preview.benchmarks,expected.matched_benchmarks);
+  for(const c of expected.capabilities)assert.equal(preview.capabilities.find(x=>x.id===c.capability_id).nBenchmarks,c.n_benchmarks);
+  assert.equal(preview.rows.filter(r=>r.nTaskBenchmarks>0).length,expected.models);
+ }finally{V.setTaskMeasurements(null);}
 });
