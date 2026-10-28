@@ -48,8 +48,8 @@ test('requesting task evidence during the lightweight home load actually starts 
 });
 
 test('coding preview matches the source-scoped backend replay on the same real snapshot',()=>{
- const report=JSON.parse(fs.readFileSync(__dirname+'/validation/task-score-v7-multidomain.json','utf8'));
- const rules=JSON.parse(fs.readFileSync(__dirname+'/validation/task-measurements-v7-real.json','utf8'));
+ const report=JSON.parse(fs.readFileSync(__dirname+'/validation/task-score-v8-multidomain.json','utf8'));
+ const rules=JSON.parse(fs.readFileSync(__dirname+'/validation/task-measurements-v8-real.json','utf8'));
  assert.equal(report.snapshot_id,manifest.snapshot_id);
  const expected=report.profiles['code-development'];V.setTaskMeasurements(rules);
  try{

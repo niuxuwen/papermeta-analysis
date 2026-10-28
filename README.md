@@ -1,6 +1,6 @@
 # 论文 Meta 分析 · GitHub Pages 访问者版
 
-公开网页发布 v112 评分快照；后端源码独立保存在 backend/，不会包含在 Pages 发布目录中。网页不包含管理入口、队列或 API 密钥。
+公开网页发布 v119 评分快照（综合评分 v14、任务参考 v8）；后端源码独立保存在 backend/，不会包含在 Pages 发布目录中。网页不包含管理入口、队列或 API 密钥。
 数据截至北京时间 2026-10-27 19:42，30,594 条原始成绩、132 个默认设置下的模型综合分。
 
 ## 发布
@@ -16,7 +16,7 @@
 
 ## 验证
 
-node --test test-pages.cjs test-task-connection.cjs
+node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs test-task-v8.cjs test-source-scoring-v14.cjs
 
 该检查读取整份真实快照，验证根目录及项目子路径下的数据完整性、原分数、日期和详情身份。
 第三方图标许可见 site/vendor-logos/。
