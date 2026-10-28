@@ -425,13 +425,14 @@
     const eligible=(snapshot.index?.groups||[]).filter(g=>{const scores=taskSourceScores(g).filter(s=>!known||known.has(s.model_canonical));return matched.has(key(g))&&taskMetricCaps(g,matched.get(key(g)).benchmark,profile).length>0&&!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&scores.length>=2&&scores.every(s=>finite(s.value_numeric));});
     const sameTask=(profile.tasks||[]).length>0&&eligible.some(g=>taskExactMatch(g,matched.get(key(g)),profile));
     for(const g of eligible){
-      const match=matched.get(key(g));if(sameTask&&!taskExactMatch(g,match,profile))continue;const caps=taskMetricCaps(g,match.benchmark,profile);
+      const match=matched.get(key(g));const caps=taskMetricCaps(g,match.benchmark,profile);
       const scores=taskSourceScores(g).filter(s=>finite(s.value_numeric)&&byName.has(s.model_canonical));if(scores.length<2)continue;
       const identity=g.benchmark_identity||g.benchmark_id;benches.add(identity);for(const cap of caps)capBenches.get(cap).add(identity);
       for(const s of scores){const row=byName.get(s.model_canonical);row.benchmarks.add(identity);row.groups.add(g.group_id);for(const cap of caps)row.caps.add(cap);}
     }
     const rows=[...byName.values()].map(({benchmarks,groups,caps,...r})=>({...r,nTaskBenchmarks:benchmarks.size,nTaskGroups:groups.size,taskCapabilities:[...caps],capabilityWeightCoverage:[...caps].reduce((n,c)=>n+weights.get(c),0)}));
-    const matchScope=sameTask?'SAME_TASK':(profile.tasks||[]).length?'RELATED_CAPABILITIES_ONLY':'CAPABILITY_REFERENCE';
+    const hasRelated=eligible.some(g=>!taskExactMatch(g,matched.get(key(g)),profile));
+    const matchScope=sameTask?(hasRelated?'SAME_TASK_AND_RELATED':'SAME_TASK'):(profile.tasks||[]).length?'RELATED_CAPABILITIES_ONLY':'CAPABILITY_REFERENCE';
     const result={configured:true,protocolUnknown,emptyReason:benches.size?null:!base.length?'NO_COMPARABLE_MODELS':!stages.capability.size?'NO_CAPABILITY_EVIDENCE':!stages.domain.size?'DOMAIN_FILTER':!stages.modality.size?'MODALITY_FILTER':protocolUnknown?'UNVERIFIED_PROTOCOL':'NO_CAPABILITY_EVIDENCE',matchingCounts:{capability:stages.capability.size,domain:stages.domain.size,modality:stages.modality.size},matchScope,rows,benchmarks:benches.size,capabilities:[...capBenches].map(([id,bs])=>({id,weight:weights.get(id),nBenchmarks:bs.size}))};
     cache.set(signature,result);while(cache.size>4)cache.delete(cache.keys().next().value);return result;
   }
@@ -764,7 +765,7 @@
       return chart;
     }
     function barChart(rows,forExport=false){
-      const chartW=Math.max(340,display.clientWidth||W),small=chartW<650,left=Math.round(chartW*(small?.42:.33)),logoSize=small?22:24,logoX=small?14:18,nameStart=logoX+logoSize+(small?8:12),width=chartW-left-(small?(data.relative?90:65):(data.relative?110:100)),ticks=data.relative?(small?2:4):data.kind==='coverage'?(small?3:5):(small?2:5),layouts=rows.map(r=>({r,lines:wrapName(r.name,Math.max(8,Math.floor((left-nameStart-12)/(small?7:8.5))))}));let rowY=42;for(const x of layouts){x.y=rowY;x.height=Math.max(data.opponentAdjusted?82:48,x.lines.length*20+16);rowY+=x.height;}const h=Math.max(240,rowY+40),chart=chartBase(h);
+      const chartW=Math.max(340,display.clientWidth||W),small=chartW<650,left=small?Math.round(chartW*.43):Math.min(330,Math.max(240,Math.round(chartW*.24))),logoSize=small?22:24,logoX=small?14:18,nameStart=logoX+logoSize+(small?8:12),width=chartW-left-(small?(data.relative?90:65):(data.relative?110:100)),ticks=data.relative?(small?2:4):data.kind==='coverage'?(small?3:5):(small?2:5),layouts=rows.map(r=>({r,lines:wrapName(r.name,Math.max(8,Math.floor((left-nameStart-12)/(small?7:8.5))))}));let rowY=42;for(const x of layouts){x.y=rowY;x.height=Math.max(data.opponentAdjusted?82:48,x.lines.length*20+16);rowY+=x.height;}const h=Math.max(240,rowY+40),chart=chartBase(h);
       chart.setAttribute('viewBox',`0 0 ${chartW} ${h}`);
       chart.append(label('标识',{x:logoX+logoSize/2,y:20,'text-anchor':'middle',fill:'#68788d','font-size':11}));
       const domain=data.kind==='coverage'?[0,ticks*Math.max(1,Math.ceil(Math.max(0,...rows.map(r=>r.score||0))/ticks))]:data.relative?relativeDomain(data.rows.map(r=>r.score)):data.raw?valueDomain(rows.map(r=>r.score),true):[0,100],zero=left+width*position(0,domain);
@@ -783,7 +784,7 @@
         if(logo.href)mark.append(svg('image',{href:logo.href,x:logoX,y:logoY,width:logoSize,height:logoSize,preserveAspectRatio:'xMidYMid meet'}));
         else {mark.append(svg('circle',{cx:logoX+logoSize/2,cy:logoY+logoSize/2,r:logoSize/2,fill:'#eef2f7'}),label(logo.vendor==='其他 / 厂商待确认'?'?':logo.vendor.slice(0,2),{x:logoX+logoSize/2,y:logoY+logoSize/2+4,'text-anchor':'middle',fill:'#68788d','font-size':10}));}
         group.append(mark);
-        const name=label('',{x:left-12,y:y+12,'text-anchor':'end',fill:'#34373f','font-size':small?14:16,class:'viz-bar-name','font-family':'-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif','font-weight':550});lines.forEach((line,j)=>name.append(svg('tspan',{x:left-12,dy:j?20:0},line)));name.append(svg('title',{},r.name));group.append(name);
+        const name=label('',{x:nameStart,y:y+12,'text-anchor':'start',fill:'#34373f','font-size':small?14:16,class:'viz-bar-name','font-family':'-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif','font-weight':550});lines.forEach((line,j)=>name.append(svg('tspan',{x:nameStart,dy:j?20:0},line)));name.append(svg('title',{},r.name));group.append(name);
         let rect=null;
         if(value!==null){const x=left+width*position(value,domain);rect=svg('rect',{x:Math.min(x,zero),y,width:Math.abs(x-zero),height:18,rx:3,fill:color,'fill-opacity':1,class:'viz-bar-fill'});
           group.append(rect);}

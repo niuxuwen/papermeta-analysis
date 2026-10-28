@@ -4,12 +4,12 @@ body[data-edition=visitor]{--page:#f7f9fc;--ink:#213248;--muted:#728094;--line:#
 body[data-edition=visitor] .task-input textarea{min-height:116px}
 body[data-edition=visitor][data-visitor-detail=true] #view-benchmarks{display:none}
 body[data-edition=visitor] #detail{border-top:0;margin-top:25px;padding-top:10px}
-body[data-edition=visitor] main{max-width:1280px;padding:0 40px 36px}
+body[data-edition=visitor] main{max-width:1600px;padding:0 40px 36px}
 .visitor-header .masthead nav button:hover:not(:disabled),.visitor-header .masthead nav button:active,.visitor-header .masthead nav button[aria-pressed=true]{background:transparent;border-color:transparent;box-shadow:none;color:var(--blue)}
 .visitor-header .masthead nav button{margin-left:0;transition:color 160ms ease}
 .visitor-header .masthead nav button:focus-visible{background:transparent;box-shadow:none;outline:2px solid #a7c9ed;outline-offset:4px;border-radius:3px}
 @media(prefers-reduced-motion:reduce){.visitor-header .masthead nav button{transition:none}}
-.visitor-header .masthead{max-width:1280px;padding:18px 40px;gap:30px;min-height:84px}
+.visitor-header .masthead{max-width:1600px;padding:18px 40px;gap:30px;min-height:84px}
 .visitor-header .brand{font-size:29px;gap:11px}.visitor-header .brand>span{line-height:1.15;font-size:19px}.brand-en{display:block;font:9px/1.8 var(--mono);letter-spacing:1.7px;color:#8c99aa}
 .visitor-header nav{display:flex;align-items:center;gap:26px;margin-left:auto}.visitor-header nav button{position:relative;padding:12px 0;border:0;background:transparent;box-shadow:none;color:var(--muted);font-size:14px;font-weight:550;border-radius:0;white-space:nowrap}.visitor-header nav button:after{content:'';position:absolute;bottom:3px;height:2px;background:var(--blue);left:50%;right:50%;transition:left .2s,right .2s}.visitor-header nav button[aria-pressed=true]{color:var(--blue)}.visitor-header nav button[aria-pressed=true]:after{left:0;right:0}.visitor-header nav button:last-child{color:var(--blue)}.visitor-header #refresh{font-size:12px;font-weight:500;padding:8px 11px;margin-left:8px;background:transparent;border-color:var(--line);color:var(--muted)}
 .visitor-status{display:flex;align-items:center;gap:18px;padding:20px 0 0;font-size:11px;color:#8b96a6}.visitor-status .connection{font-size:11px!important;border:0!important;background:transparent!important;padding:0!important;color:#7b8798!important}.visitor-status .connection:before{width:5px;height:5px!important}.visitor-status .window-pill{margin-left:auto;background:transparent;border:0;padding:0;font-size:11px;color:#8b96a6;font-weight:400}

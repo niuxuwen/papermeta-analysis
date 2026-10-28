@@ -25,7 +25,7 @@
           const response=await network(new URL('api/task-measurements',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
           if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
           const measurements=await response.json();
-          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!=='source-scoped-task-measurements-v2')throw Error('TASK_SNAPSHOT_MISMATCH');
+          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==(service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2'))throw Error('TASK_SNAPSHOT_MISMATCH');
           window.RadarTaskMeasurements=measurements;
         }
         window.RadarTaskConnected=true;activate(service);window.dispatchEvent(new CustomEvent('radar:task-connected'));

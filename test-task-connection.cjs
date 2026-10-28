@@ -1,11 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const manifest=JSON.parse(fs.readFileSync(__dirname+'/site/snapshot/manifest.json','utf8'));
-function setup(snapshot=manifest.snapshot_id,version=5,measurementSnapshot=snapshot){
+function setup(snapshot=manifest.snapshot_id,version=5,measurementSnapshot=snapshot,schema=version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2'){
  const requests=[],events=[],home='https://viewer.test/papermeta-analysis/';
  const network=async(input,options={})=>{const url=String(input);requests.push({url,...options});
   if(url===home+'task-backend.json')return Response.json({enabled:true,base_url:'https://tasks.test/'});
   if(url==='https://tasks.test/api/task-service')return Response.json({status:'READY',snapshot_id:snapshot,task_score_method_version:version,task_score_available:true,task_profile_available:true});
-  if(url==='https://tasks.test/api/task-measurements')return Response.json({schema_version:'source-scoped-task-measurements-v2',snapshot_id:measurementSnapshot,groups:{}});
+  if(url==='https://tasks.test/api/task-measurements')return Response.json({schema_version:schema,snapshot_id:measurementSnapshot,groups:{}});
   return Response.json({state:'COMPLETE'});
  };
  const context={URL,Response,AbortController,setTimeout,clearTimeout,location:{hostname:'viewer.test'},CustomEvent:class{constructor(type){this.type=type;}},
@@ -40,4 +40,16 @@ test('v6 mismatched source rules block task transmission',async()=>{
  const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});
  assert.equal(r.status,503);assert.equal((await r.json()).error,'task_snapshot_mismatch');
  assert(!s.requests.some(r=>r.method==='POST'));assert(!s.window.RadarTaskConnected);
+});
+
+test('v7 source schema enables the actual broad-reference service',async()=>{
+ const s=setup(manifest.snapshot_id,7);await s.connection.connect();
+ assert.equal(s.window.RadarTaskMeasurements.schema_version,'source-scoped-task-measurements-v3');
+ assert(s.window.RadarTaskConnected);
+});
+
+test('v7 does not silently accept obsolete task attribution rules',async()=>{
+ const s=setup(manifest.snapshot_id,7,manifest.snapshot_id,'source-scoped-task-measurements-v2');
+ const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});
+ assert.equal(r.status,503);assert(!s.requests.some(r=>r.method==='POST'));
 });
