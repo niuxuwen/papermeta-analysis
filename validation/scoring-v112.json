@@ -1,0 +1,73 @@
+{
+  "source_snapshot": "28e1296cda118c5b688dc0ca",
+  "snapshot_id": "4454273dd745c7e7aa3d7712",
+  "source_sha256": "cf950cbf6425dca3d7cc93f9d010b632df76d57613960e5f7495881586936de3",
+  "output_source_sha256": "aa74922a1cbc575b626b6d191cd85a3bc2e98072734dee3c40fcd73fdeb6e38a",
+  "observations": 30594,
+  "raw_observations_sha256": "d9d6c082395d3e8c830acfeedea0d6bca01887257a0ec1c0c83036fd51777c8a",
+  "raw_values_unchanged": true,
+  "model_calls": 0,
+  "labelled_default_groups": 467,
+  "method_version": 12,
+  "source_budget_caps": "PASS",
+  "fits_converged": true,
+  "intervals_recomputed": true,
+  "uncertainty_policy": "base-source-budget-units-v1",
+  "independent_source_and_gradient_audit": {
+    "source_provenance": "PASS",
+    "pair_weights": "PASS",
+    "stationary_likelihood": "PASS",
+    "source_paper_and_benchmark_budgets": "PASS",
+    "task_macro_weights": "PASS",
+    "shared_vs_task_strengths": "PASS",
+    "penalties_not_source_edges": "PASS",
+    "two_model_scale_policy": "PASS",
+    "broad_coverage_admission": "PASS",
+    "connected_reference": "PASS",
+    "fixed_0_100_mapping": "PASS",
+    "continuous_source_margin_objective": "PASS",
+    "interval_mapping": "PASS",
+    "adjacent_ranking_evidence": "PASS",
+    "source_consensus_projection_kkt": "REMOVED",
+    "checked_score_components": 11862,
+    "checked_pair_records": 58684,
+    "published_models": 132
+  },
+  "whole_source_family_validation": {
+    "method": "4-fold held-out connected paper/benchmark families; fixed candidate list; no model age/vendor/order used",
+    "families": 173,
+    "fold_loads": [
+      279,
+      279,
+      279,
+      278
+    ],
+    "comparison": {
+      "pair_p03_c3": {
+        "soft_logloss": 0.6742113077452792,
+        "logloss": 0.6312737821379092,
+        "brier": 0.2120274098508162,
+        "direction_agreement": 0.6516333194841809
+      },
+      "cap_p03_c3": {
+        "soft_logloss": 0.6726503911009425,
+        "logloss": 0.6260773096077077,
+        "brier": 0.20954769863059092,
+        "direction_agreement": 0.6611526576642511
+      },
+      "cap_p1_c3": {
+        "soft_logloss": 0.6719819685281322,
+        "logloss": 0.6355046132006373,
+        "brier": 0.2140322107241205,
+        "direction_agreement": 0.6658225923830331
+      },
+      "cap_p03_c1": {
+        "soft_logloss": 0.6710461013547555,
+        "logloss": 0.626991712432019,
+        "brier": 0.21003076973197052,
+        "direction_agreement": 0.6708815836120305
+      }
+    },
+    "selected": "cap_p03_c1"
+  }
+}
