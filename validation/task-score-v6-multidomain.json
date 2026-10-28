@@ -1,0 +1,6499 @@
+{
+  "snapshot_id": "4454273dd745c7e7aa3d7712",
+  "observations": 30594,
+  "observation_sha256": "9146e30d05aa4c6d2764e5996b4df63dd09b17fce45d6eee5eaf1334fcf4a966",
+  "method_version": 6,
+  "model_calls": 0,
+  "profiles": {
+    "code-development": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "编写和修改代码，通过测试验证功能，并遵循给定规格。",
+        "domains": [
+          "software"
+        ],
+        "tasks": [
+          "code_development"
+        ],
+        "capabilities": [
+          {
+            "id": "code_correctness",
+            "weight": 0.6,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "reasoning",
+            "weight": 0.25,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "instruction_following",
+            "weight": 0.15,
+            "rationale": "初始模板建议，需按实际任务调整"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 6,
+      "model_rows": 89,
+      "models": 36,
+      "panels": 11,
+      "facets": [
+        "code_implementation:condition:314c87db3cdde0bd8173a6f8",
+        "code_implementation:condition:f936368964ee776c06d74237",
+        "code_repair",
+        "rtl_generation",
+        "software_delivery",
+        "verifier_generation",
+        "web_functionality",
+        "web_functionality:condition:87166a4054913ca82727dc2c",
+        "web_functionality:condition:dc4b6ded40e241f33a073046",
+        "web_functionality:condition:e92ec4138311091764adbb94"
+      ],
+      "same_vendor_pairs": 65,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 67.57474660663394,
+          "score_b": 70.92935196522414,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -4.200000000000003,
+              "raw_a": 65.8,
+              "raw_b": 70.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3 Pro",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 66.75866162335934,
+          "score_b": 61.497634987576035,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 6.299999999999997,
+              "raw_a": 64.8,
+              "raw_b": 58.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3 VL 8B Instruct",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 19.698650736598537,
+          "score_b": 16.53654048230052,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 5.4,
+              "raw_a": 5.4,
+              "raw_b": 0.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 19.698650736598537,
+          "score_b": 36.44477950111733,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -23.5,
+              "raw_a": 5.4,
+              "raw_b": 28.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 19.698650736598537,
+          "score_b": 38.865800545221006,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -26.5,
+              "raw_a": 5.4,
+              "raw_b": 31.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 19.698650736598537,
+          "score_b": 69.98380938008482,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -63.4,
+              "raw_a": 5.4,
+              "raw_b": 68.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 16.53654048230052,
+          "score_b": 36.44477950111733,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -28.9,
+              "raw_a": 0.0,
+              "raw_b": 28.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 16.53654048230052,
+          "score_b": 38.865800545221006,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -31.9,
+              "raw_a": 0.0,
+              "raw_b": 31.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 16.53654048230052,
+          "score_b": 69.98380938008482,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -68.8,
+              "raw_a": 0.0,
+              "raw_b": 68.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 36.44477950111733,
+          "score_b": 38.865800545221006,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -3.0,
+              "raw_a": 28.9,
+              "raw_b": 31.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 36.44477950111733,
+          "score_b": 69.98380938008482,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -39.9,
+              "raw_a": 28.9,
+              "raw_b": 68.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 397B A17B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality",
+          "score_a": 38.865800545221006,
+          "score_b": 69.98380938008482,
+          "shared_sources": [
+            {
+              "group_id": "6223e7d2d57ace6c70ad23b0",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -36.9,
+              "raw_a": 31.9,
+              "raw_b": 68.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 57.466593145261086,
+          "score_b": 73.66413970306472,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -20.0,
+              "raw_a": 46.7,
+              "raw_b": 66.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3 Pro",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 64.96962801200031,
+          "score_b": 44.90046384017438,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 23.4,
+              "raw_a": 55.6,
+              "raw_b": 32.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3 VL 8B Instruct",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 20.066744837151685,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 0.0,
+              "raw_a": 0.0,
+              "raw_b": 0.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 30.71080652187122,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -15.0,
+              "raw_a": 0.0,
+              "raw_b": 15.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 43.525719056924444,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -30.6,
+              "raw_a": 0.0,
+              "raw_b": 30.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 73.66413970306472,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -66.7,
+              "raw_a": 0.0,
+              "raw_b": 66.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 30.71080652187122,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -15.0,
+              "raw_a": 0.0,
+              "raw_b": 15.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 43.525719056924444,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -30.6,
+              "raw_a": 0.0,
+              "raw_b": 30.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 20.066744837151685,
+          "score_b": 73.66413970306472,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -66.7,
+              "raw_a": 0.0,
+              "raw_b": 66.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 30.71080652187122,
+          "score_b": 43.525719056924444,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -15.600000000000001,
+              "raw_a": 15.0,
+              "raw_b": 30.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 30.71080652187122,
+          "score_b": 73.66413970306472,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -51.7,
+              "raw_a": 15.0,
+              "raw_b": 66.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 397B A17B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "score_a": 43.525719056924444,
+          "score_b": 73.66413970306472,
+          "shared_sources": [
+            {
+              "group_id": "87166a4054913ca82727dc2c",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -36.1,
+              "raw_a": 30.6,
+              "raw_b": 66.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 66.75758359869573,
+          "score_b": 67.3076786750888,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -0.9000000000000057,
+              "raw_a": 86.8,
+              "raw_b": 87.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3 Pro",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 65.95830116005754,
+          "score_b": 62.838679417788335,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 5.0,
+              "raw_a": 85.5,
+              "raw_b": 80.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3 VL 8B Instruct",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 16.69901678469681,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 0.0,
+              "raw_a": 0.0,
+              "raw_b": 0.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 38.84248867437121,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -42.7,
+              "raw_a": 0.0,
+              "raw_b": 42.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 38.298381955232344,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -41.8,
+              "raw_a": 0.0,
+              "raw_b": 41.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 73.20540779237862,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -97.7,
+              "raw_a": 0.0,
+              "raw_b": 97.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 38.84248867437121,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -42.7,
+              "raw_a": 0.0,
+              "raw_b": 42.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 38.298381955232344,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -41.8,
+              "raw_a": 0.0,
+              "raw_b": 41.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 16.69901678469681,
+          "score_b": 73.20540779237862,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -97.7,
+              "raw_a": 0.0,
+              "raw_b": 97.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 38.84248867437121,
+          "score_b": 38.298381955232344,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 0.9000000000000057,
+              "raw_a": 42.7,
+              "raw_b": 41.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 38.84248867437121,
+          "score_b": 73.20540779237862,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -55.0,
+              "raw_a": 42.7,
+              "raw_b": 97.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 397B A17B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "score_a": 38.298381955232344,
+          "score_b": 73.20540779237862,
+          "shared_sources": [
+            {
+              "group_id": "dc4b6ded40e241f33a073046",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -55.900000000000006,
+              "raw_a": 41.8,
+              "raw_b": 97.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 72.55272488779686,
+          "score_b": 71.48218866771934,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 1.1999999999999957,
+              "raw_a": 62.9,
+              "raw_b": 61.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3 Pro",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 67.6193707669471,
+          "score_b": 68.36791734781347,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -0.7999999999999972,
+              "raw_a": 57.5,
+              "raw_b": 58.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3 VL 8B Instruct",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 23.683255867165677,
+          "score_b": 15.98249588893278,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 10.8,
+              "raw_a": 10.8,
+              "raw_b": 0.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 23.683255867165677,
+          "score_b": 38.2095790488826,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -16.7,
+              "raw_a": 10.8,
+              "raw_b": 27.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 23.683255867165677,
+          "score_b": 37.83270326989034,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -16.3,
+              "raw_a": 10.8,
+              "raw_b": 27.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 32B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 23.683255867165677,
+          "score_b": 64.0916594012081,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -43.0,
+              "raw_a": 10.8,
+              "raw_b": 53.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 122B A10B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 15.98249588893278,
+          "score_b": 38.2095790488826,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -27.5,
+              "raw_a": 0.0,
+              "raw_b": 27.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 15.98249588893278,
+          "score_b": 37.83270326989034,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -27.1,
+              "raw_a": 0.0,
+              "raw_b": 27.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 VL 8B Instruct",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 15.98249588893278,
+          "score_b": 64.0916594012081,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -53.8,
+              "raw_a": 0.0,
+              "raw_b": 53.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.5 397B A17B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 38.2095790488826,
+          "score_b": 37.83270326989034,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": 0.3999999999999986,
+              "raw_a": 27.5,
+              "raw_b": 27.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 122B A10B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 38.2095790488826,
+          "score_b": 64.0916594012081,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -26.299999999999997,
+              "raw_a": 27.5,
+              "raw_b": 53.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3.5 397B A17B",
+          "b": "Qwen 3.8 27B",
+          "setting": "",
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "score_a": 37.83270326989034,
+          "score_b": 64.0916594012081,
+          "shared_sources": [
+            {
+              "group_id": "e92ec4138311091764adbb94",
+              "metric": "FS",
+              "paper_id": "recent-950f6aa0f44a7383",
+              "delta": -26.699999999999996,
+              "raw_a": 27.1,
+              "raw_b": 53.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.821881896143424,
+          "score_b": 58.69681628483761,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -9.100000000000001,
+              "raw_a": 63.1,
+              "raw_b": 72.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.821881896143424,
+          "score_b": 51.588491166906344,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -1.8000000000000043,
+              "raw_a": 63.1,
+              "raw_b": 64.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.821881896143424,
+          "score_b": 49.429411741779575,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 0.3999999999999986,
+              "raw_a": 63.1,
+              "raw_b": 62.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.821881896143424,
+          "score_b": 61.365641104518495,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -11.899999999999999,
+              "raw_a": 63.1,
+              "raw_b": 75.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.821881896143424,
+          "score_b": 80.62303620091288,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -35.1,
+              "raw_a": 63.1,
+              "raw_b": 98.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 58.69681628483761,
+          "score_b": 51.588491166906344,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 7.299999999999997,
+              "raw_a": 72.2,
+              "raw_b": 64.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 58.69681628483761,
+          "score_b": 49.429411741779575,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 9.5,
+              "raw_a": 72.2,
+              "raw_b": 62.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 58.69681628483761,
+          "score_b": 61.365641104518495,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -2.799999999999997,
+              "raw_a": 72.2,
+              "raw_b": 75.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 58.69681628483761,
+          "score_b": 80.62303620091288,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -26.0,
+              "raw_a": 72.2,
+              "raw_b": 98.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 51.588491166906344,
+          "score_b": 49.429411741779575,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 2.200000000000003,
+              "raw_a": 64.9,
+              "raw_b": 62.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 51.588491166906344,
+          "score_b": 61.365641104518495,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -10.099999999999994,
+              "raw_a": 64.9,
+              "raw_b": 75.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 51.588491166906344,
+          "score_b": 80.62303620091288,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -33.3,
+              "raw_a": 64.9,
+              "raw_b": 98.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.429411741779575,
+          "score_b": 61.365641104518495,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -12.299999999999997,
+              "raw_a": 62.7,
+              "raw_b": 75.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 49.429411741779575,
+          "score_b": 80.62303620091288,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -35.5,
+              "raw_a": 62.7,
+              "raw_b": 98.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Terra",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 61.365641104518495,
+          "score_b": 80.62303620091288,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -23.200000000000003,
+              "raw_a": 75.0,
+              "raw_b": 98.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 4.3",
+          "b": "Grok 4.7",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 33.87224691531085,
+          "score_b": 63.52012949834929,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -31.0,
+              "raw_a": 46.3,
+              "raw_b": 77.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "月之暗面",
+          "a": "Kimi K2.6",
+          "b": "Kimi K3",
+          "setting": "",
+          "facet": "verifier_generation",
+          "score_a": 13.318255514268868,
+          "score_b": 54.662937124056846,
+          "shared_sources": [
+            {
+              "group_id": "f368c44e7f4449f49df5f470",
+              "metric": "BAnorm ↑",
+              "paper_id": "recent-4cae2a042a32eb11",
+              "delta": -22.1,
+              "raw_a": -5.6,
+              "raw_b": 16.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 470,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "V4 Flash",
+          "b": "V4 Pro",
+          "setting": "",
+          "facet": "software_delivery",
+          "score_a": 51.882842986222414,
+          "score_b": 50.607040274289886,
+          "shared_sources": [
+            {
+              "group_id": "b347cf9b2b87527d21900337",
+              "metric": "Soft.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 1.3000000000000043,
+              "raw_a": 65.2,
+              "raw_b": 63.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "code_implementation:condition:314c87db3cdde0bd8173a6f8",
+          "max_change": 0.0
+        },
+        {
+          "facet": "code_implementation:condition:f936368964ee776c06d74237",
+          "max_change": 0.0
+        },
+        {
+          "facet": "code_repair",
+          "max_change": 0.0
+        },
+        {
+          "facet": "rtl_generation",
+          "max_change": 0.0
+        },
+        {
+          "facet": "software_delivery",
+          "max_change": 0.0
+        },
+        {
+          "facet": "verifier_generation",
+          "max_change": 0.0
+        },
+        {
+          "facet": "web_functionality",
+          "max_change": 0.0
+        },
+        {
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "max_change": 0.0
+        },
+        {
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "max_change": 0.0
+        },
+        {
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "no_metric_level_task_binding": 49,
+        "other_domain_or_mixed_domain_result": 8,
+        "metric_meaning_not_established_by_source_caption": 1,
+        "verifier_component_not_overall_coding_outcome": 6,
+        "summarizer_or_compaction_not_coding_agent": 3
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 11
+      },
+      "capabilities": [
+        {
+          "capability_id": "code_correctness",
+          "weight": 0.6,
+          "n_benchmarks": 6,
+          "n_groups": 11,
+          "n_models": 36,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "reasoning",
+          "weight": 0.25,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        },
+        {
+          "capability_id": "instruction_following",
+          "weight": 0.15,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "rtl_generation",
+          "facet_label": "RTL 硬件代码生成",
+          "setting": "",
+          "models": [
+            {
+              "name": "Claude 4.5 Sonnet",
+              "vendor": "Anthropic",
+              "score": 58.8903,
+              "benchmarks": 1
+            },
+            {
+              "name": "DeepSeek-V3",
+              "vendor": "DeepSeek",
+              "score": 48.5184,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o",
+              "vendor": "OpenAI",
+              "score": 42.5913,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "web_functionality",
+          "facet_label": "网页功能实现",
+          "setting": "",
+          "models": [
+            {
+              "name": "Claude 4.8 Opus",
+              "vendor": "Anthropic",
+              "score": 71.4758,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 70.9294,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 69.9838,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 67.5747,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Flash",
+              "vendor": "Google",
+              "score": 66.7587,
+              "benchmarks": 1
+            },
+            {
+              "name": "Seed 1.8",
+              "vendor": "字节跳动",
+              "score": 65.9367,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Pro",
+              "vendor": "Google",
+              "score": 61.4976,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 58.5099,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 397B A17B",
+              "vendor": "阿里巴巴",
+              "score": 38.8658,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 122B A10B",
+              "vendor": "阿里巴巴",
+              "score": 36.4448,
+              "benchmarks": 1
+            },
+            {
+              "name": "MiMo V2.5",
+              "vendor": "小米",
+              "score": 30.4843,
+              "benchmarks": 1
+            },
+            {
+              "name": "Step 3.7 Flash",
+              "vendor": "阶跃星辰",
+              "score": 25.3034,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 32B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 19.6987,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 8B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 16.5365,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "web_functionality:condition:87166a4054913ca82727dc2c",
+          "facet_label": "网页功能实现 · 来源条件 1",
+          "setting": "",
+          "models": [
+            {
+              "name": "Claude 4.8 Opus",
+              "vendor": "Anthropic",
+              "score": 81.572,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 73.6641,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 73.6641,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Flash",
+              "vendor": "Google",
+              "score": 64.9696,
+              "benchmarks": 1
+            },
+            {
+              "name": "Seed 1.8",
+              "vendor": "字节跳动",
+              "score": 64.9696,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 60.7953,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 57.4666,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Pro",
+              "vendor": "Google",
+              "score": 44.9005,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 397B A17B",
+              "vendor": "阿里巴巴",
+              "score": 43.5257,
+              "benchmarks": 1
+            },
+            {
+              "name": "MiMo V2.5",
+              "vendor": "小米",
+              "score": 38.2814,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 122B A10B",
+              "vendor": "阿里巴巴",
+              "score": 30.7108,
+              "benchmarks": 1
+            },
+            {
+              "name": "Step 3.7 Flash",
+              "vendor": "阶跃星辰",
+              "score": 25.3467,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 32B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 20.0667,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 8B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 20.0667,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "web_functionality:condition:dc4b6ded40e241f33a073046",
+          "facet_label": "网页功能实现 · 来源条件 2",
+          "setting": "",
+          "models": [
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 73.2054,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 4.8 Opus",
+              "vendor": "Anthropic",
+              "score": 68.7005,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 67.3077,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 66.7576,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Flash",
+              "vendor": "Google",
+              "score": 65.9583,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 63.9693,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Pro",
+              "vendor": "Google",
+              "score": 62.8387,
+              "benchmarks": 1
+            },
+            {
+              "name": "Seed 1.8",
+              "vendor": "字节跳动",
+              "score": 62.8387,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 122B A10B",
+              "vendor": "阿里巴巴",
+              "score": 38.8425,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 397B A17B",
+              "vendor": "阿里巴巴",
+              "score": 38.2984,
+              "benchmarks": 1
+            },
+            {
+              "name": "MiMo V2.5",
+              "vendor": "小米",
+              "score": 30.9179,
+              "benchmarks": 1
+            },
+            {
+              "name": "Step 3.7 Flash",
+              "vendor": "阶跃星辰",
+              "score": 26.967,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 32B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 16.699,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 8B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 16.699,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "web_functionality:condition:e92ec4138311091764adbb94",
+          "facet_label": "网页功能实现 · 来源条件 3",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 72.5527,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 71.4822,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Pro",
+              "vendor": "Google",
+              "score": 68.3679,
+              "benchmarks": 1
+            },
+            {
+              "name": "Seed 1.8",
+              "vendor": "字节跳动",
+              "score": 68.3679,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Flash",
+              "vendor": "Google",
+              "score": 67.6194,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 4.8 Opus",
+              "vendor": "Anthropic",
+              "score": 66.8654,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 64.0917,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 52.5122,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 122B A10B",
+              "vendor": "阿里巴巴",
+              "score": 38.2096,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 397B A17B",
+              "vendor": "阿里巴巴",
+              "score": 37.8327,
+              "benchmarks": 1
+            },
+            {
+              "name": "MiMo V2.5",
+              "vendor": "小米",
+              "score": 27.403,
+              "benchmarks": 1
+            },
+            {
+              "name": "Step 3.7 Flash",
+              "vendor": "阶跃星辰",
+              "score": 25.0295,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 32B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 23.6833,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 VL 8B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 15.9825,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "software_delivery",
+          "facet_label": "软件工作交付",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-6-Astra",
+              "vendor": "OpenAI",
+              "score": 80.623,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.7",
+              "vendor": "xAI",
+              "score": 63.5201,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Terra",
+              "vendor": "OpenAI",
+              "score": 61.3656,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 58.6968,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Flash",
+              "vendor": "其他 / 厂商待确认",
+              "score": 51.8828,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 51.5885,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 5.5 Opus",
+              "vendor": "Anthropic",
+              "score": 51.2941,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Pro",
+              "vendor": "其他 / 厂商待确认",
+              "score": 50.607,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.2",
+              "vendor": "OpenAI",
+              "score": 49.8219,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Sol",
+              "vendor": "OpenAI",
+              "score": 49.4294,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.3",
+              "vendor": "xAI",
+              "score": 33.8722,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 30.8952,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Large 3",
+              "vendor": "Mistral AI",
+              "score": 16.4032,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "code_implementation:condition:314c87db3cdde0bd8173a6f8",
+          "facet_label": "规格实现与验收 · 来源条件 1",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 62.7148,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 5.3 Flash",
+              "vendor": "智谱 · Z.ai",
+              "score": 37.2852,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "code_implementation:condition:f936368964ee776c06d74237",
+          "facet_label": "规格实现与验收 · 来源条件 2",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 59.8688,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 5.3 Flash",
+              "vendor": "智谱 · Z.ai",
+              "score": 40.1312,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "code_repair",
+          "facet_label": "已有代码修复",
+          "setting": "{'Track': 'SWE-Residual\\n(DeepSWE)'}",
+          "models": [
+            {
+              "name": "GPT-6-Sol",
+              "vendor": "OpenAI",
+              "score": 63.2126,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.8 Flash",
+              "vendor": "阿里巴巴",
+              "score": 59.8008,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3.8 Flash",
+              "vendor": "Google",
+              "score": 46.9791,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 5.3 Flash",
+              "vendor": "智谱 · Z.ai",
+              "score": 41.4285,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.8 Preview",
+              "vendor": "月之暗面",
+              "score": 38.579,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "code_repair",
+          "facet_label": "已有代码修复",
+          "setting": "{'Track': 'SWE-Residual\\n(Terminal-Bench)'}",
+          "models": [
+            {
+              "name": "GPT-6-Sol",
+              "vendor": "OpenAI",
+              "score": 69.808,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.8 Preview",
+              "vendor": "月之暗面",
+              "score": 51.2459,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 5.3 Flash",
+              "vendor": "智谱 · Z.ai",
+              "score": 43.6212,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3.8 Flash",
+              "vendor": "Google",
+              "score": 43.6212,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.8 Flash",
+              "vendor": "阿里巴巴",
+              "score": 41.7036,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "verifier_generation",
+          "facet_label": "验证器生成",
+          "setting": "",
+          "models": [
+            {
+              "name": "Qwen 3.7 Plus",
+              "vendor": "阿里巴巴",
+              "score": 82.0188,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K3",
+              "vendor": "月之暗面",
+              "score": 54.6629,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.6",
+              "vendor": "月之暗面",
+              "score": 13.3183,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "medical-literature-review": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "整理医学文献，比较不同研究结论，并提供可核实的引用。",
+        "domains": [
+          "medicine"
+        ],
+        "tasks": [
+          "literature_review"
+        ],
+        "capabilities": [
+          {
+            "id": "domain_knowledge",
+            "weight": 0.3,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "long_context",
+            "weight": 0.3,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "cross_document_synthesis",
+            "weight": 0.25,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "citation_reliability",
+            "weight": 0.15,
+            "rationale": "初始模板建议，需按实际任务调整"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 6,
+      "model_rows": 73,
+      "models": 60,
+      "panels": 11,
+      "facets": [
+        "clinical_answer_quality",
+        "clinical_delivery",
+        "clinical_guideline_grading_hard",
+        "clinical_guideline_grading_ood",
+        "medical_guideline_application",
+        "medical_knowledge_qa",
+        "therapy_fidelity_classification:condition:5efaceb050dc6492fbb615f2",
+        "therapy_fidelity_classification:condition:8d171ece2f1a996895a78a72"
+      ],
+      "same_vendor_pairs": 55,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "Anthropic",
+          "a": "Claude 3.5 Sonnet",
+          "b": "Claude 3.7 Sonnet",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 62.468009796253995,
+          "score_b": 62.01927375129663,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 0.5,
+              "raw_a": 88.91,
+              "raw_b": 88.41
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "智谱 · Z.ai",
+          "a": "GLM 4 32B",
+          "b": "GLM 4 9B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 53.32926962119768,
+          "score_b": 51.22447041670504,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 2.269999999999996,
+              "raw_a": 78.94,
+              "raw_b": 76.67
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-4o",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 50.99289411969645,
+          "score_b": 62.07319973808196,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -12.049999999999997,
+              "raw_a": 76.42,
+              "raw_b": 88.47
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-4o-mini",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 50.99289411969645,
+          "score_b": 56.35762207812909,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -5.789999999999992,
+              "raw_a": 76.42,
+              "raw_b": 82.21
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 50.99289411969645,
+          "score_b": 64.59965280403055,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -14.89,
+              "raw_a": 76.42,
+              "raw_b": 91.31
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o",
+          "b": "GPT-4o-mini",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 62.07319973808196,
+          "score_b": 56.35762207812909,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 6.260000000000005,
+              "raw_a": 88.47,
+              "raw_b": 82.21
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 62.07319973808196,
+          "score_b": 64.59965280403055,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -2.8400000000000034,
+              "raw_a": 88.47,
+              "raw_b": 91.31
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o-mini",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 56.35762207812909,
+          "score_b": 64.59965280403055,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -9.100000000000009,
+              "raw_a": 82.21,
+              "raw_b": 91.31
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 2",
+          "b": "Grok 3",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 62.136086933635035,
+          "score_b": 60.10143436136807,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 2.25,
+              "raw_a": 88.54,
+              "raw_b": 86.29
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3 Med42 8B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 47.625434526670674,
+          "score_b": 52.55015893389255,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -5.329999999999998,
+              "raw_a": 72.77,
+              "raw_b": 78.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3.1 405B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 47.625434526670674,
+          "score_b": 61.713303762454146,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -15.299999999999997,
+              "raw_a": 72.77,
+              "raw_b": 88.07
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 47.625434526670674,
+          "score_b": 47.625434526670674,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 0.0,
+              "raw_a": 72.77,
+              "raw_b": 72.77
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 47.625434526670674,
+          "score_b": 53.09739079542405,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -5.920000000000002,
+              "raw_a": 72.77,
+              "raw_b": 78.69
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 3.1 405B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 52.55015893389255,
+          "score_b": 61.713303762454146,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -9.969999999999999,
+              "raw_a": 78.1,
+              "raw_b": 88.07
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 52.55015893389255,
+          "score_b": 47.625434526670674,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 5.329999999999998,
+              "raw_a": 78.1,
+              "raw_b": 72.77
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 52.55015893389255,
+          "score_b": 53.09739079542405,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -0.5900000000000034,
+              "raw_a": 78.1,
+              "raw_b": 78.69
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 405B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 61.713303762454146,
+          "score_b": 47.625434526670674,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 15.299999999999997,
+              "raw_a": 88.07,
+              "raw_b": 72.77
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 405B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 61.713303762454146,
+          "score_b": 53.09739079542405,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 9.379999999999995,
+              "raw_a": 88.07,
+              "raw_b": 78.69
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 70B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 47.625434526670674,
+          "score_b": 53.09739079542405,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -5.920000000000002,
+              "raw_a": 72.77,
+              "raw_b": 78.69
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 14B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 19.831284065210806,
+          "score_b": 57.10501576061023,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -45.949999999999996,
+              "raw_a": 37.07,
+              "raw_b": 83.02
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 32B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 19.831284065210806,
+          "score_b": 58.64928963715495,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -47.63,
+              "raw_a": 37.07,
+              "raw_b": 84.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 19.831284065210806,
+          "score_b": 60.07413489139047,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -49.190000000000005,
+              "raw_a": 37.07,
+              "raw_b": 86.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 19.831284065210806,
+          "score_b": 52.80985704205283,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -41.309999999999995,
+              "raw_a": 37.07,
+              "raw_b": 78.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 32B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 57.10501576061023,
+          "score_b": 58.64928963715495,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -1.6800000000000068,
+              "raw_a": 83.02,
+              "raw_b": 84.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 57.10501576061023,
+          "score_b": 60.07413489139047,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -3.240000000000009,
+              "raw_a": 83.02,
+              "raw_b": 86.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 57.10501576061023,
+          "score_b": 52.80985704205283,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 4.640000000000001,
+              "raw_a": 83.02,
+              "raw_b": 78.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 32B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 58.64928963715495,
+          "score_b": 60.07413489139047,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -1.5600000000000023,
+              "raw_a": 84.7,
+              "raw_b": 86.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 32B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 58.64928963715495,
+          "score_b": 52.80985704205283,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 6.320000000000007,
+              "raw_a": 84.7,
+              "raw_b": 78.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 72B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 60.07413489139047,
+          "score_b": 52.80985704205283,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 7.88000000000001,
+              "raw_a": 86.26,
+              "raw_b": 78.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 54.60084957027011,
+          "score_b": 58.58944105266474,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -4.200000000000003,
+              "raw_a": 71.5,
+              "raw_b": 75.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 54.60084957027011,
+          "score_b": 66.312475605818,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -12.599999999999994,
+              "raw_a": 71.5,
+              "raw_b": 84.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 54.60084957027011,
+          "score_b": 47.62149389015419,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 7.299999999999997,
+              "raw_a": 71.5,
+              "raw_b": 64.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 54.60084957027011,
+          "score_b": 48.19324495997264,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 6.700000000000003,
+              "raw_a": 71.5,
+              "raw_b": 64.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 54.60084957027011,
+          "score_b": 77.63076023976346,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -26.400000000000006,
+              "raw_a": 71.5,
+              "raw_b": 97.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 58.58944105266474,
+          "score_b": 66.312475605818,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -8.399999999999991,
+              "raw_a": 75.7,
+              "raw_b": 84.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 58.58944105266474,
+          "score_b": 47.62149389015419,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 11.5,
+              "raw_a": 75.7,
+              "raw_b": 64.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 58.58944105266474,
+          "score_b": 48.19324495997264,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 10.900000000000006,
+              "raw_a": 75.7,
+              "raw_b": 64.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 58.58944105266474,
+          "score_b": 77.63076023976346,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -22.200000000000003,
+              "raw_a": 75.7,
+              "raw_b": 97.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 66.312475605818,
+          "score_b": 47.62149389015419,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 19.89999999999999,
+              "raw_a": 84.1,
+              "raw_b": 64.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 66.312475605818,
+          "score_b": 48.19324495997264,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 19.299999999999997,
+              "raw_a": 84.1,
+              "raw_b": 64.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 66.312475605818,
+          "score_b": 77.63076023976346,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -13.800000000000011,
+              "raw_a": 84.1,
+              "raw_b": 97.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 47.62149389015419,
+          "score_b": 48.19324495997264,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -0.5999999999999943,
+              "raw_a": 64.2,
+              "raw_b": 64.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 47.62149389015419,
+          "score_b": 77.63076023976346,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -33.7,
+              "raw_a": 64.2,
+              "raw_b": 97.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Terra",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 48.19324495997264,
+          "score_b": 77.63076023976346,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -33.10000000000001,
+              "raw_a": 64.8,
+              "raw_b": 97.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 4.3",
+          "b": "Grok 4.7",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 32.02069252322538,
+          "score_b": 65.59779864265113,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -36.3,
+              "raw_a": 47.0,
+              "raw_b": 83.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o",
+          "b": "GPT-4o-mini",
+          "setting": "5-shot",
+          "facet": "clinical_answer_quality",
+          "score_a": 63.64525402815665,
+          "score_b": 36.354745971843364,
+          "shared_sources": [
+            {
+              "group_id": "c1dc59c1f90939b348149de8",
+              "metric": "Correct",
+              "paper_id": "recent-c452dc3ab12b6678",
+              "delta": 14.0,
+              "raw_a": 44.0,
+              "raw_b": 30.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 55.88021913721156,
+          "score_b": 58.427830042243976,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": -2.3999999999999915,
+              "raw_a": 89.2,
+              "raw_b": 91.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 55.88021913721156,
+          "score_b": 57.79396012534757,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": -1.7999999999999972,
+              "raw_a": 89.2,
+              "raw_b": 91.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 58.427830042243976,
+          "score_b": 57.79396012534757,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": 0.5999999999999943,
+              "raw_a": 91.6,
+              "raw_b": 91.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 70B Instruct",
+          "b": "Llama 3.1 8B Instruct",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 50.39441425081694,
+          "score_b": 39.61278854442266,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": 10.099999999999994,
+              "raw_a": 84.1,
+              "raw_b": 74.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Mistral AI",
+          "a": "Mistral Instruct v0.3 7B",
+          "b": "Mistral Small Instruct 2501 24B",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 43.832163480416995,
+          "score_b": 46.72603341312486,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": -2.700000000000003,
+              "raw_a": 78.0,
+              "raw_b": 80.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 14B",
+          "b": "Qwen 3 32B",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 48.55860354872515,
+          "score_b": 49.2063783387357,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": -0.5999999999999943,
+              "raw_a": 82.4,
+              "raw_b": 83.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 14B",
+          "b": "Qwen 3 4B",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 48.55860354872515,
+          "score_b": 46.188254870828956,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": 2.200000000000003,
+              "raw_a": 82.4,
+              "raw_b": 80.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 32B",
+          "b": "Qwen 3 4B",
+          "setting": "",
+          "facet": "medical_guideline_application",
+          "score_a": 49.2063783387357,
+          "score_b": 46.188254870828956,
+          "shared_sources": [
+            {
+              "group_id": "b0dc9c335798c5ca8089f25c",
+              "metric": "Clinical (%)",
+              "paper_id": "recent-fcc70b0f8529b222",
+              "delta": 2.799999999999997,
+              "raw_a": 83.0,
+              "raw_b": 80.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemma 4 26B A4B Instruct",
+          "b": "Gemma 4 E4B Instruct",
+          "setting": "",
+          "facet": "therapy_fidelity_classification:condition:5efaceb050dc6492fbb615f2",
+          "score_a": 10.77975169400493,
+          "score_b": 67.09253805017646,
+          "shared_sources": [
+            {
+              "group_id": "5efaceb050dc6492fbb615f2",
+              "metric": "BA",
+              "paper_id": "recent-1325940c70a20cef",
+              "delta": -0.12,
+              "raw_a": 0.52,
+              "raw_b": 0.64
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 539,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "OpenAI o3",
+          "b": "OpenAI o4 mini",
+          "setting": "",
+          "facet": "medical_knowledge_qa",
+          "score_a": 63.440910709060205,
+          "score_b": 63.21844165003551,
+          "shared_sources": [
+            {
+              "group_id": "784eea2298916d00271dbbc4",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 0.25,
+              "raw_a": 90.0,
+              "raw_b": 89.75
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "V4 Flash",
+          "b": "V4 Pro",
+          "setting": "",
+          "facet": "clinical_delivery",
+          "score_a": 46.19616557626292,
+          "score_b": 51.15656704913797,
+          "shared_sources": [
+            {
+              "group_id": "cbf35710ef1b11bccab06ff2",
+              "metric": "Clin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -5.200000000000003,
+              "raw_a": 62.7,
+              "raw_b": 67.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "RetiJev 0.8B",
+          "b": "RetiJev 2B",
+          "setting": "",
+          "facet": "clinical_guideline_grading_hard",
+          "score_a": 50.81663506540672,
+          "score_b": 52.523278120418496,
+          "shared_sources": [
+            {
+              "group_id": "2a278fa2eaa24c25d363574b",
+              "metric": "Hard",
+              "paper_id": "recent-6c18e0c963947290",
+              "delta": -1.2999999999999972,
+              "raw_a": 89.8,
+              "raw_b": 91.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "RetiJev 0.8B",
+          "b": "RetiJev 9B",
+          "setting": "",
+          "facet": "clinical_guideline_grading_hard",
+          "score_a": 50.81663506540672,
+          "score_b": 59.348046679588855,
+          "shared_sources": [
+            {
+              "group_id": "2a278fa2eaa24c25d363574b",
+              "metric": "Hard",
+              "paper_id": "recent-6c18e0c963947290",
+              "delta": -6.540000000000006,
+              "raw_a": 89.8,
+              "raw_b": 96.34
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "RetiJev 2B",
+          "b": "RetiJev 9B",
+          "setting": "",
+          "facet": "clinical_guideline_grading_hard",
+          "score_a": 52.523278120418496,
+          "score_b": 59.348046679588855,
+          "shared_sources": [
+            {
+              "group_id": "2a278fa2eaa24c25d363574b",
+              "metric": "Hard",
+              "paper_id": "recent-6c18e0c963947290",
+              "delta": -5.240000000000009,
+              "raw_a": 91.1,
+              "raw_b": 96.34
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "RetiJev 0.8B",
+          "b": "RetiJev 9B",
+          "setting": "",
+          "facet": "clinical_guideline_grading_ood",
+          "score_a": 55.59079689132812,
+          "score_b": 57.69947303579954,
+          "shared_sources": [
+            {
+              "group_id": "af400fb19cadf4554a0b2a62",
+              "metric": "OOD",
+              "paper_id": "recent-6c18e0c963947290",
+              "delta": -1.4399999999999977,
+              "raw_a": 95.9,
+              "raw_b": 97.34
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "clinical_answer_quality",
+          "max_change": 0.0
+        },
+        {
+          "facet": "clinical_delivery",
+          "max_change": 0.0
+        },
+        {
+          "facet": "clinical_guideline_grading_hard",
+          "max_change": 0.0
+        },
+        {
+          "facet": "clinical_guideline_grading_ood",
+          "max_change": 0.0
+        },
+        {
+          "facet": "medical_guideline_application",
+          "max_change": 0.0
+        },
+        {
+          "facet": "medical_knowledge_qa",
+          "max_change": 0.0
+        },
+        {
+          "facet": "therapy_fidelity_classification:condition:5efaceb050dc6492fbb615f2",
+          "max_change": 0.0
+        },
+        {
+          "facet": "therapy_fidelity_classification:condition:8d171ece2f1a996895a78a72",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "source_value_outside_declared_percentage": 1,
+        "recognition_or_gap_not_final_guideline_application": 1,
+        "no_metric_level_task_binding": 1,
+        "auxiliary_or_diagnostic_measurement": 15,
+        "other_domain_or_mixed_domain_result": 10
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 11
+      },
+      "capabilities": [
+        {
+          "capability_id": "domain_knowledge",
+          "weight": 0.3,
+          "n_benchmarks": 6,
+          "n_groups": 11,
+          "n_models": 60,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "long_context",
+          "weight": 0.3,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        },
+        {
+          "capability_id": "cross_document_synthesis",
+          "weight": 0.25,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        },
+        {
+          "capability_id": "citation_reliability",
+          "weight": 0.15,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "medical_knowledge_qa",
+          "facet_label": "医学知识问答",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 64.5997,
+              "benchmarks": 1
+            },
+            {
+              "name": "OpenAI o3",
+              "vendor": "其他 / 厂商待确认",
+              "score": 63.4409,
+              "benchmarks": 1
+            },
+            {
+              "name": "OpenAI o4 mini",
+              "vendor": "其他 / 厂商待确认",
+              "score": 63.2184,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 3.5 Sonnet",
+              "vendor": "Anthropic",
+              "score": 62.468,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 2",
+              "vendor": "xAI",
+              "score": 62.1361,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o",
+              "vendor": "OpenAI",
+              "score": 62.0732,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 3.7 Sonnet",
+              "vendor": "Anthropic",
+              "score": 62.0193,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 405B",
+              "vendor": "Meta",
+              "score": 61.7133,
+              "benchmarks": 1
+            },
+            {
+              "name": "DeepSeek-V3",
+              "vendor": "DeepSeek",
+              "score": 60.9003,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 3",
+              "vendor": "xAI",
+              "score": 60.1014,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 72B",
+              "vendor": "阿里巴巴",
+              "score": 60.0741,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 32B",
+              "vendor": "阿里巴巴",
+              "score": 58.6493,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 14B",
+              "vendor": "阿里巴巴",
+              "score": 57.105,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o-mini",
+              "vendor": "OpenAI",
+              "score": 56.3576,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 4 32B",
+              "vendor": "智谱 · Z.ai",
+              "score": 53.3293,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 4 Scout",
+              "vendor": "Meta",
+              "score": 53.0974,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 7B",
+              "vendor": "阿里巴巴",
+              "score": 52.8099,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3 Med42 8B",
+              "vendor": "Meta",
+              "score": 52.5502,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 4 9B",
+              "vendor": "智谱 · Z.ai",
+              "score": 51.2245,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-3.5",
+              "vendor": "OpenAI",
+              "score": 50.9929,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3 8B",
+              "vendor": "Meta",
+              "score": 47.6254,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 70B",
+              "vendor": "Meta",
+              "score": 47.6254,
+              "benchmarks": 1
+            },
+            {
+              "name": "HuatuoGPT2 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 37.2343,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 3 1B",
+              "vendor": "Google",
+              "score": 29.6076,
+              "benchmarks": 1
+            },
+            {
+              "name": "Medicine LLM 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 20.8245,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 0.5B",
+              "vendor": "阿里巴巴",
+              "score": 19.8313,
+              "benchmarks": 1
+            },
+            {
+              "name": "HuatuoGPT 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 15.2902,
+              "benchmarks": 1
+            },
+            {
+              "name": "BioMedLM 2.7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 13.1005,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_delivery",
+          "facet_label": "临床工作交付",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-6-Astra",
+              "vendor": "OpenAI",
+              "score": 77.6308,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 66.3125,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.7",
+              "vendor": "xAI",
+              "score": 65.5978,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 5.5 Opus",
+              "vendor": "Anthropic",
+              "score": 60.7459,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 58.5894,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.2",
+              "vendor": "OpenAI",
+              "score": 54.6008,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Pro",
+              "vendor": "其他 / 厂商待确认",
+              "score": 51.1566,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Terra",
+              "vendor": "OpenAI",
+              "score": 48.1932,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Sol",
+              "vendor": "OpenAI",
+              "score": 47.6215,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Flash",
+              "vendor": "其他 / 厂商待确认",
+              "score": 46.1962,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.3",
+              "vendor": "xAI",
+              "score": 32.0207,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 29.2223,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Large 3",
+              "vendor": "Mistral AI",
+              "score": 12.1123,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_answer_quality",
+          "facet_label": "临床回答质量",
+          "setting": "5-shot",
+          "models": [
+            {
+              "name": "GPT-4o",
+              "vendor": "OpenAI",
+              "score": 63.6453,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o-mini",
+              "vendor": "OpenAI",
+              "score": 36.3547,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "medical_guideline_application",
+          "facet_label": "医学指南应用",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5.6-Sol",
+              "vendor": "OpenAI",
+              "score": 58.4278,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Terra",
+              "vendor": "OpenAI",
+              "score": 57.794,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 55.8802,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 3 12B Instruct",
+              "vendor": "Google",
+              "score": 52.445,
+              "benchmarks": 1
+            },
+            {
+              "name": "Phi 4",
+              "vendor": "微软",
+              "score": 50.9344,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 70B Instruct",
+              "vendor": "Meta",
+              "score": 50.3944,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 32B",
+              "vendor": "阿里巴巴",
+              "score": 49.2064,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 14B",
+              "vendor": "阿里巴巴",
+              "score": 48.5586,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Small Instruct 2501 24B",
+              "vendor": "Mistral AI",
+              "score": 46.726,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 4B",
+              "vendor": "阿里巴巴",
+              "score": 46.1883,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Instruct v0.3 7B",
+              "vendor": "Mistral AI",
+              "score": 43.8322,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 8B Instruct",
+              "vendor": "Meta",
+              "score": 39.6128,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "therapy_fidelity_classification:condition:5efaceb050dc6492fbb615f2",
+          "facet_label": "治疗记录分类 · 来源条件 1",
+          "setting": "",
+          "models": [
+            {
+              "name": "Qwen 3.5 9B",
+              "vendor": "阿里巴巴",
+              "score": 72.1277,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 4 E4B Instruct",
+              "vendor": "Google",
+              "score": 67.0925,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 4 26B A4B Instruct",
+              "vendor": "Google",
+              "score": 10.7798,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "therapy_fidelity_classification:condition:8d171ece2f1a996895a78a72",
+          "facet_label": "治疗记录分类 · 来源条件 2",
+          "setting": "",
+          "models": [
+            {
+              "name": "Gemma 4 E4B Instruct",
+              "vendor": "Google",
+              "score": 75.0,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3.5 9B",
+              "vendor": "阿里巴巴",
+              "score": 25.0,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_guideline_grading_hard",
+          "facet_label": "临床指南分级 · 困难样本",
+          "setting": "",
+          "models": [
+            {
+              "name": "RetiJev 9B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 59.348,
+              "benchmarks": 1
+            },
+            {
+              "name": "RetiJev 2B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 52.5233,
+              "benchmarks": 1
+            },
+            {
+              "name": "RetiJev 0.8B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 50.8166,
+              "benchmarks": 1
+            },
+            {
+              "name": "Jev 1.13, zero shot (API)",
+              "vendor": "其他 / 厂商待确认",
+              "score": 37.312,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_guideline_grading_ood",
+          "facet_label": "临床指南分级 · 分布外样本",
+          "setting": "",
+          "models": [
+            {
+              "name": "RetiJev 9B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 57.6995,
+              "benchmarks": 1
+            },
+            {
+              "name": "RetiJev 0.8B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 55.5908,
+              "benchmarks": 1
+            },
+            {
+              "name": "Jev 1.13, zero shot (API)",
+              "vendor": "其他 / 厂商待确认",
+              "score": 36.7097,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_answer_quality",
+          "facet_label": "临床回答质量",
+          "setting": "Open-source multilingual LLM | 5-shot",
+          "models": [
+            {
+              "name": "Llama 3.1 8B Instruct",
+              "vendor": "Meta",
+              "score": 55.9714,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 7B Instruct",
+              "vendor": "阿里巴巴",
+              "score": 44.0286,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_guideline_grading_hard",
+          "facet_label": "临床指南分级 · 困难样本",
+          "setting": "zero-shot",
+          "models": [
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 78.1768,
+              "benchmarks": 1
+            },
+            {
+              "name": "MedJev",
+              "vendor": "其他 / 厂商待确认",
+              "score": 21.8232,
+              "benchmarks": 1
+            }
+          ]
+        },
+        {
+          "facet": "clinical_guideline_grading_ood",
+          "facet_label": "临床指南分级 · 分布外样本",
+          "setting": "zero-shot",
+          "models": [
+            {
+              "name": "Qwen 3.8 27B",
+              "vendor": "阿里巴巴",
+              "score": 80.0911,
+              "benchmarks": 1
+            },
+            {
+              "name": "MedJev",
+              "vendor": "其他 / 厂商待确认",
+              "score": 19.9089,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "structured-extraction": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "从来源文档中提取信息，按指定结构输出，保留来源含义。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "structured_extraction"
+        ],
+        "capabilities": [
+          {
+            "id": "information_extraction",
+            "weight": 0.6,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "instruction_following",
+            "weight": 0.2,
+            "rationale": "初始模板建议，需按实际任务调整"
+          },
+          {
+            "id": "grounded_faithfulness",
+            "weight": 0.2,
+            "rationale": "初始模板建议，需按实际任务调整"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 1,
+      "model_rows": 2,
+      "models": 2,
+      "panels": 1,
+      "facets": [
+        "audio_attribute_extraction"
+      ],
+      "same_vendor_pairs": 1,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 3 Omni Captioner",
+          "b": "Qwen 3 Omni Flash",
+          "setting": "",
+          "facet": "audio_attribute_extraction",
+          "score_a": 25.0,
+          "score_b": 75.0,
+          "shared_sources": [
+            {
+              "group_id": "9347c87fa771778b13d45bd4",
+              "metric": "Tag-Bench structured (19)",
+              "paper_id": "recent-204aed937da98220",
+              "delta": -10.04,
+              "raw_a": 52.7,
+              "raw_b": 62.74
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 1,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "audio_attribute_extraction",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "no_metric_level_task_binding": 68,
+        "mixed_descriptive_or_missingness_diagnostic": 5,
+        "auxiliary_or_diagnostic_measurement": 4,
+        "source_caption_reports_annotation_agreement": 2
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 1
+      },
+      "capabilities": [
+        {
+          "capability_id": "information_extraction",
+          "weight": 0.6,
+          "n_benchmarks": 1,
+          "n_groups": 1,
+          "n_models": 2,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "instruction_following",
+          "weight": 0.2,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        },
+        {
+          "capability_id": "grounded_faithfulness",
+          "weight": 0.2,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "audio_attribute_extraction",
+          "facet_label": "语音属性抽取",
+          "setting": "",
+          "models": [
+            {
+              "name": "Qwen 3 Omni Flash",
+              "vendor": "阿里巴巴",
+              "score": 75.0,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 3 Omni Captioner",
+              "vendor": "阿里巴巴",
+              "score": 25.0,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "finance": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "分析金融领域的资料和任务。",
+        "domains": [
+          "finance"
+        ],
+        "tasks": [
+          "data_analysis"
+        ],
+        "capabilities": [
+          {
+            "id": "domain_knowledge",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          },
+          {
+            "id": "statistical_reasoning",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 1,
+      "model_rows": 13,
+      "models": 13,
+      "panels": 1,
+      "facets": [
+        "finance_delivery"
+      ],
+      "same_vendor_pairs": 16,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 51.516610304772556,
+          "score_b": 57.11011503367766,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -5.899999999999999,
+              "raw_a": 63.9,
+              "raw_b": 69.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 51.516610304772556,
+          "score_b": 61.03978961439155,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -10.100000000000001,
+              "raw_a": 63.9,
+              "raw_b": 74.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 51.516610304772556,
+          "score_b": 55.503238703977665,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -4.199999999999996,
+              "raw_a": 63.9,
+              "raw_b": 68.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 51.516610304772556,
+          "score_b": 60.575904853482335,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -9.600000000000001,
+              "raw_a": 63.9,
+              "raw_b": 73.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 51.516610304772556,
+          "score_b": 77.69629503277528,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -29.800000000000004,
+              "raw_a": 63.9,
+              "raw_b": 93.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 57.11011503367766,
+          "score_b": 61.03978961439155,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -4.200000000000003,
+              "raw_a": 69.8,
+              "raw_b": 74.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 57.11011503367766,
+          "score_b": 55.503238703977665,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 1.7000000000000028,
+              "raw_a": 69.8,
+              "raw_b": 68.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 57.11011503367766,
+          "score_b": 60.575904853482335,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -3.700000000000003,
+              "raw_a": 69.8,
+              "raw_b": 73.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 57.11011503367766,
+          "score_b": 77.69629503277528,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -23.900000000000006,
+              "raw_a": 69.8,
+              "raw_b": 93.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 61.03978961439155,
+          "score_b": 55.503238703977665,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 5.900000000000006,
+              "raw_a": 74.0,
+              "raw_b": 68.1
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 61.03978961439155,
+          "score_b": 60.575904853482335,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 0.5,
+              "raw_a": 74.0,
+              "raw_b": 73.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 61.03978961439155,
+          "score_b": 77.69629503277528,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -19.700000000000003,
+              "raw_a": 74.0,
+              "raw_b": 93.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 55.503238703977665,
+          "score_b": 60.575904853482335,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -5.400000000000006,
+              "raw_a": 68.1,
+              "raw_b": 73.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 55.503238703977665,
+          "score_b": 77.69629503277528,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -25.60000000000001,
+              "raw_a": 68.1,
+              "raw_b": 93.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Terra",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 60.575904853482335,
+          "score_b": 77.69629503277528,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -20.200000000000003,
+              "raw_a": 73.5,
+              "raw_b": 93.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 4.3",
+          "b": "Grok 4.7",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 28.051215882591023,
+          "score_b": 65.7762156983832,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -41.800000000000004,
+              "raw_a": 37.4,
+              "raw_b": 79.2
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 78,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "V4 Flash",
+          "b": "V4 Pro",
+          "setting": "",
+          "facet": "finance_delivery",
+          "score_a": 47.728122242078605,
+          "score_b": 48.767064936475315,
+          "shared_sources": [
+            {
+              "group_id": "862320fc195d6073fd4ce35c",
+              "metric": "Fin.",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -1.1000000000000014,
+              "raw_a": 59.9,
+              "raw_b": 61.0
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "finance_delivery",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "other_domain_or_mixed_domain_result": 8,
+        "no_metric_level_task_binding": 6
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 1
+      },
+      "capabilities": [
+        {
+          "capability_id": "domain_knowledge",
+          "weight": 0.5,
+          "n_benchmarks": 1,
+          "n_groups": 1,
+          "n_models": 13,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "statistical_reasoning",
+          "weight": 0.5,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "finance_delivery",
+          "facet_label": "金融工作交付",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-6-Astra",
+              "vendor": "OpenAI",
+              "score": 77.6963,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.7",
+              "vendor": "xAI",
+              "score": 65.7762,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 61.0398,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Terra",
+              "vendor": "OpenAI",
+              "score": 60.5759,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 5.5 Opus",
+              "vendor": "Anthropic",
+              "score": 57.6755,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 57.1101,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Sol",
+              "vendor": "OpenAI",
+              "score": 55.5032,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.2",
+              "vendor": "OpenAI",
+              "score": 51.5166,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Pro",
+              "vendor": "其他 / 厂商待确认",
+              "score": 48.7671,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Flash",
+              "vendor": "其他 / 厂商待确认",
+              "score": 47.7281,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.3",
+              "vendor": "xAI",
+              "score": 28.0512,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 26.9,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Large 3",
+              "vendor": "Mistral AI",
+              "score": 11.6599,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "law": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "处理法律领域资料。",
+        "domains": [
+          "law"
+        ],
+        "tasks": [
+          "document_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "domain_knowledge",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          },
+          {
+            "id": "reading_comprehension",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 1,
+      "model_rows": 13,
+      "models": 13,
+      "panels": 1,
+      "facets": [
+        "legal_delivery"
+      ],
+      "same_vendor_pairs": 16,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.4",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 47.273957195998904,
+          "score_b": 45.86405871756259,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 1.5,
+              "raw_a": 61.2,
+              "raw_b": 59.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 47.273957195998904,
+          "score_b": 72.04414933043192,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -27.200000000000003,
+              "raw_a": 61.2,
+              "raw_b": 88.4
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 47.273957195998904,
+          "score_b": 66.33816300247597,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -20.5,
+              "raw_a": 61.2,
+              "raw_b": 81.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 47.273957195998904,
+          "score_b": 56.16292660392242,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -9.399999999999991,
+              "raw_a": 61.2,
+              "raw_b": 70.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.2",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 47.273957195998904,
+          "score_b": 75.15364069658776,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -31.099999999999994,
+              "raw_a": 61.2,
+              "raw_b": 92.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Luna",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 45.86405871756259,
+          "score_b": 72.04414933043192,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -28.700000000000003,
+              "raw_a": 59.7,
+              "raw_b": 88.4
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 45.86405871756259,
+          "score_b": 66.33816300247597,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -22.0,
+              "raw_a": 59.7,
+              "raw_b": 81.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 45.86405871756259,
+          "score_b": 56.16292660392242,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -10.899999999999991,
+              "raw_a": 59.7,
+              "raw_b": 70.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.4",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 45.86405871756259,
+          "score_b": 75.15364069658776,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -32.599999999999994,
+              "raw_a": 59.7,
+              "raw_b": 92.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Sol",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 72.04414933043192,
+          "score_b": 66.33816300247597,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 6.700000000000003,
+              "raw_a": 88.4,
+              "raw_b": 81.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 72.04414933043192,
+          "score_b": 56.16292660392242,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 17.80000000000001,
+              "raw_a": 88.4,
+              "raw_b": 70.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Luna",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 72.04414933043192,
+          "score_b": 75.15364069658776,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -3.8999999999999915,
+              "raw_a": 88.4,
+              "raw_b": 92.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-5.6-Terra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 66.33816300247597,
+          "score_b": 56.16292660392242,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 11.100000000000009,
+              "raw_a": 81.7,
+              "raw_b": 70.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Sol",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 66.33816300247597,
+          "score_b": 75.15364069658776,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -10.599999999999994,
+              "raw_a": 81.7,
+              "raw_b": 92.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-5.6-Terra",
+          "b": "GPT-6-Astra",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 56.16292660392242,
+          "score_b": 75.15364069658776,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -21.700000000000003,
+              "raw_a": 70.6,
+              "raw_b": 92.3
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 4.3",
+          "b": "Grok 4.7",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 25.329193873312384,
+          "score_b": 59.15977913047069,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": -38.0,
+              "raw_a": 35.8,
+              "raw_b": 73.8
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 78,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "V4 Flash",
+          "b": "V4 Pro",
+          "setting": "",
+          "facet": "legal_delivery",
+          "score_a": 52.85583387802143,
+          "score_b": 41.40853136630607,
+          "shared_sources": [
+            {
+              "group_id": "a307f0c2ff72ce818167fcd9",
+              "metric": "Legal",
+              "paper_id": "recent-10078ca6d4e74c17",
+              "delta": 12.199999999999996,
+              "raw_a": 67.1,
+              "raw_b": 54.9
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "legal_delivery",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "no_metric_level_task_binding": 14,
+        "other_domain_or_mixed_domain_result": 8
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 1
+      },
+      "capabilities": [
+        {
+          "capability_id": "domain_knowledge",
+          "weight": 0.5,
+          "n_benchmarks": 1,
+          "n_groups": 1,
+          "n_models": 13,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "reading_comprehension",
+          "weight": 0.5,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "legal_delivery",
+          "facet_label": "法律工作交付",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-6-Astra",
+              "vendor": "OpenAI",
+              "score": 75.1536,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 72.0441,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Sol",
+              "vendor": "OpenAI",
+              "score": 66.3382,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 5.5 Opus",
+              "vendor": "Anthropic",
+              "score": 60.8275,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.7",
+              "vendor": "xAI",
+              "score": 59.1598,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Terra",
+              "vendor": "OpenAI",
+              "score": 56.1629,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Flash",
+              "vendor": "其他 / 厂商待确认",
+              "score": 52.8558,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.2",
+              "vendor": "OpenAI",
+              "score": 47.274,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.4",
+              "vendor": "OpenAI",
+              "score": 45.8641,
+              "benchmarks": 1
+            },
+            {
+              "name": "V4 Pro",
+              "vendor": "其他 / 厂商待确认",
+              "score": 41.4085,
+              "benchmarks": 1
+            },
+            {
+              "name": "Kimi K2.5",
+              "vendor": "月之暗面",
+              "score": 33.5981,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 4.3",
+              "vendor": "xAI",
+              "score": 25.3292,
+              "benchmarks": 1
+            },
+            {
+              "name": "Mistral Large 3",
+              "vendor": "Mistral AI",
+              "score": 13.9841,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "mathematics": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "求解数学问题并验证答案。",
+        "domains": [
+          "science"
+        ],
+        "tasks": [
+          "mathematical_problem_solving"
+        ],
+        "capabilities": [
+          {
+            "id": "mathematical_reasoning",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          },
+          {
+            "id": "reasoning",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 1,
+      "model_rows": 11,
+      "models": 11,
+      "panels": 1,
+      "facets": [
+        "mathematical_problem_solving"
+      ],
+      "same_vendor_pairs": 10,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3 Pro",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 67.24491300809764,
+          "score_b": 65.37820582482163,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 0.7999999999999972,
+              "raw_a": 98.8,
+              "raw_b": 98.0
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 0.29999999999999716,
+              "raw_a": 95.7,
+              "raw_b": 95.4
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 0.10000000000000853,
+              "raw_a": 95.7,
+              "raw_b": 95.6
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemini 3.7 Flash",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 67.24491300809764,
+          "score_b": 68.99156873810016,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -0.4000000000000057,
+              "raw_a": 98.8,
+              "raw_b": 99.2
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -0.7000000000000028,
+              "raw_a": 95.7,
+              "raw_b": 96.4
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -0.7999999999999972,
+              "raw_a": 95.7,
+              "raw_b": 96.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemma 3 12B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 67.24491300809764,
+          "score_b": 42.00671117220417,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 6.0,
+              "raw_a": 98.8,
+              "raw_b": 92.8
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 18.5,
+              "raw_a": 95.7,
+              "raw_b": 77.2
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 6.0,
+              "raw_a": 95.7,
+              "raw_b": 89.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Flash",
+          "b": "Gemma 3 27B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 67.24491300809764,
+          "score_b": 53.06722272623383,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 2.799999999999997,
+              "raw_a": 98.8,
+              "raw_b": 96.0
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 12.100000000000009,
+              "raw_a": 95.7,
+              "raw_b": 83.6
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 4.0,
+              "raw_a": 95.7,
+              "raw_b": 91.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Pro",
+          "b": "Gemini 3.7 Flash",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 65.37820582482163,
+          "score_b": 68.99156873810016,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -1.2000000000000028,
+              "raw_a": 98.0,
+              "raw_b": 99.2
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -1.0,
+              "raw_a": 95.4,
+              "raw_b": 96.4
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -0.9000000000000057,
+              "raw_a": 95.6,
+              "raw_b": 96.5
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Pro",
+          "b": "Gemma 3 12B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 65.37820582482163,
+          "score_b": 42.00671117220417,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 5.200000000000003,
+              "raw_a": 98.0,
+              "raw_b": 92.8
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 18.200000000000003,
+              "raw_a": 95.4,
+              "raw_b": 77.2
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 5.8999999999999915,
+              "raw_a": 95.6,
+              "raw_b": 89.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3 Pro",
+          "b": "Gemma 3 27B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 65.37820582482163,
+          "score_b": 53.06722272623383,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 2.0,
+              "raw_a": 98.0,
+              "raw_b": 96.0
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 11.800000000000011,
+              "raw_a": 95.4,
+              "raw_b": 83.6
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 3.8999999999999915,
+              "raw_a": 95.6,
+              "raw_b": 91.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3.7 Flash",
+          "b": "Gemma 3 12B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 68.99156873810016,
+          "score_b": 42.00671117220417,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 6.400000000000006,
+              "raw_a": 99.2,
+              "raw_b": 92.8
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 19.200000000000003,
+              "raw_a": 96.4,
+              "raw_b": 77.2
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 6.799999999999997,
+              "raw_a": 96.5,
+              "raw_b": 89.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemini 3.7 Flash",
+          "b": "Gemma 3 27B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 68.99156873810016,
+          "score_b": 53.06722272623383,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 3.200000000000003,
+              "raw_a": 99.2,
+              "raw_b": 96.0
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 12.800000000000011,
+              "raw_a": 96.4,
+              "raw_b": 83.6
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": 4.799999999999997,
+              "raw_a": 96.5,
+              "raw_b": 91.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Google",
+          "a": "Gemma 3 12B",
+          "b": "Gemma 3 27B",
+          "setting": "",
+          "facet": "mathematical_problem_solving",
+          "score_a": 42.00671117220417,
+          "score_b": 53.06722272623383,
+          "shared_sources": [
+            {
+              "group_id": "b3e2c233fc8135c656f926c9",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -3.200000000000003,
+              "raw_a": 92.8,
+              "raw_b": 96.0
+            },
+            {
+              "group_id": "29507d47d02bd72cd1b88522",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -6.3999999999999915,
+              "raw_a": 77.2,
+              "raw_b": 83.6
+            },
+            {
+              "group_id": "ef82b218cbd06045d0c3c759",
+              "metric": "Accuracy ↑",
+              "paper_id": "recent-929737cc7718b04c",
+              "delta": -2.0,
+              "raw_a": 89.7,
+              "raw_b": 91.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 55,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "mathematical_problem_solving",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "no_metric_level_task_binding": 103
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 2
+      },
+      "capabilities": [
+        {
+          "capability_id": "mathematical_reasoning",
+          "weight": 0.5,
+          "n_benchmarks": 1,
+          "n_groups": 3,
+          "n_models": 11,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "reasoning",
+          "weight": 0.5,
+          "n_benchmarks": 1,
+          "n_groups": 3,
+          "n_models": 11,
+          "status": "MATCHED"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "mathematical_problem_solving",
+          "facet_label": "数学问题求解",
+          "setting": "",
+          "models": [
+            {
+              "name": "Gemini 3.7 Flash",
+              "vendor": "Google",
+              "score": 68.9916,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 5 Sonnet",
+              "vendor": "Anthropic",
+              "score": 67.7507,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Flash",
+              "vendor": "Google",
+              "score": 67.2449,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemini 3 Pro",
+              "vendor": "Google",
+              "score": 65.3782,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-5.6-Luna",
+              "vendor": "OpenAI",
+              "score": 58.8328,
+              "benchmarks": 1
+            },
+            {
+              "name": "SEA LION v4 27B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 54.0538,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 3 27B",
+              "vendor": "Google",
+              "score": 53.0672,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 3 12B",
+              "vendor": "Google",
+              "score": 42.0067,
+              "benchmarks": 1
+            },
+            {
+              "name": "Sailor 2 20B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 40.3803,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 Inst 7B",
+              "vendor": "阿里巴巴",
+              "score": 22.7043,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 Inst 8B",
+              "vendor": "Meta",
+              "score": 9.5895,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    },
+    "science": {
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "回答自然科学知识问题。",
+        "domains": [
+          "science"
+        ],
+        "tasks": [
+          "knowledge_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "domain_knowledge",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          },
+          {
+            "id": "reasoning",
+            "weight": 0.5,
+            "rationale": "来源核验测试"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "user_specified",
+        "assumptions": [
+          "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+        ]
+      },
+      "matched_benchmarks": 1,
+      "model_rows": 28,
+      "models": 28,
+      "panels": 1,
+      "facets": [
+        "biology_knowledge_qa"
+      ],
+      "same_vendor_pairs": 29,
+      "same_vendor_unanimous_reversals": 0,
+      "same_vendor_details": [
+        {
+          "vendor": "Anthropic",
+          "a": "Claude 3.5 Sonnet",
+          "b": "Claude 3.7 Sonnet",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 61.18183063073715,
+          "score_b": 61.53473528351666,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -0.39000000000000057,
+              "raw_a": 88.65,
+              "raw_b": 89.04
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "智谱 · Z.ai",
+          "a": "GLM 4 32B",
+          "b": "GLM 4 9B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 53.62406667868067,
+          "score_b": 50.86819068039545,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 2.969999999999999,
+              "raw_a": 80.44,
+              "raw_b": 77.47
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-4o",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.45141442286562,
+          "score_b": 62.13006032597698,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -12.680000000000007,
+              "raw_a": 77.02,
+              "raw_b": 89.7
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-4o-mini",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.45141442286562,
+          "score_b": 57.301533726871035,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -7.390000000000001,
+              "raw_a": 77.02,
+              "raw_b": 84.41
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-3.5",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.45141442286562,
+          "score_b": 63.339716478080334,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -14.030000000000001,
+              "raw_a": 77.02,
+              "raw_b": 91.05
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o",
+          "b": "GPT-4o-mini",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 62.13006032597698,
+          "score_b": 57.301533726871035,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 5.290000000000006,
+              "raw_a": 89.7,
+              "raw_b": 84.41
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 62.13006032597698,
+          "score_b": 63.339716478080334,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -1.3499999999999943,
+              "raw_a": 89.7,
+              "raw_b": 91.05
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "OpenAI",
+          "a": "GPT-4o-mini",
+          "b": "GPT-5",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 57.301533726871035,
+          "score_b": 63.339716478080334,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -6.640000000000001,
+              "raw_a": 84.41,
+              "raw_b": 91.05
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "xAI",
+          "a": "Grok 2",
+          "b": "Grok 3",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 61.507617636180754,
+          "score_b": 57.2738538349935,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 4.63000000000001,
+              "raw_a": 89.01,
+              "raw_b": 84.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3 Med42 8B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 49.20344356478041,
+          "score_b": 50.78480930273693,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -1.7099999999999937,
+              "raw_a": 75.67,
+              "raw_b": 77.38
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3.1 405B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 49.20344356478041,
+          "score_b": 60.82813508886979,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -12.590000000000003,
+              "raw_a": 75.67,
+              "raw_b": 88.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 49.20344356478041,
+          "score_b": 56.12786098370991,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -7.469999999999999,
+              "raw_a": 75.67,
+              "raw_b": 83.14
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 8B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 49.20344356478041,
+          "score_b": 54.876939343279616,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -6.1200000000000045,
+              "raw_a": 75.67,
+              "raw_b": 81.79
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 3.1 405B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.78480930273693,
+          "score_b": 60.82813508886979,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -10.88000000000001,
+              "raw_a": 77.38,
+              "raw_b": 88.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.78480930273693,
+          "score_b": 56.12786098370991,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -5.760000000000005,
+              "raw_a": 77.38,
+              "raw_b": 83.14
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3 Med42 8B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 50.78480930273693,
+          "score_b": 54.876939343279616,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -4.410000000000011,
+              "raw_a": 77.38,
+              "raw_b": 81.79
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 405B",
+          "b": "Llama 3.1 70B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 60.82813508886979,
+          "score_b": 56.12786098370991,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 5.1200000000000045,
+              "raw_a": 88.26,
+              "raw_b": 83.14
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 405B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 60.82813508886979,
+          "score_b": 54.876939343279616,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 6.469999999999999,
+              "raw_a": 88.26,
+              "raw_b": 81.79
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "Meta",
+          "a": "Llama 3.1 70B",
+          "b": "Llama 4 Scout",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 56.12786098370991,
+          "score_b": 54.876939343279616,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 1.3499999999999943,
+              "raw_a": 83.14,
+              "raw_b": 81.79
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 14B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 19.839739043484776,
+          "score_b": 58.08473862765497,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -47.160000000000004,
+              "raw_a": 38.1,
+              "raw_b": 85.26
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 32B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 19.839739043484776,
+          "score_b": 58.819780354242866,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -47.96,
+              "raw_a": 38.1,
+              "raw_b": 86.06
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 19.839739043484776,
+          "score_b": 59.65302310173058,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -48.87,
+              "raw_a": 38.1,
+              "raw_b": 86.97
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 0.5B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 19.839739043484776,
+          "score_b": 53.24340499638316,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -41.93,
+              "raw_a": 38.1,
+              "raw_b": 80.03
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 32B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 58.08473862765497,
+          "score_b": 58.819780354242866,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -0.7999999999999972,
+              "raw_a": 85.26,
+              "raw_b": 86.06
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 58.08473862765497,
+          "score_b": 59.65302310173058,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -1.7099999999999937,
+              "raw_a": 85.26,
+              "raw_b": 86.97
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 14B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 58.08473862765497,
+          "score_b": 53.24340499638316,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 5.230000000000004,
+              "raw_a": 85.26,
+              "raw_b": 80.03
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 32B",
+          "b": "Qwen 2.5 72B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 58.819780354242866,
+          "score_b": 59.65302310173058,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -0.9099999999999966,
+              "raw_a": 86.06,
+              "raw_b": 86.97
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 32B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 58.819780354242866,
+          "score_b": 53.24340499638316,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 6.030000000000001,
+              "raw_a": 86.06,
+              "raw_b": 80.03
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        },
+        {
+          "vendor": "阿里巴巴",
+          "a": "Qwen 2.5 72B",
+          "b": "Qwen 2.5 7B",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 59.65302310173058,
+          "score_b": 53.24340499638316,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": 6.939999999999998,
+              "raw_a": 86.97,
+              "raw_b": 80.03
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "all_checked_pairs": 378,
+      "all_unanimous_reversals": [],
+      "same_family_unknown_vendor_pairs": [
+        {
+          "vendor": "其他 / 厂商待确认",
+          "a": "OpenAI o3",
+          "b": "OpenAI o4 mini",
+          "setting": "",
+          "facet": "biology_knowledge_qa",
+          "score_a": 61.73344779622061,
+          "score_b": 62.300980186562725,
+          "shared_sources": [
+            {
+              "group_id": "34d3abb2a86b065d46a63824",
+              "metric": "Acc",
+              "paper_id": "recent-df25059a2f6f99f0",
+              "delta": -0.6299999999999955,
+              "raw_a": 89.26,
+              "raw_b": 89.89
+            }
+          ],
+          "unanimous_source_order_reversed": false
+        }
+      ],
+      "selection_invariance": "PASS",
+      "facet_isolation": [
+        {
+          "facet": "biology_knowledge_qa",
+          "max_change": 0.0
+        }
+      ],
+      "excluded_reasons": {
+        "no_metric_level_task_binding": 103,
+        "other_domain_or_mixed_domain_result": 10,
+        "auxiliary_or_diagnostic_measurement": 4
+      },
+      "source_methods": {
+        "FIXED_SOURCE_PEER_REFERENCE": 1
+      },
+      "capabilities": [
+        {
+          "capability_id": "domain_knowledge",
+          "weight": 0.5,
+          "n_benchmarks": 1,
+          "n_groups": 1,
+          "n_models": 28,
+          "status": "MATCHED"
+        },
+        {
+          "capability_id": "reasoning",
+          "weight": 0.5,
+          "n_benchmarks": 0,
+          "n_groups": 0,
+          "n_models": 0,
+          "status": "NO_MATCHING_BENCHMARK"
+        }
+      ],
+      "rankings": [
+        {
+          "facet": "biology_knowledge_qa",
+          "facet_label": "生物知识问答",
+          "setting": "",
+          "models": [
+            {
+              "name": "GPT-5",
+              "vendor": "OpenAI",
+              "score": 63.3397,
+              "benchmarks": 1
+            },
+            {
+              "name": "OpenAI o4 mini",
+              "vendor": "其他 / 厂商待确认",
+              "score": 62.301,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o",
+              "vendor": "OpenAI",
+              "score": 62.1301,
+              "benchmarks": 1
+            },
+            {
+              "name": "OpenAI o3",
+              "vendor": "其他 / 厂商待确认",
+              "score": 61.7334,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 3.7 Sonnet",
+              "vendor": "Anthropic",
+              "score": 61.5347,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 2",
+              "vendor": "xAI",
+              "score": 61.5076,
+              "benchmarks": 1
+            },
+            {
+              "name": "Claude 3.5 Sonnet",
+              "vendor": "Anthropic",
+              "score": 61.1818,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 405B",
+              "vendor": "Meta",
+              "score": 60.8281,
+              "benchmarks": 1
+            },
+            {
+              "name": "DeepSeek-V3",
+              "vendor": "DeepSeek",
+              "score": 60.5555,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 72B",
+              "vendor": "阿里巴巴",
+              "score": 59.653,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 32B",
+              "vendor": "阿里巴巴",
+              "score": 58.8198,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 14B",
+              "vendor": "阿里巴巴",
+              "score": 58.0847,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-4o-mini",
+              "vendor": "OpenAI",
+              "score": 57.3015,
+              "benchmarks": 1
+            },
+            {
+              "name": "Grok 3",
+              "vendor": "xAI",
+              "score": 57.2739,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3.1 70B",
+              "vendor": "Meta",
+              "score": 56.1279,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 4 Scout",
+              "vendor": "Meta",
+              "score": 54.8769,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 4 32B",
+              "vendor": "智谱 · Z.ai",
+              "score": 53.6241,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 7B",
+              "vendor": "阿里巴巴",
+              "score": 53.2434,
+              "benchmarks": 1
+            },
+            {
+              "name": "GLM 4 9B",
+              "vendor": "智谱 · Z.ai",
+              "score": 50.8682,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3 Med42 8B",
+              "vendor": "Meta",
+              "score": 50.7848,
+              "benchmarks": 1
+            },
+            {
+              "name": "GPT-3.5",
+              "vendor": "OpenAI",
+              "score": 50.4514,
+              "benchmarks": 1
+            },
+            {
+              "name": "Llama 3 8B",
+              "vendor": "Meta",
+              "score": 49.2034,
+              "benchmarks": 1
+            },
+            {
+              "name": "HuatuoGPT2 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 37.3965,
+              "benchmarks": 1
+            },
+            {
+              "name": "Gemma 3 1B",
+              "vendor": "Google",
+              "score": 31.7232,
+              "benchmarks": 1
+            },
+            {
+              "name": "Qwen 2.5 0.5B",
+              "vendor": "阿里巴巴",
+              "score": 19.8397,
+              "benchmarks": 1
+            },
+            {
+              "name": "Medicine LLM 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 18.0063,
+              "benchmarks": 1
+            },
+            {
+              "name": "HuatuoGPT 7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 15.0506,
+              "benchmarks": 1
+            },
+            {
+              "name": "BioMedLM 2.7B",
+              "vendor": "其他 / 厂商待确认",
+              "score": 12.5585,
+              "benchmarks": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "original_snapshot_unchanged": true
+}

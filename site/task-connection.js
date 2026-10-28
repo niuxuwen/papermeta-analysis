@@ -3,7 +3,7 @@
   'use strict';
   const base=new URL('./',document.currentScript.src),network=window.fetch.bind(window);
   let connection;
-  const supports=(route,method)=>['/api/task-profile','/api/task-score','/api/interactive-jobs'].includes(route)?method==='POST':route==='/api/taxonomy'?method==='GET':/^\/api\/interactive-jobs\/[A-Za-z0-9_-]{43}$/.test(route)&&['GET','DELETE'].includes(method);
+  const supports=(route,method)=>['/api/task-profile','/api/task-score','/api/interactive-jobs'].includes(route)?method==='POST':['/api/taxonomy','/api/task-measurements'].includes(route)?method==='GET':/^\/api\/interactive-jobs\/[A-Za-z0-9_-]{43}$/.test(route)&&['GET','DELETE'].includes(method);
   async function connect(){
     if(connection)return connection;
     connection=(async()=>{
@@ -21,6 +21,13 @@
         const bootstrap=JSON.parse(document.getElementById('snapshot-bootstrap').textContent);
         if(service.snapshot_id!==bootstrap.snapshot.snapshot_id)throw Error('TASK_SNAPSHOT_MISMATCH');
         if(service.status!=='READY'||!service.task_score_available)throw Error('TASK_SERVICE_UNAVAILABLE');
+        if(service.task_score_method_version>=6){
+          const response=await network(new URL('api/task-measurements',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
+          if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
+          const measurements=await response.json();
+          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!=='source-scoped-task-measurements-v2')throw Error('TASK_SNAPSHOT_MISMATCH');
+          window.RadarTaskMeasurements=measurements;
+        }
         window.RadarTaskConnected=true;activate(service);window.dispatchEvent(new CustomEvent('radar:task-connected'));
         return {url,service};
       }finally{clearTimeout(timeout);}

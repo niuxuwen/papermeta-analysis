@@ -370,8 +370,18 @@
     const rows=[...result.values()].map(r=>({name:r.name,nBenchmarks:r.benchmarks.size,nGroups:r.groups.size}));
     candidateCache.set(snapshot,rows);return rows;
   }
+  let taskMeasurements=null;
+  function setTaskMeasurements(value){taskMeasurements=value;}
+  function taskMeasurement(g){return (taskMeasurements||(typeof window!=='undefined'?window.RadarTaskMeasurements:null))?.groups?.[g.group_id];}
+  function taskSourceScores(g){const m=taskMeasurement(g);return (g.scores||[]).map(s=>m?.aliases?.[s.model_canonical]?{...s,model_canonical:m.aliases[s.model_canonical]}:s).filter(s=>!m||m.models.includes(s.model_canonical));}
+  function taskExactMatch(g,match,profile){const m=taskMeasurement(g);return m?(profile.tasks||[]).some(t=>(m.tasks||[]).includes(t)):match.exact;}
   function taskMetricCaps(g,b,profile){
     const requested=(b.catalog_labels?.capabilities||[]).filter(c=>profile.capabilities.some(x=>x.id===c));
+    const measured=taskMeasurement(g);
+    if(measured){
+      if(profile.domains?.length&&measured.domains?.length&&!profile.domains.some(d=>measured.domains.includes(d)))return [];
+      return measured.capabilities.filter(c=>requested.includes(c));
+    }
     if(!profile.tasks?.includes('code_development'))return requested;
     const text=String(g.metric_role_context||'').replace(/\s+/g,' ').toLowerCase(),metric=String(g.metric).replace(/[↑↓%()\s.]+/g,'').toLowerCase();
     const quotes=(b.enrichment?.labels?.evidence||[]).filter(e=>e.bound_to_benchmark&&(b.catalog_labels?.[e.layer]||[]).includes(e.id)).map(e=>e.quote||'').join('\n').toLowerCase();
@@ -392,7 +402,7 @@
   function taskMatchPreview(snapshot,profile){
     const base=taskCandidateRows(snapshot);
     if(!snapshot||!profile)return {configured:false,rows:base.map(r=>({...r,nTaskBenchmarks:0,nTaskGroups:0,taskCapabilities:[],capabilityWeightCoverage:0})),benchmarks:0,capabilities:[]};
-    const signature=JSON.stringify([profile.domains,profile.tasks,profile.capabilities,profile.constraints]);
+    const signature=JSON.stringify([profile.domains,profile.tasks,profile.capabilities,profile.constraints,(taskMeasurements||(typeof window!=='undefined'?window.RadarTaskMeasurements:null))?.schema_version]);
     let cache=taskPreviewCache.get(snapshot);if(!cache){cache=new Map();taskPreviewCache.set(snapshot,cache);}if(cache.has(signature))return cache.get(signature);
     const weights=new Map(profile.capabilities.map(c=>[c.id,c.weight])),matched=new Map(),constraints=profile.constraints;
     const protocolUnknown=constraints.language!=='any'||constraints.knowledge_access!=='any'||constraints.min_context_tokens!=null;
@@ -412,11 +422,11 @@
     }
     const byName=new Map(base.map(r=>[r.name,{...r,benchmarks:new Set(),groups:new Set(),caps:new Set()}])),benches=new Set(),capBenches=new Map(profile.capabilities.map(c=>[c.id,new Set()]));
     const known=snapshot.index?.models?.length?new Set(snapshot.index.models.filter(m=>!m.general_model_issue).map(m=>m.model_canonical)):null;
-    const eligible=(snapshot.index?.groups||[]).filter(g=>{const scores=(g.scores||[]).filter(s=>!known||known.has(s.model_canonical));return matched.has(key(g))&&taskMetricCaps(g,matched.get(key(g)).benchmark,profile).length>0&&!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&scores.length>=2&&scores.every(s=>finite(s.value_numeric));});
-    const sameTask=(profile.tasks||[]).length>0&&eligible.some(g=>matched.get(key(g)).exact);
+    const eligible=(snapshot.index?.groups||[]).filter(g=>{const scores=taskSourceScores(g).filter(s=>!known||known.has(s.model_canonical));return matched.has(key(g))&&taskMetricCaps(g,matched.get(key(g)).benchmark,profile).length>0&&!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&scores.length>=2&&scores.every(s=>finite(s.value_numeric));});
+    const sameTask=(profile.tasks||[]).length>0&&eligible.some(g=>taskExactMatch(g,matched.get(key(g)),profile));
     for(const g of eligible){
-      const match=matched.get(key(g));if(sameTask&&!match.exact)continue;const caps=taskMetricCaps(g,match.benchmark,profile);
-      const scores=(g.scores||[]).filter(s=>finite(s.value_numeric)&&byName.has(s.model_canonical));if(scores.length<2)continue;
+      const match=matched.get(key(g));if(sameTask&&!taskExactMatch(g,match,profile))continue;const caps=taskMetricCaps(g,match.benchmark,profile);
+      const scores=taskSourceScores(g).filter(s=>finite(s.value_numeric)&&byName.has(s.model_canonical));if(scores.length<2)continue;
       const identity=g.benchmark_identity||g.benchmark_id;benches.add(identity);for(const cap of caps)capBenches.get(cap).add(identity);
       for(const s of scores){const row=byName.get(s.model_canonical);row.benchmarks.add(identity);row.groups.add(g.group_id);for(const cap of caps)row.caps.add(cap);}
     }
@@ -456,9 +466,9 @@
         table:(a.n_independent_benchmarks||0)+' 个独立 Benchmark；'+(a.n_groups||0)+'/'+(a.required_groups||0)+' 组',opponents:[]});
       return {name:m.model_canonical,axis:a.capability_id,value:catalog?a.reference_score:fixed&&finite(a.score)?a.score:null,observed:(fixed||catalog)?a.observed_score:null,nGroups:a.n_groups,proof};}));
     return {kind:'task',rows,axes,cells,taskCalibration:calibrated,selectionKey:'task:'+panel,scopeId:panel,setting:models[0]?.model_setting||'',
-      title:calibrated&&report.match_scope==='RELATED_CAPABILITIES_ONLY'?'相近能力参考 · 非同类任务成绩':catalog?'任务相关评测比较':'任务能力比较',
+      title:catalog&&report.method.version>=6?(models[0]?.measurement_facets||[]).map(f=>report.method.measurement_facets?.[f]||f).join('、')+' · 同场比较':calibrated&&report.match_scope==='RELATED_CAPABILITIES_ONLY'?'相近能力参考 · 非同类任务成绩':catalog?'任务相关评测比较':'任务能力比较',
       summaryLabel:calibrated?'完整权重参考分':catalog?'任务相关参考分':'任务综合评测分',valueLabel:calibrated?'完整权重参考分 · 0–100':catalog?'任务相关参考分 · 0–100':'任务综合评测分 · 0–100',
-      note:catalog&&report.method.version>=5?'各分项独立使用来源指标估计，按已测能力权重汇总；缺测不补50分，相同能力覆盖与来源网络内比较。代码相关参考先区分任务成果、辅助表现和未明确的指标；分数不表示实际任务成功率。':calibrated?'至少一项真实成绩即参与。已测能力先校准对手，主分使用完整任务权重；未测分项留空，汇总时按50分中性假设估计，估计比例在数据表与导出中单列。不同来源网络分开比较。参考分不是实际任务成功率。':catalog?'至少一项相关成绩即出分。分项先在 Benchmark 内平均，再按 Benchmark 等权汇总；主分按已覆盖能力的权重比例计算，缺失能力留空，覆盖率另列。参考分不是实际任务成功率。':'同一任务、同一评分集合和实验设置。原始成绩按核验过的固定量程转换，再按 Benchmark 和能力权重汇总。缺测或量程未核验时不发布总分；分数不等同于实际任务成功率。'};
+      note:catalog&&report.method.version>=6?'按具体任务类型与来源条件分组；仅汇总已测能力，缺测留空。单项评测直接使用固定同场参考，不用中性收缩制造分差。不同组的分数不混排。':catalog&&report.method.version>=5?'各分项独立使用来源指标估计，按已测能力权重汇总；缺测不补50分，相同能力覆盖与来源网络内比较。代码相关参考先区分任务成果、辅助表现和未明确的指标；分数不表示实际任务成功率。':calibrated?'至少一项真实成绩即参与。已测能力先校准对手，主分使用完整任务权重；未测分项留空，汇总时按50分中性假设估计，估计比例在数据表与导出中单列。不同来源网络分开比较。参考分不是实际任务成功率。':catalog?'至少一项相关成绩即出分。分项先在 Benchmark 内平均，再按 Benchmark 等权汇总；主分按已覆盖能力的权重比例计算，缺失能力留空，覆盖率另列。参考分不是实际任务成功率。':'同一任务、同一评分集合和实验设置。原始成绩按核验过的固定量程转换，再按 Benchmark 和能力权重汇总。缺测或量程未核验时不发布总分；分数不等同于实际任务成功率。'};
   }
   function benchmarkData(snapshot,bench,setting,metric='') {
     const groups=(snapshot?.score_groups||snapshot?.index?.groups||[]).filter(g=>key(g)===key(bench)&&g.model_setting===setting&&(!metric||g.metric===metric));
@@ -535,7 +545,7 @@
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  const api={setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   host.RadarViz=api;
   if(typeof document==='undefined')return;

@@ -13,7 +13,7 @@ class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):return None
 
 def allowed(method,path):
-    if path in {'/api/task-service','/api/taxonomy'}:return method=='GET'
+    if path in {'/api/task-service','/api/taxonomy','/api/task-measurements'}:return method=='GET'
     if path in {'/api/task-profile','/api/task-score','/api/interactive-jobs'}:return method=='POST'
     return bool(method in {'GET','DELETE'} and re.fullmatch(r'/api/interactive-jobs/[A-Za-z0-9_-]{43}',path))
 
@@ -37,7 +37,9 @@ def main():
     from recent_benchmarks.taxonomy import TAXONOMY_VERSION
     raw=args.snapshot.read_bytes();snapshot=json.loads(gzip.decompress(raw)if raw[:2]==b'\x1f\x8b'else raw)
     if not snapshot.get('snapshot_id')or not snapshot.get('observations'):raise ValueError('A real identified snapshot is required')
-    source_index,source_catalog=prepare_inputs(snapshot['index'],[b for b in snapshot['benchmarks']if public_benchmark(b)])
+    source_index,source_catalog=prepare_inputs(snapshot['index'],[b for b in snapshot['benchmarks']if public_benchmark(b)],snapshot['observations'])
+    from recent_benchmarks.task_measurements import projection
+    measurements=projection(source_index,source_catalog,snapshot['snapshot_id'])
     service=SimpleNamespace(args=SimpleNamespace(llm_url=os.environ.get('RADAR_LLM_URL','https://aigateway.paperbypass.com/api/v1/chat/completions'),
         llm_model=os.environ.get('RADAR_LLM_MODEL','qwen/qwen3.8-flash'),llm_transport='requests',request_timeout=55,max_tokens=2200,json_mode='off'))
     profile_available=bool(os.environ.get('RADAR_API_KEY'))
@@ -86,6 +88,7 @@ def main():
             if self.headers.get('Origin')and self.headers['Origin']not in args.allow_origin:return self.reply(403,{'error':'forbidden'})
             if not allowed(self.command,self.path):return self.reply(404,{'error':'not_found'})
             if self.path=='/api/task-service':return self.reply(200,{'status':'READY','snapshot_id':snapshot['snapshot_id'],'generated_at':snapshot['generated_at'],'taxonomy_version':TAXONOMY_VERSION,'task_score_method_version':TASK_SCORE_VERSION,'task_score_available':True,'task_profile_available':profile_available})
+            if self.path=='/api/task-measurements':return self.reply(200,measurements)
             body=None
             if self.command=='POST':
                 try:
