@@ -1,46 +1,46 @@
 {
-  "snapshot_id": "c88df5aa4ebdd38faefa8723",
+  "snapshot_id": "56f4d633a658169561b70217",
   "generated_at": "2026-10-27T11:42:12.646556Z",
-  "source_sha256": "b61fbf94cc3aae53a216f9b68288ae8e12f9dc2eea46a4946bddc354333e2889",
+  "source_sha256": "4521e1546809790d359b0b5d515b7413bb77f9ef6e8e9d863ef982e4d8589224",
   "initial_snapshot_download_bytes": 0,
-  "previous_required_snapshot_bytes": 14754420,
-  "embedded_bootstrap_bytes": 3743,
+  "previous_required_snapshot_bytes": 14816967,
+  "embedded_bootstrap_bytes": 3744,
   "compact_manifest_bytes": 1045,
   "models": [
     {
       "name": "GPT-6-Astra",
-      "score": 81.085009,
+      "score": 80.84808,
       "nBenchmarks": 20,
       "vendor": "OpenAI"
     },
     {
-      "name": "Claude 5.5 Sonnet",
-      "score": 75.485413,
+      "name": "Claude Fable 5.1",
+      "score": 79.721078,
       "nBenchmarks": 3,
       "vendor": "Anthropic"
     },
     {
       "name": "GPT-6.1-Sol",
-      "score": 73.522024,
+      "score": 79.152655,
       "nBenchmarks": 8,
       "vendor": "OpenAI"
     },
     {
-      "name": "Claude Fable 5",
-      "score": 72.940266,
-      "nBenchmarks": 5,
-      "vendor": "Anthropic"
-    },
-    {
       "name": "Claude 5.5 Opus",
-      "score": 72.687597,
+      "score": 78.302424,
       "nBenchmarks": 11,
       "vendor": "Anthropic"
     },
     {
       "name": "Claude 5 Opus",
-      "score": 72.495956,
+      "score": 77.036045,
       "nBenchmarks": 19,
+      "vendor": "Anthropic"
+    },
+    {
+      "name": "Claude 5.5 Sonnet",
+      "score": 76.661703,
+      "nBenchmarks": 3,
       "vendor": "Anthropic"
     }
   ],

@@ -1,0 +1,1018 @@
+{
+  "choice": {
+    "frozen_at": "2026-10-28T18:37:30.897163+00:00",
+    "candidate": "hybrid",
+    "strength": [
+      2.0,
+      32.0
+    ],
+    "reason": "Lowest development source log-loss and Brier among predeclared hybrid candidates; fixes the documented Sol inversion and reduces repeated same-vendor contradictions from 19 to 2. Directional agreement not the only selection objective. No model age/order input. Vendor grouping explicitly used for finite regularization.",
+    "development_sha256": "e3936899909e9486d10d2bf63fa7535fa9c29af2c275320b334363dd6d424b37",
+    "reserved_scope_sha256": "8f7d6a6a459ada8f2e24fb26d6f1529789fb4a86f3e5231f7a5be51b6c28c008",
+    "refit_if_final_fails": false
+  },
+  "test_snapshot": "a63cbc3fb29b915f082f0a32",
+  "test_groups": 197,
+  "test_families": 36,
+  "results": {
+    "baseline": {
+      "all": {
+        "macro_source": {
+          "logloss": 0.6397428152900898,
+          "brier": 0.21244562016177368,
+          "soft_logloss": 0.6810209590269214,
+          "direction_agreement": 0.6556014705410853
+        },
+        "macro_category": {
+          "logloss": 0.6439088363629274,
+          "brier": 0.21564956989322606,
+          "soft_logloss": 0.6837887813129845,
+          "direction_agreement": 0.6618678747585277
+        },
+        "by_category": {
+          "agents": {
+            "logloss": 0.6230058663867554,
+            "brier": 0.1961746935267705,
+            "soft_logloss": 0.6686881974452372,
+            "direction_agreement": 0.6741128253534269
+          },
+          "language_documents": {
+            "logloss": 0.6613294993050588,
+            "brier": 0.21050883511509794,
+            "soft_logloss": 0.6842006065041651,
+            "direction_agreement": 0.6021568522445715
+          },
+          "knowledge": {
+            "logloss": 0.7622473728162887,
+            "brier": 0.26158550910293216,
+            "soft_logloss": 0.7793587247139803,
+            "direction_agreement": 0.47414529914529907
+          },
+          "reasoning_data": {
+            "logloss": 0.5807136856272852,
+            "brier": 0.19470902850787503,
+            "soft_logloss": 0.663033579243526,
+            "direction_agreement": 0.875
+          },
+          "unclassified": {
+            "logloss": 0.5845474111056564,
+            "brier": 0.1989622743768275,
+            "soft_logloss": 0.6412548254910472,
+            "direction_agreement": 0.6741412522662522
+          },
+          "software": {
+            "logloss": 0.6392297013677593,
+            "brier": 0.2220926961667042,
+            "soft_logloss": 0.6650121517519841,
+            "direction_agreement": 0.6661379419191918
+          },
+          "safety": {
+            "logloss": 0.6562883179316885,
+            "brier": 0.2255139524563751,
+            "soft_logloss": 0.6849733840409511,
+            "direction_agreement": 0.6673809523809524
+          }
+        },
+        "test_source_units": 25,
+        "covered_pairs": 2286,
+        "available_pairs": 11206,
+        "coverage": 0.20399785829020167,
+        "per_source": [
+          {
+            "paper_id": "recent-bd1b3e2a4cdcd60d",
+            "benchmark_identity": "bench-098f5a97d38ac4a1",
+            "logloss": 0.7117669000929302,
+            "brier": 0.2592355006173196,
+            "soft_logloss": 0.6977815767166028,
+            "direction_agreement": 0.6
+          },
+          {
+            "paper_id": "recent-c4b30b195fac0fa1",
+            "benchmark_identity": "bench-0f623769a0e8ec41",
+            "logloss": 0.711873609183854,
+            "brier": 0.24464081108045999,
+            "soft_logloss": 0.7310883970248493,
+            "direction_agreement": 0.5613247863247863
+          },
+          {
+            "paper_id": "recent-25391e5f6009bc24",
+            "benchmark_identity": "bench-19ebaebdf76cec80",
+            "logloss": 0.6432730121985986,
+            "brier": 0.225428990458562,
+            "soft_logloss": 0.6850099190644144,
+            "direction_agreement": 0.7
+          },
+          {
+            "paper_id": "recent-e6c52df7574bc334",
+            "benchmark_identity": "bench-1aca5f7cf28813de",
+            "logloss": 0.8981809743667928,
+            "brier": 0.2977720519859764,
+            "soft_logloss": 0.9010501603071628,
+            "direction_agreement": 0.25
+          },
+          {
+            "paper_id": "recent-9dbae4fb88c2cb71",
+            "benchmark_identity": "bench-1bd17d8f81574585",
+            "logloss": 0.5725248196580583,
+            "brier": 0.1900093418242966,
+            "soft_logloss": 0.6728128148193367,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-c1e80feafb140321",
+            "benchmark_identity": "bench-1f6d98ca541404d4",
+            "logloss": 0.7801692958369072,
+            "brier": 0.29140315246152254,
+            "soft_logloss": 0.7607813298853414,
+            "direction_agreement": 0.44000000000000006
+          },
+          {
+            "paper_id": "recent-4f22b0b4231c094f",
+            "benchmark_identity": "bench-288f27d4317cde57",
+            "logloss": 0.6157551566330981,
+            "brier": 0.20965030398781892,
+            "soft_logloss": 0.673716026681948,
+            "direction_agreement": 0.6626984126984128
+          },
+          {
+            "paper_id": "recent-28d269baac8d7e0a",
+            "benchmark_identity": "bench-40fe0c8c30c36eb8",
+            "logloss": 0.4899251436433505,
+            "brier": 0.1500227821391759,
+            "soft_logloss": 0.7067579713373906,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-23a3ae8b8fa23e8c",
+            "benchmark_identity": "bench-5f9f8169b3a53f06",
+            "logloss": 0.43815152083122755,
+            "brier": 0.1291389663496211,
+            "soft_logloss": 0.5407362926683639,
+            "direction_agreement": 0.9
+          },
+          {
+            "paper_id": "recent-1a9252a113717b99",
+            "benchmark_identity": "bench-64e3fc6dd41fa1f0",
+            "logloss": 0.6751173170796497,
+            "brier": 0.23032426102917633,
+            "soft_logloss": 0.6976436024589121,
+            "direction_agreement": 0.6561224489795918
+          },
+          {
+            "paper_id": "recent-eb6270da44620228",
+            "benchmark_identity": "bench-751ab0e42ef2d008",
+            "logloss": 0.5370280402054141,
+            "brier": 0.1712982379787589,
+            "soft_logloss": 0.6006941851277158,
+            "direction_agreement": 0.855952380952381
+          },
+          {
+            "paper_id": "recent-8b149c0ea2596d6a",
+            "benchmark_identity": "bench-8a492c5c382ea9fd",
+            "logloss": 0.588902551596512,
+            "brier": 0.19940871519145342,
+            "soft_logloss": 0.6532543436677153,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-17596a3890e51a35",
+            "benchmark_identity": "bench-92e039326b205f71",
+            "logloss": 0.6642188355645412,
+            "brier": 0.23749920635710015,
+            "soft_logloss": 0.664076998332063,
+            "direction_agreement": 0.5723809523809524
+          },
+          {
+            "paper_id": "recent-131b2e0313fae713",
+            "benchmark_identity": "bench-993516288c580d57",
+            "logloss": 0.3334450062876369,
+            "brier": 0.08611918384889743,
+            "soft_logloss": 0.5256025192495524,
+            "direction_agreement": 0.9148148148148149
+          },
+          {
+            "paper_id": "recent-a75c43e79fc73870",
+            "benchmark_identity": "bench-aed08221e1ed51ae",
+            "logloss": 0.5837196923071678,
+            "brier": 0.19151016022807843,
+            "soft_logloss": 0.6603964663015987,
+            "direction_agreement": 0.731747159090909
+          },
+          {
+            "paper_id": "recent-f3e4f49d9abf2100",
+            "benchmark_identity": "bench-b297dfcfb7cb9b5f",
+            "logloss": 0.6766875348982194,
+            "brier": 0.24234366424236012,
+            "soft_logloss": 0.7059376168099286,
+            "direction_agreement": 0.611111111111111
+          },
+          {
+            "paper_id": "recent-7ba26edecad8e148",
+            "benchmark_identity": "bench-b6f3b81486cdfb7a",
+            "logloss": 0.6933441587345448,
+            "brier": 0.2500984696896465,
+            "soft_logloss": 0.6933441587345449,
+            "direction_agreement": 0.5
+          },
+          {
+            "paper_id": "recent-267bc3725bde1d6f",
+            "benchmark_identity": "bench-bc644e52afcbbb7b",
+            "logloss": 0.6562883179316885,
+            "brier": 0.2255139524563751,
+            "soft_logloss": 0.6849733840409511,
+            "direction_agreement": 0.6673809523809524
+          },
+          {
+            "paper_id": "recent-5d75b1fa79541c3f",
+            "benchmark_identity": "bench-c42f88a5c8e708c5",
+            "logloss": 0.6841203441934995,
+            "brier": 0.22121268693806093,
+            "soft_logloss": 0.6863213970040287,
+            "direction_agreement": 0.631578947368421
+          },
+          {
+            "paper_id": "recent-649aaaddf9a8b9d9",
+            "benchmark_identity": "bench-d899559c4f8ea69e",
+            "logloss": 0.6837111763178142,
+            "brier": 0.24537396866570452,
+            "soft_logloss": 0.6515970343737774,
+            "direction_agreement": 0.6666666666666666
+          },
+          {
+            "paper_id": "recent-983874c5063b78c0",
+            "benchmark_identity": "bench-dac4b70dcb1efb6b",
+            "logloss": 0.6671172357913844,
+            "brier": 0.23363161757478415,
+            "soft_logloss": 0.6861123220157195,
+            "direction_agreement": 0.6150835275835276
+          },
+          {
+            "paper_id": "recent-acc64f65515e42f1",
+            "benchmark_identity": "bench-db7e1cec5b6122d5",
+            "logloss": 0.8004461711849038,
+            "brier": 0.12554545203737122,
+            "soft_logloss": 0.7652419807935278,
+            "direction_agreement": 0.1111111111111111
+          },
+          {
+            "paper_id": "recent-0c2d71f9e3cbe6b5",
+            "benchmark_identity": "bench-e1dcc00aef7071c5",
+            "logloss": 0.5932620886270968,
+            "brier": 0.1985652409015107,
+            "soft_logloss": 0.6375902217126421,
+            "direction_agreement": 0.7253968253968254
+          },
+          {
+            "paper_id": "recent-9bf1eb6f28f9f011",
+            "benchmark_identity": "bench-e526935a11f7613f",
+            "logloss": 0.6442832436090599,
+            "brier": 0.22599982639398197,
+            "soft_logloss": 0.659960301964372,
+            "direction_agreement": 0.6666666666666666
+          },
+          {
+            "paper_id": "recent-601fff39a8935003",
+            "benchmark_identity": "bench-fe97a2b3352814db",
+            "logloss": 0.6502582354782959,
+            "brier": 0.2293939596063297,
+            "soft_logloss": 0.6830429545805765,
+            "direction_agreement": 0.6
+          }
+        ]
+      },
+      "same_vendor": {
+        "macro_source": {
+          "logloss": 0.6629472485387405,
+          "brier": 0.225818018516558,
+          "soft_logloss": 0.6919409049231386,
+          "direction_agreement": 0.6337621406371406
+        },
+        "macro_category": {
+          "logloss": 0.6788707738974455,
+          "brier": 0.2353360050834575,
+          "soft_logloss": 0.6967720002662091,
+          "direction_agreement": 0.6094312884085611
+        },
+        "by_category": {
+          "agents": {
+            "logloss": 0.6281161123676363,
+            "brier": 0.20325943361876767,
+            "soft_logloss": 0.6776407277125434,
+            "direction_agreement": 0.7063352051988416
+          },
+          "language_documents": {
+            "logloss": 0.6710347115878188,
+            "brier": 0.220593174558512,
+            "soft_logloss": 0.6944809584060816,
+            "direction_agreement": 0.6308080808080807
+          },
+          "knowledge": {
+            "logloss": 0.7547951614662585,
+            "brier": 0.2692128870947726,
+            "soft_logloss": 0.715701878558664,
+            "direction_agreement": 0.5416666666666666
+          },
+          "reasoning_data": {
+            "logloss": 0.6335206034789291,
+            "brier": 0.22036041412674737,
+            "soft_logloss": 0.681668474135994,
+            "direction_agreement": 0.75
+          },
+          "unclassified": {
+            "logloss": 0.6212150912659272,
+            "brier": 0.2159310271490302,
+            "soft_logloss": 0.6671900433855072,
+            "direction_agreement": 0.6666666666666666
+          },
+          "software": {
+            "logloss": 0.7645429632181036,
+            "brier": 0.2826590939529152,
+            "soft_logloss": 0.7439499193984647,
+            "direction_agreement": 0.3611111111111111
+          }
+        },
+        "test_source_units": 20,
+        "covered_pairs": 382,
+        "available_pairs": 2086,
+        "coverage": 0.18312559923298177,
+        "per_source": [
+          {
+            "paper_id": "recent-bd1b3e2a4cdcd60d",
+            "benchmark_identity": "bench-098f5a97d38ac4a1",
+            "logloss": 0.7164149235770016,
+            "brier": 0.2615476533523231,
+            "soft_logloss": 0.702267549467876,
+            "direction_agreement": 0.6
+          },
+          {
+            "paper_id": "recent-c4b30b195fac0fa1",
+            "benchmark_identity": "bench-0f623769a0e8ec41",
+            "logloss": 0.6367244334540558,
+            "brier": 0.20273566710431984,
+            "soft_logloss": 0.6820186844811528,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-25391e5f6009bc24",
+            "benchmark_identity": "bench-19ebaebdf76cec80",
+            "logloss": 0.6197775783442772,
+            "brier": 0.21356289990719068,
+            "soft_logloss": 0.6517056729865949,
+            "direction_agreement": 0.8333333333333333
+          },
+          {
+            "paper_id": "recent-c1e80feafb140321",
+            "benchmark_identity": "bench-1f6d98ca541404d4",
+            "logloss": 0.813825608085377,
+            "brier": 0.3086091428555016,
+            "soft_logloss": 0.7822278934180233,
+            "direction_agreement": 0.35
+          },
+          {
+            "paper_id": "recent-4f22b0b4231c094f",
+            "benchmark_identity": "bench-288f27d4317cde57",
+            "logloss": 0.6500181374671858,
+            "brier": 0.21498898006169112,
+            "soft_logloss": 0.6664057343596713,
+            "direction_agreement": 0.7222222222222222
+          },
+          {
+            "paper_id": "recent-28d269baac8d7e0a",
+            "benchmark_identity": "bench-40fe0c8c30c36eb8",
+            "logloss": 0.4899251436433505,
+            "brier": 0.1500227821391759,
+            "soft_logloss": 0.7067579713373906,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-23a3ae8b8fa23e8c",
+            "benchmark_identity": "bench-5f9f8169b3a53f06",
+            "logloss": 0.4889778501996547,
+            "brier": 0.15087511510647406,
+            "soft_logloss": 0.6213846237354708,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-1a9252a113717b99",
+            "benchmark_identity": "bench-64e3fc6dd41fa1f0",
+            "logloss": 0.6611954523064655,
+            "brier": 0.23093682476179084,
+            "soft_logloss": 0.6920294750716727,
+            "direction_agreement": 0.6410256410256411
+          },
+          {
+            "paper_id": "recent-eb6270da44620228",
+            "benchmark_identity": "bench-751ab0e42ef2d008",
+            "logloss": 0.4531558210633515,
+            "brier": 0.1329119360281118,
+            "soft_logloss": 0.6026193166966968,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-8b149c0ea2596d6a",
+            "benchmark_identity": "bench-8a492c5c382ea9fd",
+            "logloss": 0.6335206034789291,
+            "brier": 0.22036041412674737,
+            "soft_logloss": 0.681668474135994,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-17596a3890e51a35",
+            "benchmark_identity": "bench-92e039326b205f71",
+            "logloss": 0.6997409222916391,
+            "brier": 0.25335989987563584,
+            "soft_logloss": 0.681821933752981,
+            "direction_agreement": 0.5791666666666666
+          },
+          {
+            "paper_id": "recent-131b2e0313fae713",
+            "benchmark_identity": "bench-993516288c580d57",
+            "logloss": 0.5636935573521608,
+            "brier": 0.1901950666014364,
+            "soft_logloss": 0.6727538473688766,
+            "direction_agreement": 0.5833333333333334
+          },
+          {
+            "paper_id": "recent-a75c43e79fc73870",
+            "benchmark_identity": "bench-aed08221e1ed51ae",
+            "logloss": 0.6000506480353648,
+            "brier": 0.19921396312880102,
+            "soft_logloss": 0.694584587277177,
+            "direction_agreement": 0.7222222222222222
+          },
+          {
+            "paper_id": "recent-f3e4f49d9abf2100",
+            "benchmark_identity": "bench-b297dfcfb7cb9b5f",
+            "logloss": 0.8728658894784612,
+            "brier": 0.33569010708522534,
+            "soft_logloss": 0.749385072636175,
+            "direction_agreement": 0.3333333333333333
+          },
+          {
+            "paper_id": "recent-5d75b1fa79541c3f",
+            "benchmark_identity": "bench-c42f88a5c8e708c5",
+            "logloss": 0.619428272506068,
+            "brier": 0.2136281519887496,
+            "soft_logloss": 0.6380577175852202,
+            "direction_agreement": 0.6666666666666666
+          },
+          {
+            "paper_id": "recent-649aaaddf9a8b9d9",
+            "benchmark_identity": "bench-d899559c4f8ea69e",
+            "logloss": 0.9290352784008424,
+            "brier": 0.36610422477702936,
+            "soft_logloss": 0.7933152515197524,
+            "direction_agreement": 0.0
+          },
+          {
+            "paper_id": "recent-983874c5063b78c0",
+            "benchmark_identity": "bench-dac4b70dcb1efb6b",
+            "logloss": 0.6556684728365609,
+            "brier": 0.23159818845167224,
+            "soft_logloss": 0.668855980823273,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-acc64f65515e42f1",
+            "benchmark_identity": "bench-db7e1cec5b6122d5",
+            "logloss": 0.8699390532192443,
+            "brier": 0.21095091007057748,
+            "soft_logloss": 0.8143022568519859,
+            "direction_agreement": 0.0
+          },
+          {
+            "paper_id": "recent-0c2d71f9e3cbe6b5",
+            "benchmark_identity": "bench-e1dcc00aef7071c5",
+            "logloss": 0.6407040814257613,
+            "brier": 0.2030686165147241,
+            "soft_logloss": 0.676695752992417,
+            "direction_agreement": 0.7272727272727273
+          },
+          {
+            "paper_id": "recent-9bf1eb6f28f9f011",
+            "benchmark_identity": "bench-e526935a11f7613f",
+            "logloss": 0.6442832436090599,
+            "brier": 0.22599982639398197,
+            "soft_logloss": 0.659960301964372,
+            "direction_agreement": 0.6666666666666666
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "all": {
+        "macro_source": {
+          "logloss": 0.6218200538037473,
+          "brier": 0.20396977164419194,
+          "soft_logloss": 0.6778998736642068,
+          "direction_agreement": 0.6605984790880938
+        },
+        "macro_category": {
+          "logloss": 0.6258822071028954,
+          "brier": 0.20697370778497337,
+          "soft_logloss": 0.6801649577883264,
+          "direction_agreement": 0.6613361759679004
+        },
+        "by_category": {
+          "agents": {
+            "logloss": 0.6014914742350519,
+            "brier": 0.1862518010877872,
+            "soft_logloss": 0.6638914331178606,
+            "direction_agreement": 0.6820532182938197
+          },
+          "language_documents": {
+            "logloss": 0.6460928820859686,
+            "brier": 0.20299565671691594,
+            "soft_logloss": 0.6831572449227072,
+            "direction_agreement": 0.6025231526108719
+          },
+          "knowledge": {
+            "logloss": 0.7384345603522898,
+            "brier": 0.2505311037365619,
+            "soft_logloss": 0.766172038293956,
+            "direction_agreement": 0.4682336182336182
+          },
+          "reasoning_data": {
+            "logloss": 0.5505871764799664,
+            "brier": 0.17926259340501619,
+            "soft_logloss": 0.6700759633277573,
+            "direction_agreement": 0.875
+          },
+          "unclassified": {
+            "logloss": 0.5575920585238874,
+            "brier": 0.18661447948294885,
+            "soft_logloss": 0.6348358594883581,
+            "direction_agreement": 0.6920936124061124
+          },
+          "software": {
+            "logloss": 0.6398613969284516,
+            "brier": 0.22216947582950441,
+            "soft_logloss": 0.6659505381694464,
+            "direction_agreement": 0.6699258207070707
+          },
+          "safety": {
+            "logloss": 0.6471159011146523,
+            "brier": 0.220990844236079,
+            "soft_logloss": 0.6770716271981996,
+            "direction_agreement": 0.6395238095238096
+          }
+        },
+        "test_source_units": 25,
+        "covered_pairs": 2286,
+        "available_pairs": 11206,
+        "coverage": 0.20399785829020167,
+        "per_source": [
+          {
+            "paper_id": "recent-bd1b3e2a4cdcd60d",
+            "benchmark_identity": "bench-098f5a97d38ac4a1",
+            "logloss": 0.6589956269944317,
+            "brier": 0.2332909098158384,
+            "soft_logloss": 0.6621474396111048,
+            "direction_agreement": 0.6
+          },
+          {
+            "paper_id": "recent-c4b30b195fac0fa1",
+            "benchmark_identity": "bench-0f623769a0e8ec41",
+            "logloss": 0.7255851506880326,
+            "brier": 0.25009068143286395,
+            "soft_logloss": 0.7520600876099703,
+            "direction_agreement": 0.5435897435897435
+          },
+          {
+            "paper_id": "recent-25391e5f6009bc24",
+            "benchmark_identity": "bench-19ebaebdf76cec80",
+            "logloss": 0.6212505879450805,
+            "brier": 0.21496749927502,
+            "soft_logloss": 0.6785918584842705,
+            "direction_agreement": 0.6
+          },
+          {
+            "paper_id": "recent-e6c52df7574bc334",
+            "benchmark_identity": "bench-1aca5f7cf28813de",
+            "logloss": 0.8445140834929876,
+            "brier": 0.27350965617097506,
+            "soft_logloss": 0.8467739527223876,
+            "direction_agreement": 0.25
+          },
+          {
+            "paper_id": "recent-9dbae4fb88c2cb71",
+            "benchmark_identity": "bench-1bd17d8f81574585",
+            "logloss": 0.5218421699425903,
+            "brier": 0.16530213429990723,
+            "soft_logloss": 0.6689380694316253,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-c1e80feafb140321",
+            "benchmark_identity": "bench-1f6d98ca541404d4",
+            "logloss": 0.8155487684957514,
+            "brier": 0.3063987914630336,
+            "soft_logloss": 0.7917563561113485,
+            "direction_agreement": 0.44000000000000006
+          },
+          {
+            "paper_id": "recent-4f22b0b4231c094f",
+            "benchmark_identity": "bench-288f27d4317cde57",
+            "logloss": 0.6598844245759545,
+            "brier": 0.2304334955294703,
+            "soft_logloss": 0.7335565716002186,
+            "direction_agreement": 0.6345238095238095
+          },
+          {
+            "paper_id": "recent-28d269baac8d7e0a",
+            "benchmark_identity": "bench-40fe0c8c30c36eb8",
+            "logloss": 0.46855175915328084,
+            "brier": 0.13994476621503144,
+            "soft_logloss": 0.7119322288426627,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-23a3ae8b8fa23e8c",
+            "benchmark_identity": "bench-5f9f8169b3a53f06",
+            "logloss": 0.3936881257037954,
+            "brier": 0.11035763031398442,
+            "soft_logloss": 0.5249553065852326,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-1a9252a113717b99",
+            "benchmark_identity": "bench-64e3fc6dd41fa1f0",
+            "logloss": 0.6632842386158372,
+            "brier": 0.2247468777980984,
+            "soft_logloss": 0.701677243368749,
+            "direction_agreement": 0.6561224489795918
+          },
+          {
+            "paper_id": "recent-eb6270da44620228",
+            "benchmark_identity": "bench-751ab0e42ef2d008",
+            "logloss": 0.5092957120564147,
+            "brier": 0.15864402779909478,
+            "soft_logloss": 0.5805161982738289,
+            "direction_agreement": 0.8785714285714286
+          },
+          {
+            "paper_id": "recent-8b149c0ea2596d6a",
+            "benchmark_identity": "bench-8a492c5c382ea9fd",
+            "logloss": 0.5793321830173426,
+            "brier": 0.19322305251012514,
+            "soft_logloss": 0.6712138572238895,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-17596a3890e51a35",
+            "benchmark_identity": "bench-92e039326b205f71",
+            "logloss": 0.6210202456114918,
+            "brier": 0.21775225957774355,
+            "soft_logloss": 0.6417386188518499,
+            "direction_agreement": 0.6442490842490842
+          },
+          {
+            "paper_id": "recent-131b2e0313fae713",
+            "benchmark_identity": "bench-993516288c580d57",
+            "logloss": 0.31639062794634415,
+            "brier": 0.08000855682803847,
+            "soft_logloss": 0.5256725939353158,
+            "direction_agreement": 0.9148148148148149
+          },
+          {
+            "paper_id": "recent-a75c43e79fc73870",
+            "benchmark_identity": "bench-aed08221e1ed51ae",
+            "logloss": 0.5780031808796856,
+            "brier": 0.18834173293679118,
+            "soft_logloss": 0.6490739067181415,
+            "direction_agreement": 0.7431107954545455
+          },
+          {
+            "paper_id": "recent-f3e4f49d9abf2100",
+            "benchmark_identity": "bench-b297dfcfb7cb9b5f",
+            "logloss": 0.6452044468758492,
+            "brier": 0.2279929736058466,
+            "soft_logloss": 0.6996820745495099,
+            "direction_agreement": 0.611111111111111
+          },
+          {
+            "paper_id": "recent-7ba26edecad8e148",
+            "benchmark_identity": "bench-b6f3b81486cdfb7a",
+            "logloss": 0.7166064362254898,
+            "brier": 0.2614587129824315,
+            "soft_logloss": 0.7166064362254898,
+            "direction_agreement": 0.5
+          },
+          {
+            "paper_id": "recent-267bc3725bde1d6f",
+            "benchmark_identity": "bench-bc644e52afcbbb7b",
+            "logloss": 0.6471159011146523,
+            "brier": 0.220990844236079,
+            "soft_logloss": 0.6770716271981996,
+            "direction_agreement": 0.6395238095238096
+          },
+          {
+            "paper_id": "recent-5d75b1fa79541c3f",
+            "benchmark_identity": "bench-c42f88a5c8e708c5",
+            "logloss": 0.647946191636378,
+            "brier": 0.20423642273545983,
+            "soft_logloss": 0.6723462427337233,
+            "direction_agreement": 0.631578947368421
+          },
+          {
+            "paper_id": "recent-649aaaddf9a8b9d9",
+            "benchmark_identity": "bench-d899559c4f8ea69e",
+            "logloss": 0.6881155328028171,
+            "brier": 0.2473519475359197,
+            "soft_logloss": 0.6559827057664226,
+            "direction_agreement": 0.6666666666666666
+          },
+          {
+            "paper_id": "recent-983874c5063b78c0",
+            "benchmark_identity": "bench-dac4b70dcb1efb6b",
+            "logloss": 0.6481483400151045,
+            "brier": 0.2247692645866823,
+            "soft_logloss": 0.6819976613486558,
+            "direction_agreement": 0.6868929681429682
+          },
+          {
+            "paper_id": "recent-acc64f65515e42f1",
+            "benchmark_identity": "bench-db7e1cec5b6122d5",
+            "logloss": 0.8052316673561997,
+            "brier": 0.12776466550852886,
+            "soft_logloss": 0.7688067893056746,
+            "direction_agreement": 0.1111111111111111
+          },
+          {
+            "paper_id": "recent-0c2d71f9e3cbe6b5",
+            "benchmark_identity": "bench-e1dcc00aef7071c5",
+            "logloss": 0.5672576369367062,
+            "brier": 0.1866312573973894,
+            "soft_logloss": 0.6265372666391513,
+            "direction_agreement": 0.7464285714285714
+          },
+          {
+            "paper_id": "recent-9bf1eb6f28f9f011",
+            "benchmark_identity": "bench-e526935a11f7613f",
+            "logloss": 0.5492228299086112,
+            "brier": 0.18022138353464312,
+            "soft_logloss": 0.6150667464439709,
+            "direction_agreement": 0.6666666666666666
+          },
+          {
+            "paper_id": "recent-601fff39a8935003",
+            "benchmark_identity": "bench-fe97a2b3352814db",
+            "logloss": 0.6534654771028517,
+            "brier": 0.23081474701580235,
+            "soft_logloss": 0.6927950020237751,
+            "direction_agreement": 0.6
+          }
+        ]
+      },
+      "same_vendor": {
+        "macro_source": {
+          "logloss": 0.6431144882031733,
+          "brier": 0.21611755735675575,
+          "soft_logloss": 0.6861849044226878,
+          "direction_agreement": 0.6550121406371406
+        },
+        "macro_category": {
+          "logloss": 0.6522970465709713,
+          "brier": 0.22245355516467016,
+          "soft_logloss": 0.6923006173150442,
+          "direction_agreement": 0.6348661930101324
+        },
+        "by_category": {
+          "agents": {
+            "logloss": 0.6120963828980835,
+            "brier": 0.19546220427989625,
+            "soft_logloss": 0.6722959824303006,
+            "direction_agreement": 0.723759447623084
+          },
+          "language_documents": {
+            "logloss": 0.6613587521863243,
+            "brier": 0.21538934454128705,
+            "soft_logloss": 0.6976520938837774,
+            "direction_agreement": 0.6493265993265993
+          },
+          "knowledge": {
+            "logloss": 0.729393514666753,
+            "brier": 0.25787007651347843,
+            "soft_logloss": 0.709135000068088,
+            "direction_agreement": 0.5416666666666666
+          },
+          "reasoning_data": {
+            "logloss": 0.5787697121713249,
+            "brier": 0.1944523598032551,
+            "soft_logloss": 0.6993656190985855,
+            "direction_agreement": 0.75
+          },
+          "unclassified": {
+            "logloss": 0.5722915513077349,
+            "brier": 0.19162836757031101,
+            "soft_logloss": 0.6464505342461451,
+            "direction_agreement": 0.6666666666666666
+          },
+          "software": {
+            "logloss": 0.7598723661956074,
+            "brier": 0.2799189782797933,
+            "soft_logloss": 0.7289044741633683,
+            "direction_agreement": 0.4777777777777778
+          }
+        },
+        "test_source_units": 20,
+        "covered_pairs": 382,
+        "available_pairs": 2086,
+        "coverage": 0.18312559923298177,
+        "per_source": [
+          {
+            "paper_id": "recent-bd1b3e2a4cdcd60d",
+            "benchmark_identity": "bench-098f5a97d38ac4a1",
+            "logloss": 0.6998052978900324,
+            "brier": 0.25331898582811674,
+            "soft_logloss": 0.6934616817779472,
+            "direction_agreement": 0.6
+          },
+          {
+            "paper_id": "recent-c4b30b195fac0fa1",
+            "benchmark_identity": "bench-0f623769a0e8ec41",
+            "logloss": 0.6497067665543028,
+            "brier": 0.20912526547011748,
+            "soft_logloss": 0.6829457051334865,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-25391e5f6009bc24",
+            "benchmark_identity": "bench-19ebaebdf76cec80",
+            "logloss": 0.5779917309283702,
+            "brier": 0.1931615555456025,
+            "soft_logloss": 0.6276226220849499,
+            "direction_agreement": 0.8333333333333333
+          },
+          {
+            "paper_id": "recent-c1e80feafb140321",
+            "benchmark_identity": "bench-1f6d98ca541404d4",
+            "logloss": 0.855053424365296,
+            "brier": 0.3273513279555246,
+            "soft_logloss": 0.8136461114205151,
+            "direction_agreement": 0.35
+          },
+          {
+            "paper_id": "recent-4f22b0b4231c094f",
+            "benchmark_identity": "bench-288f27d4317cde57",
+            "logloss": 0.6330083521657517,
+            "brier": 0.20652817868202897,
+            "soft_logloss": 0.6625153105399088,
+            "direction_agreement": 0.7222222222222222
+          },
+          {
+            "paper_id": "recent-28d269baac8d7e0a",
+            "benchmark_identity": "bench-40fe0c8c30c36eb8",
+            "logloss": 0.46855175915328084,
+            "brier": 0.13994476621503144,
+            "soft_logloss": 0.7119322288426627,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-23a3ae8b8fa23e8c",
+            "benchmark_identity": "bench-5f9f8169b3a53f06",
+            "logloss": 0.43769393887156494,
+            "brier": 0.1270272677770704,
+            "soft_logloss": 0.6150269202317339,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-1a9252a113717b99",
+            "benchmark_identity": "bench-64e3fc6dd41fa1f0",
+            "logloss": 0.6546602553519569,
+            "brier": 0.22788632084521743,
+            "soft_logloss": 0.696998895121493,
+            "direction_agreement": 0.6410256410256411
+          },
+          {
+            "paper_id": "recent-eb6270da44620228",
+            "benchmark_identity": "bench-751ab0e42ef2d008",
+            "logloss": 0.485401181349447,
+            "brier": 0.14890734654745208,
+            "soft_logloss": 0.5990620575622849,
+            "direction_agreement": 1.0
+          },
+          {
+            "paper_id": "recent-8b149c0ea2596d6a",
+            "benchmark_identity": "bench-8a492c5c382ea9fd",
+            "logloss": 0.5787697121713249,
+            "brier": 0.1944523598032551,
+            "soft_logloss": 0.6993656190985855,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-17596a3890e51a35",
+            "benchmark_identity": "bench-92e039326b205f71",
+            "logloss": 0.622739797272487,
+            "brier": 0.2192424871464425,
+            "soft_logloss": 0.6418359053655481,
+            "direction_agreement": 0.6041666666666666
+          },
+          {
+            "paper_id": "recent-131b2e0313fae713",
+            "benchmark_identity": "bench-993516288c580d57",
+            "logloss": 0.5599387219906795,
+            "brier": 0.18666407995317802,
+            "soft_logloss": 0.6618358350200807,
+            "direction_agreement": 0.5833333333333334
+          },
+          {
+            "paper_id": "recent-a75c43e79fc73870",
+            "benchmark_identity": "bench-aed08221e1ed51ae",
+            "logloss": 0.5881194728395598,
+            "brier": 0.19249647953930318,
+            "soft_logloss": 0.6632643262037192,
+            "direction_agreement": 0.9555555555555556
+          },
+          {
+            "paper_id": "recent-f3e4f49d9abf2100",
+            "benchmark_identity": "bench-b297dfcfb7cb9b5f",
+            "logloss": 0.809080262779203,
+            "brier": 0.3066148875568394,
+            "soft_logloss": 0.7353242950026896,
+            "direction_agreement": 0.3333333333333333
+          },
+          {
+            "paper_id": "recent-5d75b1fa79541c3f",
+            "benchmark_identity": "bench-c42f88a5c8e708c5",
+            "logloss": 0.5696846535872004,
+            "brier": 0.18959881906042514,
+            "soft_logloss": 0.6151019919559467,
+            "direction_agreement": 0.8333333333333333
+          },
+          {
+            "paper_id": "recent-649aaaddf9a8b9d9",
+            "benchmark_identity": "bench-d899559c4f8ea69e",
+            "logloss": 0.931625259551655,
+            "brier": 0.36734147702028336,
+            "soft_logloss": 0.7945446221230175,
+            "direction_agreement": 0.0
+          },
+          {
+            "paper_id": "recent-983874c5063b78c0",
+            "benchmark_identity": "bench-dac4b70dcb1efb6b",
+            "logloss": 0.607713102023914,
+            "brier": 0.2079996392231119,
+            "soft_logloss": 0.6624490212743837,
+            "direction_agreement": 0.75
+          },
+          {
+            "paper_id": "recent-acc64f65515e42f1",
+            "benchmark_identity": "bench-db7e1cec5b6122d5",
+            "logloss": 0.9281461283885233,
+            "brier": 0.23416036296960455,
+            "soft_logloss": 0.8391159219882004,
+            "direction_agreement": 0.0
+          },
+          {
+            "paper_id": "recent-0c2d71f9e3cbe6b5",
+            "benchmark_identity": "bench-e1dcc00aef7071c5",
+            "logloss": 0.6553771169203043,
+            "brier": 0.21030815646186718,
+            "soft_logloss": 0.6925822712626317,
+            "direction_agreement": 0.7272727272727273
+          },
+          {
+            "paper_id": "recent-9bf1eb6f28f9f011",
+            "benchmark_identity": "bench-e526935a11f7613f",
+            "logloss": 0.5492228299086112,
+            "brier": 0.18022138353464312,
+            "soft_logloss": 0.6150667464439709,
+            "direction_agreement": 0.6666666666666666
+          }
+        ]
+      }
+    }
+  },
+  "model_calls": 0,
+  "paired_whole_paper_difference_ci95": {
+    "all": {
+      "logloss": [
+        -0.02957333193275284,
+        -0.006608664393176875
+      ],
+      "brier": [
+        -0.014028015150298612,
+        -0.0031115945512591526
+      ],
+      "direction_agreement": [
+        -0.009799422799422803,
+        0.019367160617160616
+      ]
+    },
+    "same_vendor": {
+      "logloss": [
+        -0.03718540584100172,
+        -0.0027461424497257025
+      ],
+      "brier": [
+        -0.017838234469213073,
+        -0.0018971148036207822
+      ],
+      "direction_agreement": [
+        0.0,
+        0.05291666666666668
+      ]
+    }
+  }
+}
