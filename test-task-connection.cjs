@@ -67,3 +67,15 @@ test('static rules from another scoring version block task submission',async()=>
  const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});
  assert.equal(r.status,503);assert(!s.requests.some(r=>r.method==='POST'));
 });
+
+test('profile analysis reaches the backend without waiting for task-evidence download',async()=>{
+ const s=setup(manifest.snapshot_id,8);let resolveRules;
+ s.window.RadarLoadTaskEvidence=()=>new Promise(resolve=>{resolveRules=resolve;});
+ const profile=await s.connection.request('/api/interactive-jobs',{method:'POST',body:JSON.stringify({kind:'profile',payload:{description:'整理医学文献'}})});
+ assert.equal(profile.status,200);assert(s.requests.some(r=>r.method==='POST'));assert.equal(resolveRules,undefined);
+ const before=s.requests.filter(r=>r.method==='POST').length;
+ const score=s.connection.request('/api/task-score',{method:'POST',body:'{}'});
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(s.requests.filter(r=>r.method==='POST').length,before);
+ resolveRules({task_method_version:8,measurements:{schema_version:'source-scoped-task-measurements-v3',snapshot_id:manifest.snapshot_id,groups:{}}});
+ assert.equal((await score).status,200);
+});
