@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--profile-calls-per-day',type=int,default=24)
     args=parser.parse_args();sys.path.insert(0,str(args.radar_root.resolve()))
     from recent_benchmarks.live_web import make_server
-    from recent_benchmarks.catalog_task_scoring import prepare_inputs,score_task
+    from recent_benchmarks.catalog_task_scoring import prepare_inputs,score_task,VERSION as TASK_SCORE_VERSION
     from recent_benchmarks.task_labels import validate_profile
     from recent_benchmarks.interactive_profile import analyse_task,TaskProfileFailure
     from recent_benchmarks.taxonomy import TAXONOMY_VERSION
@@ -85,7 +85,7 @@ def main():
         def handle_request(self):
             if self.headers.get('Origin')and self.headers['Origin']not in args.allow_origin:return self.reply(403,{'error':'forbidden'})
             if not allowed(self.command,self.path):return self.reply(404,{'error':'not_found'})
-            if self.path=='/api/task-service':return self.reply(200,{'status':'READY','snapshot_id':snapshot['snapshot_id'],'generated_at':snapshot['generated_at'],'taxonomy_version':TAXONOMY_VERSION,'task_score_available':True,'task_profile_available':profile_available})
+            if self.path=='/api/task-service':return self.reply(200,{'status':'READY','snapshot_id':snapshot['snapshot_id'],'generated_at':snapshot['generated_at'],'taxonomy_version':TAXONOMY_VERSION,'task_score_method_version':TASK_SCORE_VERSION,'task_score_available':True,'task_profile_available':profile_available})
             body=None
             if self.command=='POST':
                 try:

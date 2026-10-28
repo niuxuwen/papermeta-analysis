@@ -341,7 +341,7 @@
     DOMAIN_FILTER:'当前领域没有匹配的已标注成绩；其他领域存在相关能力评测。可检查第二步的领域选择。',
     MODALITY_FILTER:'当前输入模态没有匹配的已核验成绩。可检查第二步的实验条件。',
     UNVERIFIED_PROTOCOL:'现有来源无法核实你要求的语言、知识访问或上下文条件，因此暂不纳入任务评分。',
-    NO_CAPABILITY_EVIDENCE:'当前已标注成绩尚未覆盖所选能力。可检查能力选择，或浏览全部有成绩的模型。',
+    NO_CAPABILITY_EVIDENCE:'当前来源暂无可用于所选能力计分的指标。可检查能力选择，或浏览全部有成绩的模型。',
     NO_COMPARABLE_MODELS:'完整评测数据尚未就绪，请等待加载完成后重试。'
   };
   function renderReferences() {
@@ -409,15 +409,15 @@
     catch(e){if(rev===taskState.revision){taskState.result=null;$('task-results').hidden=true;taskMessage('task-score-message',e.name==='AbortError'?'计算超时，当前未展示旧分数，请重试。':e.message,'error');}}
     finally{taskState.busy=false;$('cancel-task-score').hidden=true;if(taskState.request===ctrl)taskState.request=null;$('score-task').disabled=false;}
   }
-  const gapNames={missing_verified_score_scale:'指标量程尚未核验',unapproved_score_scale:'指标量程尚未审核通过',value_outside_verified_scale:'原始值超出核验量程',conflicting_score_scales:'指标量程证据冲突',score_scale_source_mismatch:'量程证据与当前来源不符',score_scale_direction_mismatch:'指标方向与量程不符',unverified_score_scale_quote:'量程引句未通过来源核验',unannotated_source_groups:'部分来源能力标签缺失或无效，总分暂不发布',incomplete_direct_task_panel:'直接任务证据不完整',insufficient_independent_benchmarks:'独立来源 Benchmark 不足',missing_target_observation:'候选模型缺测',missing_reference_observation:'参考模型缺测',no_capability_evidence:'该能力无匹配证据',unknown_direction:'指标方向不明',protocol_mismatch:'实验条件不匹配',domain_mismatch:'领域不匹配',capability_not_requested:'任务未要求该能力'};
+  const gapNames={summarizer_or_compaction_not_coding_agent:'摘要或压缩表现，另列辅助结果',metric_meaning_not_established_by_source_caption:'指标含义尚未明确，保留原始结果',other_domain_or_mixed_domain_result:'其他领域或跨领域总分',verifier_component_not_overall_coding_outcome:'验证器分项统计，保留来源详情',no_metric_level_task_binding:'指标与当前任务分项尚无明确对应',missing_verified_score_scale:'指标量程尚未核验',unapproved_score_scale:'指标量程尚未审核通过',value_outside_verified_scale:'原始值超出核验量程',conflicting_score_scales:'指标量程证据冲突',score_scale_source_mismatch:'量程证据与当前来源不符',score_scale_direction_mismatch:'指标方向与量程不符',unverified_score_scale_quote:'量程引句未通过来源核验',unannotated_source_groups:'部分来源能力标签缺失或无效，总分暂不发布',incomplete_direct_task_panel:'直接任务证据不完整',insufficient_independent_benchmarks:'独立来源 Benchmark 不足',missing_target_observation:'候选模型缺测',missing_reference_observation:'参考模型缺测',no_capability_evidence:'该能力无匹配证据',unknown_direction:'指标方向不明',protocol_mismatch:'实验条件不匹配',domain_mismatch:'领域不匹配',capability_not_requested:'任务未要求该能力'};
   function renderTaskResults() {
-    const response=taskState.result;if(!response)return;const report=response.task_index,catalog=report.method?.name==='catalog_task_pairwise_reference',calibrated=catalog&&report.method.version>=3;
+    const response=taskState.result;if(!response)return;const report=response.task_index,catalog=report.method?.name==='catalog_task_pairwise_reference',calibrated=catalog&&report.method.version>=3&&report.method.version<5;
     if(!report.method){$('task-results').hidden=true;taskMessage('task-score-message',report.note||'当前任务配置或证据不足，暂无法计算。','warning');return;}
     if(!catalog&&(report.method?.name!=='task_source_fixed_scale_weighted'||report.method.version<3)){$('task-results').hidden=true;taskMessage('task-score-message','服务端评分方法尚未更新，请更新后端后重新计算。','warning');return;}
     taskMessage('task-score-message',report.available?(calibrated?(report.match_scope==='RELATED_CAPABILITIES_ONLY'?'没有同类型任务成绩，以下仅为相近能力参考。':'已匹配来源证据并校准对手；待测能力的估计比例单列。'):(catalog?'已按有来源的 Benchmark 标签匹配任务，参考分与证据覆盖已列出。':'已按当前窗口计算。只有证据覆盖与独立来源要求均满足时发布任务总分。')):report.note||'当前没有足够的任务证据。',report.available?'':'warning');
     $('task-results').hidden=false;$('task-result-meta').textContent=`窗口 ${response.window.days} 天 · 快照截止 ${date(response.generated_at)} · 计算时间 ${date(report.computed_at||response.generated_at)} · 评分方法：${catalog?(calibrated?'任务参考 · 对手校准与完整权重':'任务相关评测 · 已覆盖能力加权参考分'):'原始成绩固定量程加权'}${report.annotation_scope==='AUDITED_SUBSET_ONLY'?' · 能力图仅代表已标注证据子集，来源标签仍有缺口':''}${response.evidence_stale?' · 后台证据更新较慢，请结合来源核验时间查看':''}${response.evidence_generated_at?' · 来源核验 '+date(response.evidence_generated_at):''}${state.snapshot?.status?.preview_note?' · '+state.snapshot.status.preview_note:''}`;
     $('broaden-task-evidence').hidden=!calibrated||report.match_scope!=='SAME_TASK';
-    const panels=[...new Set(report.models.map(m=>m.panel_id))].sort((a,b)=>{const am=report.models.filter(m=>m.panel_id===a),bm=report.models.filter(m=>m.panel_id===b),x=am[0]?.model_setting||'',y=bm[0]?.model_setting||'';return Number(Boolean(x))-Number(Boolean(y))||x.localeCompare(y)||bm.length-am.length||a.localeCompare(b);}),select=$('task-panel');select.replaceChildren();const settingCounts=new Map(),settingOrdinal=new Map();for(const id of panels){const setting=report.models.find(m=>m.panel_id===id).model_setting;settingCounts.set(setting,(settingCounts.get(setting)||0)+1);}for(const id of panels){const members=report.models.filter(m=>m.panel_id===id),m=members[0],ordinal=(settingOrdinal.get(m.model_setting)||0)+1;settingOrdinal.set(m.model_setting,ordinal);const op=el('option',(m.model_setting||'未另列实验设置')+(settingCounts.get(m.model_setting)>1?` · 可比来源组 ${ordinal}（${members.length} 个模型）`:''));op.value=id;select.append(op);}if(!panels.includes(taskState.panel))taskState.panel=panels[0]||'';select.value=taskState.panel;select.hidden=panels.length<2;
+    const panels=[...new Set(report.models.map(m=>m.panel_id))].sort((a,b)=>{const am=report.models.filter(m=>m.panel_id===a),bm=report.models.filter(m=>m.panel_id===b),x=am[0]?.model_setting||'',y=bm[0]?.model_setting||'';return Number(Boolean(x))-Number(Boolean(y))||x.localeCompare(y)||bm.length-am.length||a.localeCompare(b);}),select=$('task-panel');select.replaceChildren();const settingCounts=new Map(),settingOrdinal=new Map();for(const id of panels){const setting=report.models.find(m=>m.panel_id===id).model_setting;settingCounts.set(setting,(settingCounts.get(setting)||0)+1);}for(const id of panels){const members=report.models.filter(m=>m.panel_id===id),m=members[0],ordinal=(settingOrdinal.get(m.model_setting)||0)+1;settingOrdinal.set(m.model_setting,ordinal);const op=el('option',(m.model_setting||'未另列实验设置')+(report.method.version>=5?' · '+(m.measured_capability_ids||[]).map(c=>report.method.capability_display_labels?.[c]||titleFor(c)).join('、'):'')+(settingCounts.get(m.model_setting)>1?` · 可比来源组 ${ordinal}（${members.length} 个模型）`:''));op.value=id;select.append(op);}if(!panels.includes(taskState.panel))taskState.panel=panels[0]||'';select.value=taskState.panel;select.hidden=panels.length<2;
     const panelModels=report.models.filter(m=>m.panel_id===taskState.panel),published=panelModels.filter(m=>m.publication_eligible);
     const models=(catalog?(published.length?published:panelModels.filter(m=>m.n_groups).slice(0,12)):panelModels).sort((a,b)=>(b.publication_score??-1)-(a.publication_score??-1)||(b.coverage||0)-(a.coverage||0));
     taskVisuals.update(Viz.taskData(report,taskState.panel,Object.fromEntries(taskTaxonomy.capabilities.map(c=>[c.id,c.label]))));
@@ -443,24 +443,25 @@
     const excluded=$('task-exclusions');excluded.replaceChildren();excluded.append(el('p',report.validation?.note||'当前分数未经真实专业任务校准。'));if(report.annotation_audit){const details=el('details');details.append(el('summary',`任务范围核查：${report.irrelevant_groups||0} 组已确认无关，${report.unresolved_scope_groups||0} 组关系待核`));for(const g of report.annotation_audit){const b=state.snapshot?.benchmarks.find(b=>identity(b)===identity(g));details.append(el('p',`${b?.benchmark_name||'来源 Benchmark'} · ${sourceLabel(g.paper_id,g.table_id)} · ${{OUT_OF_SCOPE:'已确认领域不符',UNKNOWN:'关系待核',REVIEWED:'已审核'}[g.state]||g.state}`));}excluded.append(details);}const reasons=new Map();for(const e of report.exclusions||[]){const key=e.reason||'其他';reasons.set(key,(reasons.get(key)||0)+1);}for(const [reason,count] of reasons)excluded.append(el('p',`${gapNames[reason]||reason} · ${count} 组`));if(!reasons.size)excluded.append(el('p',report.note||'没有额外的排除记录。'));
   }
   function candidateGapText(a){
-    if(a.status==='NO_TASK_EVIDENCE')return '本快照没有该模型与当前任务匹配的成绩。';
+    if(a.status==='NO_TASK_EVIDENCE')return '本快照暂无该模型符合当前任务计分范围的成绩；可继续查看原始来源。';
     return '有相关成绩，可在对应实验设置内查看参考分。';
   }
   function renderTaskEvidence(report){
-    const calibrated=report.method?.version>=3,related=report.match_scope==='RELATED_CAPABILITIES_ONLY';
+    const calibrated=report.method?.version>=3&&report.method.version<5,related=report.match_scope==='RELATED_CAPABILITIES_ONLY';
+    const capTitle=id=>report.method?.capability_display_labels?.[id]||titleFor(id);
     const coverage=$('task-coverage');coverage.hidden=false;coverage.replaceChildren();
     const caps=report.capability_coverage||[],found=caps.filter(c=>c.n_benchmarks>0),head=el('div',null,'task-evidence-heading');
     head.append(el('h3',related?'相近能力证据':'能力证据概览'),el('span',`${found.length} / ${caps.length} 项能力有相关评测`,'badge'));coverage.append(head);
     coverage.append(el('p',calibrated?'至少一项真实成绩即可参与。已测能力先校准对手；未测分项留空，汇总时按 50 分中性假设估计，并单列比例。':'至少一项相关成绩即可计算参考分。缺失能力留空，参考分按已覆盖能力的权重比例汇总。','method-note'));
     if(related)coverage.append(el('p','当前没有同类型任务成绩；这里展示相近能力参考，不代表完成该任务的表现。','method-note'));
     const grid=el('div',null,'task-capability-evidence-grid');
-    for(const cap of caps){const card=el('button',null,'task-capability-evidence'+(!cap.n_benchmarks?' is-gap':''));card.type='button';card.append(el('strong',titleFor(cap.capability_id)),el('small',`任务权重 ${fmt(cap.weight*100)}%`),el('b',cap.n_benchmarks?String(cap.n_benchmarks):'暂无'),el('span',cap.n_benchmarks?'项相关 Benchmark':'匹配评测'));card.addEventListener('click',()=>{$('task-match-capability').value=cap.capability_id;taskState.matchLimit=8;renderMatchedBenchmarks(report);$('task-match-search').scrollIntoView({block:'nearest'});});grid.append(card);}coverage.append(grid);
+    for(const cap of caps){const card=el('button',null,'task-capability-evidence'+(!cap.n_benchmarks?' is-gap':''));card.type='button';card.append(el('strong',capTitle(cap.capability_id)),el('small',`任务权重 ${fmt(cap.weight*100)}%`),el('b',cap.n_benchmarks?String(cap.n_benchmarks):'暂无'),el('span',cap.n_benchmarks?'项相关 Benchmark':'匹配评测'));card.addEventListener('click',()=>{$('task-match-capability').value=cap.capability_id;taskState.matchLimit=8;renderMatchedBenchmarks(report);$('task-match-search').scrollIntoView({block:'nearest'});});grid.append(card);}coverage.append(grid);
     const all=report.models.filter(m=>m.panel_id===taskState.panel),audit=report.candidate_audit||[],byName=new Map(all.map(m=>[m.model_canonical,m]));
     const ordered=all.slice().sort((a,b)=>(b.publication_score??-1)-(a.publication_score??-1)||b.n_benchmarks-a.n_benchmarks);
     const comparison=$('task-comparison');comparison.hidden=false;comparison.replaceChildren();
-    comparison.append(el('h3',related?'所选模型 · 相近能力参考':'所选模型 · 并排比较'),el('p',calibrated?'完整权重参考分包含待测能力的中性估计；已测能力参考分只描述有成绩的部分。不同可比来源组分开显示。':'参考分按已覆盖能力的权重比例汇总，数量和覆盖率另列。','method-note'));
+    comparison.append(el('h3',related?'所选模型 · 相近能力参考':'所选模型 · 并排比较'),el('p',calibrated?'完整权重参考分包含待测能力的中性估计；已测能力参考分只描述有成绩的部分。不同可比来源组分开显示。':'各分项独立估计，仅按已测能力权重汇总；缺测不补分。仅在相同能力覆盖与来源网络内比较，数量和覆盖率另列。','method-note'));
     const wrap=el('div',null,'task-comparison-wrap'),table=el('table',null,'task-comparison-table'),thead=el('thead'),tr=el('tr');
-    const headings=['模型',calibrated?'完整权重参考分':'参考分',...(calibrated?['已测能力参考分']:[]),'相关评测','已测能力权重',...caps.map(c=>titleFor(c.capability_id))];
+    const headings=['模型',calibrated?'完整权重参考分':'参考分',...(calibrated?['已测能力参考分']:[]),'相关评测','已测能力权重',...caps.map(c=>capTitle(c.capability_id))];
     for(const label of headings)tr.append(el('th',label));thead.append(tr);table.append(thead);
     const tbody=el('tbody'),limit=taskState.comparisonLimit||12;
     for(const m of ordered.slice(0,limit)){

@@ -370,6 +370,24 @@
     const rows=[...result.values()].map(r=>({name:r.name,nBenchmarks:r.benchmarks.size,nGroups:r.groups.size}));
     candidateCache.set(snapshot,rows);return rows;
   }
+  function taskMetricCaps(g,b,profile){
+    const requested=(b.catalog_labels?.capabilities||[]).filter(c=>profile.capabilities.some(x=>x.id===c));
+    if(!profile.tasks?.includes('code_development'))return requested;
+    const text=String(g.metric_role_context||'').replace(/\s+/g,' ').toLowerCase(),metric=String(g.metric).replace(/[↑↓%()\s.]+/g,'').toLowerCase();
+    const quotes=(b.enrichment?.labels?.evidence||[]).filter(e=>e.bound_to_benchmark&&(b.catalog_labels?.[e.layer]||[]).includes(e.id)).map(e=>e.quote||'').join('\n').toLowerCase();
+    if(/summarizer backbone|continuation agent|recurring.detail retention|task preservation damage/.test(text)||metric==='ldpr')return [];
+    let caps=[];
+    if(text.includes('domain abbreviations denote')&&text.includes('software work'))caps=['soft','software'].includes(metric)?['code_correctness']:[];
+    else if(String(g.metric).toLowerCase().includes('implementation score')&&(/acceptance testing|code acceptance/.test(quotes)))caps=['code_correctness'];
+    else if(metric==='fs'&&(text.includes('functional')||quotes.includes('functional score')))caps=['code_correctness'];
+    else if(metric==='rs'&&(text.includes('requirement satisfaction')||quotes.includes('requirement satisfaction')))caps=['instruction_following'];
+    else if(metric==='residual'&&text.includes('residual reports success'))caps=['code_correctness','code_debugging'];
+    else if(metric.startsWith('scalebench')&&quotes.includes('pass@1')&&quotes.includes('rtl'))caps=['code_correctness'];
+    else if(metric.startsWith('banorm')&&quotes.includes('verifier generation'))caps=['code_correctness'];
+    else if(['accuracy','successrate'].includes(metric)&&text.includes('code acceptance'))caps=['code_correctness'];
+    else if(text.includes('reasoning')&&(String(g.metric).toLowerCase().includes('reasoning')||metric==='accuracy'))caps=['reasoning'];
+    return caps.filter(c=>requested.includes(c));
+  }
   const taskPreviewCache=new WeakMap();
   function taskMatchPreview(snapshot,profile){
     const base=taskCandidateRows(snapshot);
@@ -390,14 +408,14 @@
       if(constraints.modality!=='any'&&!labels.modalities?.includes(constraints.modality))continue;
       if(comparableSources.has(source))stages.modality.add(b.directory_identity||b.benchmark_identity||source);
       if(protocolUnknown)continue;
-      matched.set(source,{caps,exact:(profile.tasks||[]).some(t=>labels.tasks?.includes(t))});
+      matched.set(source,{caps,benchmark:b,exact:(profile.tasks||[]).some(t=>labels.tasks?.includes(t))});
     }
     const byName=new Map(base.map(r=>[r.name,{...r,benchmarks:new Set(),groups:new Set(),caps:new Set()}])),benches=new Set(),capBenches=new Map(profile.capabilities.map(c=>[c.id,new Set()]));
     const known=snapshot.index?.models?.length?new Set(snapshot.index.models.filter(m=>!m.general_model_issue).map(m=>m.model_canonical)):null;
-    const eligible=(snapshot.index?.groups||[]).filter(g=>{const scores=(g.scores||[]).filter(s=>!known||known.has(s.model_canonical));return matched.has(key(g))&&!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&scores.length>=2&&scores.every(s=>finite(s.value_numeric));});
+    const eligible=(snapshot.index?.groups||[]).filter(g=>{const scores=(g.scores||[]).filter(s=>!known||known.has(s.model_canonical));return matched.has(key(g))&&taskMetricCaps(g,matched.get(key(g)).benchmark,profile).length>0&&!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&scores.length>=2&&scores.every(s=>finite(s.value_numeric));});
     const sameTask=(profile.tasks||[]).length>0&&eligible.some(g=>matched.get(key(g)).exact);
     for(const g of eligible){
-      const match=matched.get(key(g));if(sameTask&&!match.exact)continue;const caps=match.caps;
+      const match=matched.get(key(g));if(sameTask&&!match.exact)continue;const caps=taskMetricCaps(g,match.benchmark,profile);
       const scores=(g.scores||[]).filter(s=>finite(s.value_numeric)&&byName.has(s.model_canonical));if(scores.length<2)continue;
       const identity=g.benchmark_identity||g.benchmark_id;benches.add(identity);for(const cap of caps)capBenches.get(cap).add(identity);
       for(const s of scores){const row=byName.get(s.model_canonical);row.benchmarks.add(identity);row.groups.add(g.group_id);for(const cap of caps)row.caps.add(cap);}
@@ -411,7 +429,8 @@
   function taskData(report,panel,labels={}) {
     const fixed=report?.method?.name==='task_source_fixed_scale_weighted'&&report.method.version>=3;
     const catalog=report?.method?.name==='catalog_task_pairwise_reference';
-    const calibrated=catalog&&report.method.version>=3;
+    const calibrated=catalog&&report.method.version>=3&&report.method.version<5;
+    if(catalog&&report.method.version>=5)labels={...labels,...report.method.capability_display_labels};
     const models=(report?.models||[]).filter(m=>m.panel_id===panel);
     const scope=catalog?'BENCHMARK_TASK_REFERENCE':'DIRECT_TASK';
     const entries=new Map((report?.panel||[]).filter(g=>g.panel_id===panel&&g.score_scope===scope).map(g=>[g.group_id,g]));
@@ -439,7 +458,7 @@
     return {kind:'task',rows,axes,cells,taskCalibration:calibrated,selectionKey:'task:'+panel,scopeId:panel,setting:models[0]?.model_setting||'',
       title:calibrated&&report.match_scope==='RELATED_CAPABILITIES_ONLY'?'相近能力参考 · 非同类任务成绩':catalog?'任务相关评测比较':'任务能力比较',
       summaryLabel:calibrated?'完整权重参考分':catalog?'任务相关参考分':'任务综合评测分',valueLabel:calibrated?'完整权重参考分 · 0–100':catalog?'任务相关参考分 · 0–100':'任务综合评测分 · 0–100',
-      note:calibrated?'至少一项真实成绩即参与。已测能力先校准对手，主分使用完整任务权重；未测分项留空，汇总时按50分中性假设估计，估计比例在数据表与导出中单列。不同来源网络分开比较。参考分不是实际任务成功率。':catalog?'至少一项相关成绩即出分。分项先在 Benchmark 内平均，再按 Benchmark 等权汇总；主分按已覆盖能力的权重比例计算，缺失能力留空，覆盖率另列。参考分不是实际任务成功率。':'同一任务、同一评分集合和实验设置。原始成绩按核验过的固定量程转换，再按 Benchmark 和能力权重汇总。缺测或量程未核验时不发布总分；分数不等同于实际任务成功率。'};
+      note:catalog&&report.method.version>=5?'各分项独立使用来源指标估计，按已测能力权重汇总；缺测不补50分，相同能力覆盖与来源网络内比较。代码相关参考先区分任务成果、辅助表现和未明确的指标；分数不表示实际任务成功率。':calibrated?'至少一项真实成绩即参与。已测能力先校准对手，主分使用完整任务权重；未测分项留空，汇总时按50分中性假设估计，估计比例在数据表与导出中单列。不同来源网络分开比较。参考分不是实际任务成功率。':catalog?'至少一项相关成绩即出分。分项先在 Benchmark 内平均，再按 Benchmark 等权汇总；主分按已覆盖能力的权重比例计算，缺失能力留空，覆盖率另列。参考分不是实际任务成功率。':'同一任务、同一评分集合和实验设置。原始成绩按核验过的固定量程转换，再按 Benchmark 和能力权重汇总。缺测或量程未核验时不发布总分；分数不等同于实际任务成功率。'};
   }
   function benchmarkData(snapshot,bench,setting,metric='') {
     const groups=(snapshot?.score_groups||snapshot?.index?.groups||[]).filter(g=>key(g)===key(bench)&&g.model_setting===setting&&(!metric||g.metric===metric));
@@ -516,7 +535,7 @@
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  const api={taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   host.RadarViz=api;
   if(typeof document==='undefined')return;

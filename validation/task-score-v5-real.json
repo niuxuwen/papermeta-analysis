@@ -1,0 +1,171 @@
+{
+  "snapshot_id": "4454273dd745c7e7aa3d7712",
+  "observations": 30594,
+  "observation_sha256": "d9d6c082395d3e8c830acfeedea0d6bca01887257a0ec1c0c83036fd51777c8a",
+  "model_calls": 0,
+  "method_version": 5,
+  "profile": {
+    "schema_version": "task-profile-v1",
+    "taxonomy_version": "task-taxonomy-v2",
+    "description": "编写和修改代码，通过测试验证功能，并遵循给定规格。",
+    "domains": [
+      "software"
+    ],
+    "tasks": [
+      "code_development"
+    ],
+    "capabilities": [
+      {
+        "id": "code_correctness",
+        "weight": 0.6,
+        "rationale": "初始模板建议，需按实际任务调整"
+      },
+      {
+        "id": "reasoning",
+        "weight": 0.25,
+        "rationale": "初始模板建议，需按实际任务调整"
+      },
+      {
+        "id": "instruction_following",
+        "weight": 0.15,
+        "rationale": "初始模板建议，需按实际任务调整"
+      }
+    ],
+    "constraints": {
+      "language": "any",
+      "modality": "any",
+      "knowledge_access": "any",
+      "min_context_tokens": null
+    },
+    "weight_basis": "user_specified",
+    "assumptions": [
+      "这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"
+    ]
+  },
+  "primary_benchmarks": 6,
+  "model_settings": 42,
+  "capabilities": [
+    {
+      "capability_id": "code_correctness",
+      "weight": 0.6,
+      "n_benchmarks": 6,
+      "n_groups": 11,
+      "n_models": 36,
+      "status": "MATCHED"
+    },
+    {
+      "capability_id": "reasoning",
+      "weight": 0.25,
+      "n_benchmarks": 0,
+      "n_groups": 0,
+      "n_models": 0,
+      "status": "NO_MATCHING_BENCHMARK"
+    },
+    {
+      "capability_id": "instruction_following",
+      "weight": 0.15,
+      "n_benchmarks": 0,
+      "n_groups": 0,
+      "n_models": 0,
+      "status": "NO_MATCHING_BENCHMARK"
+    }
+  ],
+  "excluded_reasons": {
+    "no_metric_level_task_binding": 18,
+    "other_domain_or_mixed_domain_result": 8,
+    "metric_meaning_not_established_by_source_caption": 1,
+    "verifier_component_not_overall_coding_outcome": 6,
+    "summarizer_or_compaction_not_coding_agent": 3
+  },
+  "groups": {
+    "9ba549ef51946ddb7b89a327": [
+      "code_correctness"
+    ],
+    "ec5d4145879cdf8014ac5225": [
+      "code_correctness"
+    ],
+    "8d6d645b10c41f0d0a5493a3": [
+      "code_correctness"
+    ],
+    "b347cf9b2b87527d21900337": [
+      "code_correctness"
+    ],
+    "f936368964ee776c06d74237": [
+      "code_correctness"
+    ],
+    "314c87db3cdde0bd8173a6f8": [
+      "code_correctness"
+    ],
+    "f368c44e7f4449f49df5f470": [
+      "code_correctness"
+    ],
+    "e92ec4138311091764adbb94": [
+      "code_correctness"
+    ],
+    "dc4b6ded40e241f33a073046": [
+      "code_correctness"
+    ],
+    "87166a4054913ca82727dc2c": [
+      "code_correctness"
+    ],
+    "6223e7d2d57ace6c70ad23b0": [
+      "code_correctness"
+    ]
+  },
+  "selected_models": [
+    {
+      "name": "Claude 5.5 Opus",
+      "score": 55.22205175662037,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 1,
+      "coverage_weight": 0.6
+    },
+    {
+      "name": "GPT-5.4",
+      "score": 65.02792676170927,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 2,
+      "coverage_weight": 0.6
+    },
+    {
+      "name": "GPT-5.6-Luna",
+      "score": 58.048960799808775,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 2,
+      "coverage_weight": 0.6
+    },
+    {
+      "name": "GPT-5.6-Sol",
+      "score": 53.3147234005092,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 1,
+      "coverage_weight": 0.6
+    },
+    {
+      "name": "GPT-6-Astra",
+      "score": 81.23592320026243,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 1,
+      "coverage_weight": 0.6
+    },
+    {
+      "name": "Kimi K3",
+      "score": 53.068227678652406,
+      "observed_capabilities": [
+        "code_correctness"
+      ],
+      "benchmarks": 1,
+      "coverage_weight": 0.6
+    }
+  ]
+}
