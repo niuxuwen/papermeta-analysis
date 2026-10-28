@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "anonymized_published_models": 132,
+  "maximum_score_change": 1.4210854715202004e-14,
+  "manufacturer_lookup": "FORBIDDEN_DURING_FIT",
+  "source_values_preserved": true,
+  "source_file_unchanged": true,
+  "scope": "Published general model identities anonymized. Source-local/specialized identity admission remains unchanged; source evidence is untouched.",
+  "model_calls": 0
+}

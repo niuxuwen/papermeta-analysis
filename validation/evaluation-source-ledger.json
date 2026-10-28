@@ -1,0 +1,71 @@
+{
+  "policy": "Once comparison outcomes are examined, paper/benchmark source identities remain consumed for future independent validation.",
+  "consumed_batches": [
+    {
+      "id": "uniform-v121-independent-1",
+      "source_sha256": "81c256f8c57b4da030dc6d1da97ca09f4ea9f96184eda5cdebbae72c5d53f419",
+      "consumed_at": 1793229400.3079798,
+      "paper_identities": [
+        "arxiv:2610.36384",
+        "arxiv:2610.36554",
+        "arxiv:2610.36589",
+        "arxiv:2610.36967",
+        "arxiv:2610.37098",
+        "arxiv:2610.37186",
+        "arxiv:2610.37459",
+        "arxiv:2610.37567"
+      ],
+      "paper_ids": [
+        "recent-3073a7d52ca913fa",
+        "recent-5349122ef41044cd",
+        "recent-7edd4ac521ef55fe",
+        "recent-852ef00921492525",
+        "recent-938afc57504c89d8",
+        "recent-9649848ae10f179d",
+        "recent-c3d2911cf8eb5e8c",
+        "recent-ea288bc9d56bf87b"
+      ],
+      "benchmark_identities": [
+        "bench-12404c007b8f9dbb",
+        "bench-2b9068887703ba61",
+        "bench-31480e2abdda922b",
+        "bench-32105673283bcd0a",
+        "bench-53a5fa93f3c7fec7",
+        "bench-696bca32d571f247",
+        "bench-bb7e529e71b88d59",
+        "bench-ffb2ca663ad83091"
+      ],
+      "benchmark_ids": [
+        "bench-12404c007b8f9dbb",
+        "bench-2b9068887703ba61",
+        "bench-31480e2abdda922b",
+        "bench-32105673283bcd0a",
+        "bench-53a5fa93f3c7fec7",
+        "bench-696bca32d571f247",
+        "bench-bb7e529e71b88d59",
+        "bench-ffb2ca663ad83091"
+      ],
+      "group_ids": [
+        "04af16e5c81e02b7e38609bf",
+        "0adc70ea14f429537e173ab8",
+        "100da2662baed20225aa3fdb",
+        "25ef2427c232580853520fb3",
+        "34f2c3f279d7549f5956ce4d",
+        "47c9b009cf2c3be94fe221b3",
+        "5ca790e8218eb67b5bf897d1",
+        "5cb6a82b91114f8007a6a4e9",
+        "61ce16e761c5ad95b54d7a8c",
+        "6225ccd04b849a2c13ef57ee",
+        "6e1a1bbd85fc4f2c2053a5f9",
+        "7851671be3f0ad9456ee1be2",
+        "a330e9576fec5a5816ace935",
+        "c420d51cb20e02bdd6ac7c45",
+        "c4e094b3935a2815032fe563",
+        "c6cfff9353894834d5df9a07",
+        "cd67f5b4d958154d6ffb4a79",
+        "cdd6c5ab2b8a2bf904227412"
+      ],
+      "frozen_choice_sha256": "9f1c94d1ffb36c04081ebb3fefada9baa11d2bc0628481c6cef6a31fbd7d60e0"
+    }
+  ]
+}

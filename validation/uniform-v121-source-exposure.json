@@ -1,0 +1,66 @@
+{
+  "protocol": "Identities only. Exclude any paper-family or benchmark identity in prior development/validation source sets. No candidate outcome inspection.",
+  "audited_at_source": "2026-10-28T23:01:29.565187Z",
+  "current_source_sha256": "81c256f8c57b4da030dc6d1da97ca09f4ea9f96184eda5cdebbae72c5d53f419",
+  "exposure_inputs": [
+    {
+      "path": "dist/public-v119-snapshot-20261028.json.gz",
+      "sha256": "b61fbf94cc3aae53a216f9b68288ae8e12f9dc2eea46a4946bddc354333e2889",
+      "groups": 1613
+    },
+    {
+      "path": "dist/ranking-v120-live-validation-20261029.json.gz",
+      "sha256": "8611379cab0f6356cc20b62c0c0f2eba9b484289468de35d71acff1e305e6770",
+      "groups": 998
+    },
+    {
+      "path": "dist/source-consensus-v105-chart-data.json",
+      "sha256": "78bdf7f1b1ed70b1ac4d26b09684321d74101160e5284a7b34cf3b246c54a599",
+      "groups": 2105
+    },
+    {
+      "path": "dist/chart-snapshot-labels-20261013.json",
+      "sha256": "a735b9d010332557601e18da0e3c1f7573fd29fde9ec77f4d4168d2e1ccf762d",
+      "groups": 2126
+    },
+    {
+      "path": "dist/validated-v66/chart-snapshot.json",
+      "sha256": "3231600847a996f4576fc12065382818cfdbcb564747948a4f6802343a76d209",
+      "groups": 2126
+    }
+  ],
+  "unexposed_group_ids": [
+    "cd67f5b4d958154d6ffb4a79",
+    "34f2c3f279d7549f5956ce4d",
+    "6e1a1bbd85fc4f2c2053a5f9",
+    "0adc70ea14f429537e173ab8",
+    "25ef2427c232580853520fb3",
+    "cdd6c5ab2b8a2bf904227412",
+    "100da2662baed20225aa3fdb",
+    "a330e9576fec5a5816ace935",
+    "47c9b009cf2c3be94fe221b3",
+    "5cb6a82b91114f8007a6a4e9",
+    "7851671be3f0ad9456ee1be2",
+    "61ce16e761c5ad95b54d7a8c",
+    "c420d51cb20e02bdd6ac7c45",
+    "c6cfff9353894834d5df9a07",
+    "04af16e5c81e02b7e38609bf",
+    "6225ccd04b849a2c13ef57ee",
+    "c4e094b3935a2815032fe563",
+    "5ca790e8218eb67b5bf897d1"
+  ],
+  "unexposed_paper_families": [
+    "arxiv:2610.36384",
+    "arxiv:2610.36554",
+    "arxiv:2610.36589",
+    "arxiv:2610.36967",
+    "arxiv:2610.37098",
+    "arxiv:2610.37186",
+    "arxiv:2610.37459",
+    "arxiv:2610.37567"
+  ],
+  "excluded_counts": {
+    "paper_seen": 983
+  },
+  "candidate_outcomes_examined": false
+}

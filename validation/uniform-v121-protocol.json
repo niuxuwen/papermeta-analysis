@@ -1,0 +1,43 @@
+{
+  "version": "uniform-common-source-candidate-v121",
+  "source_sha256": "b61fbf94cc3aae53a216f9b68288ae8e12f9dc2eea46a4946bddc354333e2889",
+  "cohort": "Same incidence-selected cohort; source weights, prior .3, coupling 1 and time policy unchanged.",
+  "candidates": [
+    [
+      "uniform_2_0",
+      2.0,
+      0.0
+    ],
+    [
+      "uniform_8_0",
+      8.0,
+      0.0
+    ],
+    [
+      "uniform_2_0.5",
+      2.0,
+      0.5
+    ],
+    [
+      "uniform_2_2",
+      2.0,
+      2.0
+    ],
+    [
+      "uniform_2_8",
+      2.0,
+      8.0
+    ],
+    [
+      "uniform_2_32",
+      2.0,
+      32.0
+    ]
+  ],
+  "vendor_input": false,
+  "source_support": "At least two independent paper-family means, consistent soft and win directions; absolute average soft contrast >=.01.",
+  "selection": "Minimum mean whole-source-fold logloss; Brier tie-breaker. Report direction, source coverage and task breakdown, not expected model ordering.",
+  "promotion": "Manufacturer blindness is a requirement. No claim of improved generalization without further unused independent source tests; old v120 holdout cannot be reused as new evidence.",
+  "new_evidence": "Audit all known source identities first; reserve any untouched paper/benchmark components before reading their outcomes. Report sample insufficiency explicitly.",
+  "model_calls": 0
+}

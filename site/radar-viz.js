@@ -237,6 +237,47 @@
     for(const a of axes.values())a.groups.sort((a,b)=>b.sourceModels-a.sourceModels||Number(/overall|average|total/i.test(b.metric))-Number(/overall|average|total/i.test(a.metric))||a.group.localeCompare(b.group));
     return [...axes.values()].sort((a,b)=>a.name.localeCompare(b.name));
   }
+  function commonSourceEvidence(snapshot,setting,left,right) {
+    // Descriptive direct evidence only. Manufacturer, score and model age
+    // cannot affect inclusion or the observed direction in this report.
+    const result={left,right,setting,rows:[],papers:[],benchmarks:0,sourceGroups:0,paperFamilies:0,
+      paperWins:{left:0,tie:0,right:0},excluded:{nonFinal:0,notScored:0,duplicate:0}};
+    if(!left||!right||left===right)return result;
+    const groups=new Map((snapshot?.index?.groups||[]).map(g=>[g.group_id,g]));
+    const catalog=new Map((snapshot?.benchmarks||[]).map(b=>[key(b),b]));
+    const seen=new Set(),papers=new Map();
+    for(const row of pairedSources(snapshot,setting,left,right)){
+      const g=groups.get(row.group),bench=catalog.get(key(g))||{};
+      if(g.metric_role!=='PERFORMANCE'){result.excluded.nonFinal++;continue;}
+      if(g.global_status!=='CORE_READY'||!g.global_reference_models?.includes(left)||!g.global_reference_models?.includes(right)){
+        result.excluded.notScored++;continue;
+      }
+      const family=g.calibration_paper_identity||'paper:'+row.paper;
+      const fingerprint=JSON.stringify([family,row.table,row.row,row.metric,setting,g.comparison_key,row.direction,row.left,row.right]);
+      if(seen.has(fingerprint)){result.excluded.duplicate++;continue;}seen.add(fingerprint);
+      const outcome=row.winner==='TIE'?.5:row.winner===left?1:0;
+      const tableNumber=String(g.metric_role_context||'').match(/^\s*(?:Table|表)\s*(\d+[A-Za-z]?)/i);
+      const coordinate=String(g.row_key||'').match(/:(column|row):(\d+)$/i);
+      const sourceCoordinate=[tableNumber?'表 '+tableNumber[1]:'',coordinate?'原表'+(coordinate[1].toLowerCase()==='column'?'列':'行')+'索引 '+coordinate[2]:''].filter(Boolean).join(' · ');
+      const r={...row,outcome,paperFamily:family,benchmarkIdentity:g.benchmark_identity||key(g),
+        sourceCoordinate,condition:g.source_condition_key||g.comparison_key||'',taskStrata:g.task_balance_strata||['unclassified']};
+      result.rows.push(r);
+      if(!papers.has(family))papers.set(family,{family,title:bench.paper_title||bench.arxiv_id||'来源论文',
+        arxiv:bench.arxiv_id||'',benchmarks:new Map(),rows:[]});
+      const paper=papers.get(family);paper.rows.push(r);
+      if(!paper.benchmarks.has(r.benchmarkIdentity))paper.benchmarks.set(r.benchmarkIdentity,[]);
+      paper.benchmarks.get(r.benchmarkIdentity).push(r);
+    }
+    result.papers=[...papers.values()].map(p=>{
+      const fraction=mean([...p.benchmarks.values()].map(rs=>mean(rs.map(r=>r.outcome))));
+      const winner=fraction>.5+1e-12?'left':fraction<.5-1e-12?'right':'tie';result.paperWins[winner]++;
+      return {...p,benchmarks:p.benchmarks.size,winFraction:fraction,winner,
+        metricWins:{left:p.rows.filter(r=>r.outcome===1).length,tie:p.rows.filter(r=>r.outcome===.5).length,right:p.rows.filter(r=>r.outcome===0).length}};
+    }).sort((a,b)=>b.rows.length-a.rows.length||a.family.localeCompare(b.family));
+    result.sourceGroups=result.rows.length;result.paperFamilies=result.papers.length;
+    result.benchmarks=new Set(result.rows.map(r=>r.benchmarkIdentity)).size;
+    return result;
+  }
   function settings(snapshot) {return [...new Set((snapshot?.index?.models||[]).map(m=>m.model_setting))].filter(x=>typeof x==='string').sort();}
   function capabilityRadarData(snapshot,setting,left,right,capabilities,minimum=3){
     const groups=new Map((snapshot?.index?.groups||[]).map(g=>[g.group_id,g])),benches=new Map((snapshot?.benchmarks||[]).map(b=>[key(b),b])),annotations=new Map();
@@ -546,7 +587,7 @@
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  const api={commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   host.RadarViz=api;
   if(typeof document==='undefined')return;

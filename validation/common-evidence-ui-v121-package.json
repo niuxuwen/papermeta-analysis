@@ -1,0 +1,19 @@
+{
+  "path": "D:\\FDU\\benchmark-radar\\dist\\papermeta-common-evidence-ui-v121-20261029.zip",
+  "sha256": "d985825bfb419e4cdfca41f6554e09e953aa52428a7bea27a0a3bf96ff4206ef",
+  "bytes": 152524,
+  "files": [
+    "web/site/radar.js",
+    "web/site/radar-viz.js",
+    "web/site/visitor.js",
+    "web/site/visitor.css",
+    "web/site/visitor.html"
+  ],
+  "ui_only": true,
+  "global_method_version": 15,
+  "task_method_version": 8,
+  "uniform_candidate_promoted": false,
+  "install_idempotence_rollback": "PASS",
+  "numerical_code_data_configuration_unchanged": "PASS",
+  "model_calls": 0
+}

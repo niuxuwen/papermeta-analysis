@@ -1,0 +1,10 @@
+{
+  "candidate": "uniform_2_8",
+  "parameters": [
+    2.0,
+    8.0
+  ],
+  "selection": "Frozen development source-fold proper loss; no holdout/model-age/vendor-order selection.",
+  "development_sha256": "72998275e7e1fb996384dd0849351094160f274110deae8fa24b11bcf559d5bf",
+  "frozen_at": 1793228769.2002478
+}

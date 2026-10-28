@@ -16,7 +16,7 @@
 
 ## 验证
 
-node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs test-task-v8.cjs test-source-scoring-v15.cjs test-task-loading.cjs
+node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs test-task-v8.cjs test-source-scoring-v15.cjs test-task-loading.cjs test-common-evidence.cjs
 
 该检查读取整份真实快照，验证根目录及项目子路径下的数据完整性、原分数、日期和详情身份。
 第三方图标许可见 site/vendor-logos/。
@@ -32,7 +32,7 @@ node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs 
 
 任务页使用同一快照派生的约 250 KB 任务数据，不下载约 10.7 MB 的完整归档。任务画像分析与候选数据加载并行，任务指标规则从同源的校验文件读取，不再经临时隧道重复下载。提交前仍核对后端快照和任务评分版本。完整榜单及模型来源详情按需读取完整数据，原始归档保留。
 
-`build-home.cjs` 会先运行 `build-task-evidence.cjs`，更新带 SHA-256 的任务数据及紧凑索引。七领域的轻量预览与完整快照逐项相同，验证见 `task-loading-validation.json` 与 `test-task-loading.cjs`。
+`build-home.cjs` 会先运行 `build-task-evidence.cjs`，更新带 SHA-256 的任务数据及紧凑索引。七领域的轻量预览与完整快照逐项相同，验证见 `task-loading-validation.json` 与 `test-task-loading.cjs test-common-evidence.cjs`。
 
 ## 访问者展示范围
 
@@ -40,3 +40,5 @@ node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs 
 访客来源导出保留论文原值与来源坐标；这项展示调整不修改快照、综合评分或原始成绩。
 
 任务后端当前通过本机临时 HTTPS 隧道连接，依赖本机任务服务与隧道进程运行。没有后台服务时，页面会显示不可用并保留成绩浏览；不会以演示结果代替任务计算。
+
+共同测试结果可在模型表现页面及模型详情中打开。统一厂商规则候选已完成开发与新来源检验，未达到替换现版的依据；线上评分仍为 v15。详见 [实验与发布范围](UNIFORM-EVIDENCE-V121.md)。

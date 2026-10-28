@@ -1,0 +1,26 @@
+{
+  "ui_feature": "common-source-evidence-v121",
+  "snapshot_id": "56f4d633a658169561b70217",
+  "global_method_version": 15,
+  "task_method_version": 8,
+  "numerical_snapshot_unchanged": true,
+  "uniform_candidate_promoted": false,
+  "frontend_tests": 47,
+  "real_source_case": {
+    "models": [
+      "GPT-6-Sol",
+      "GPT-5.6-Sol"
+    ],
+    "paper_families": 2,
+    "benchmarks": 2,
+    "final_source_groups": 16,
+    "left_paper_wins": 2,
+    "right_paper_wins": 0,
+    "nonfinal_groups_separate": 1
+  },
+  "source_lookup": "PASS",
+  "full_raw_rows": "PASS",
+  "model_detail_shortcut": "PASS",
+  "anonymity_test": "PASS",
+  "model_calls": 0
+}

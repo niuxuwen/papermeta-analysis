@@ -60,6 +60,7 @@
     const body=el('div',null,'model-dialog-body'),intro=el('p','汇总该模型的参测项目、原始成绩与评分依据。','model-dialog-intro'),stats=el('div',null,'model-dialog-stats');stats.setAttribute('aria-label','当前实验设置的模型概览');
     const catalogSection=el('section',null,'model-benchmark-catalog model-detail-panel'),catalogTitle=el('h3','参测项目'),catalogNote=el('p',null,'model-catalog-note'),catalogSearch=el('input'),catalogToolbar=el('div',null,'model-catalog-toolbar'),catalogList=el('div',null,'model-catalog-list'),catalogMore=el('button',null,'model-source-more');
     const controls=el('div',null,'model-settings'),label=el('label','实验设置 '),select=el('select');select.setAttribute('aria-label','模型详情实验设置');label.append(select);controls.append(label);
+    const commonShortcut=el('button','查看共同测试','visitor-score-source model-common-shortcut');commonShortcut.type='button';commonShortcut.onclick=()=>{dialog.close();openCommonTests(name,select.value);};controls.append(commonShortcut);
     const summary=el('p',null,'model-detail-summary'),content=el('div'),sourcePanel=el('section',null,'model-detail-panel model-detail-sources'),sourceSearch=el('input'),scorePanel=el('section',null,'model-detail-panel model-detail-scoring'),scoreContent=el('div'),audit=el('details',null,'explanation model-name-audit'),auditBody=el('p',null,'method-note');
     sourceSearch.type='search';sourceSearch.placeholder='搜索评测名称或指标…';sourceSearch.setAttribute('aria-label','搜索模型成绩');
     catalogSearch.type='search';catalogSearch.placeholder='搜索参测项目…';catalogSearch.setAttribute('aria-label','搜索模型参测项目');catalogMore.type='button';catalogToolbar.append(catalogTitle,catalogSearch);catalogSection.append(catalogToolbar,catalogNote,catalogList,catalogMore);
@@ -113,7 +114,8 @@
         }
         overview.append(facts);
         if(published!==null)overview.append(el('p','参考区间表示评分的不确定范围。不同模型的评测覆盖可能不同，应结合共同参测项目和原始成绩比较。','visitor-score-note'));
-        const sources=el('button','查看评测成绩','visitor-score-source');sources.type='button';sources.onclick=()=>activateTab('sources');overview.append(sources);scoreContent.append(overview);
+        const sources=el('button','查看评测成绩','visitor-score-source');sources.type='button';sources.onclick=()=>activateTab('sources');
+        overview.append(sources);scoreContent.append(overview);
       }else if(scored){
         const breakdown=el('details',null,'explanation score-breakdown');breakdown.append(el('summary','综合评分计算明细 · '+Viz.publicationLabel(scored)));
         breakdown.addEventListener('toggle',()=>{if(!breakdown.open||breakdown.dataset.loaded)return;breakdown.dataset.loaded='true';
@@ -766,6 +768,60 @@
   }
   const pairPreferences=new Map();
   let pairView='benchmark';
+  function openCommonTests(name,setting) {
+    setView('models');
+    if(typeof setting==='string'&&setting!==visualSetting){visualSetting=setting;renderVisuals();}
+    const left=$('pair-left'),right=$('pair-right');
+    if(name&&state.snapshot?.index?.models.some(m=>m.model_canonical===name&&m.model_setting===visualSetting)){
+      const previous=left.value;
+      if(![...left.options].some(o=>o.value===name))left.prepend(new Option(name,name));
+      left.value=name;
+      if(right.value===name){
+        const peer=[...right.options].find(o=>o.value!==name)?.value||(previous!==name?previous:'');
+        if(peer&&![...right.options].some(o=>o.value===peer))right.prepend(new Option(peer,peer));
+        right.value=peer;
+      }
+      left.dispatchEvent(new Event('change'));
+    }
+    const section=left.closest('.paired-values'),details=section?.closest('details');
+    if(details)details.open=true;
+    (details||section)?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  }
+  function renderCommonSourceEvidence(root,report) {
+    root.replaceChildren();
+    const header=el('div',null,'common-evidence-heading');header.append(el('h4','共同来源 · 最终任务表现'),
+      el('p',`${report.paperFamilies} 篇来源论文 · ${report.benchmarks} 项 Benchmark · ${report.sourceGroups} 组同条件指标`,'method-note'));
+    root.append(header);
+    if(!report.paperFamilies){root.append(el('p','当前实验设置下，暂无同时纳入综合评分的共同最终表现成绩。下方仍可查看已有的共同原始记录。','common-evidence-empty'));return;}
+    const summary=el('div',null,'common-evidence-overview');
+    for(const [label,count]of [[report.left+' 占优',report.paperWins.left],['胜负均衡',report.paperWins.tie],[report.right+' 占优',report.paperWins.right]]){
+      const stat=el('div');stat.append(el('span',label),el('strong',count+' 篇'));summary.append(stat);
+    }
+    root.append(summary,el('p','同条件指标先在 Benchmark 内汇总，再按论文来源汇总；论文版本合并，不同单位的原值不相加。结果为描述性比较，共享数据等相关性尚未扣除。','method-note'));
+    const excluded=report.excluded;
+    if(excluded.nonFinal||excluded.notScored||excluded.duplicate)root.append(el('p',`另有 ${excluded.nonFinal} 组增益、诊断或其他指标，${excluded.notScored} 组未纳入综合评分的条件，${excluded.duplicate} 组重复单元；保留在原始记录中。`,'method-note'));
+    const numeric=value=>String(value);
+    for(const paper of report.papers){
+      const detail=el('details',null,'common-evidence-paper'),title=el('summary'),copy=el('span',null,'common-evidence-paper-copy');title.setAttribute('aria-label','展开来源论文的全部共同指标：'+paper.title);
+      copy.append(el('strong',paper.title),el('small',`${paper.benchmarks} 项 Benchmark · ${paper.rows.length} 组指标`));
+      const direction=paper.winner==='left'?report.left+' 占优':paper.winner==='right'?report.right+' 占优':'胜负均衡';
+      title.append(copy,el('span',direction,'common-evidence-direction'));detail.append(title);
+      if(/^\d{4}\.\d{4,5}(?:v\d+)?$/.test(paper.arxiv))detail.append(link('https://arxiv.org/abs/'+paper.arxiv,'来源论文 · '+paper.arxiv));
+      detail.append(el('p',`${report.left} 在 ${paper.metricWins.left} 组指标更优，${report.right} 在 ${paper.metricWins.right} 组指标更优，${paper.metricWins.tie} 组同值。论文层面按 Benchmark 等权汇总，未测结果留空。`,'method-note'));
+      const wrapper=el('div',null,'common-evidence-table'),table=el('table'),head=el('thead'),tr=el('tr'),body=el('tbody');
+      for(const label of ['评测与指标',report.left,report.right,'同组较优'])tr.append(el('th',label));head.append(tr);table.append(head,body);wrapper.append(table);
+      let limit=20;const more=el('button',null,'common-evidence-more');more.type='button';
+      const draw=()=>{body.replaceChildren();for(const row of paper.rows.slice(0,limit)){
+        const tr=el('tr'),source=el('td'),a=el('a',row.benchmarkName);
+        a.href=new URL('benchmark/?'+new URLSearchParams({paper_id:row.paper,benchmark_id:row.benchmark,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;
+        const condition=Viz.publicLabel(row.condition),part=Viz.publicLabel(row.row);
+        source.append(a,el('span',[row.metric,part,condition,Viz.directionLabel(row.direction)].filter(Boolean).join(' · '),'subtext'));
+        if(row.sourceCoordinate)source.append(el('span',row.sourceCoordinate,'subtext'));
+        tr.append(source,el('td',numeric(row.left),'numeric'),el('td',numeric(row.right),'numeric'),el('td',row.winner==='TIE'?'同值':row.winner));body.append(tr);
+      }more.hidden=paper.rows.length<=limit;more.textContent=`继续显示其余 ${Math.max(0,paper.rows.length-limit)} 组指标`;};
+      more.onclick=()=>{limit=paper.rows.length;draw();};detail.append(wrapper,more);detail.addEventListener('toggle',()=>{if(detail.open&&!body.childElementCount)draw();});root.append(detail);
+    }
+  }
   function renderPairedSources(data) {
     const left=$('pair-left'),right=$('pair-right'),body=$('pair-rows');
     const leftPicker=pairModelPicker(left,'模型 A'),rightPicker=pairModelPicker(right,'模型 B');
@@ -788,6 +844,8 @@
     left.value=names.includes(oldLeft)?oldLeft:(defaults[0]||names[0]||'');right.value=names.includes(oldRight)&&oldRight!==left.value?oldRight:(defaults[1]||names.find(n=>n!==left.value)||'');
     let chosen=new Set(),sourceChoices=new Map(),previousPair='';
     function draw(){
+      let common=$('pair-common-evidence');if(!common){common=el('section',null,'common-evidence');common.id='pair-common-evidence';common.setAttribute('aria-label','共同测试的论文来源与原始成绩');$('pair-benchmark-view').before(common);}
+      renderCommonSourceEvidence(common,Viz.commonSourceEvidence(state.snapshot,visualSetting,left.value,right.value));
       $('pair-benchmark-view').hidden=pairView!=='benchmark';$('pair-capability-view').hidden=pairView!=='capability';
       $('pair-view-benchmark').setAttribute('aria-pressed',String(pairView==='benchmark'));$('pair-view-capability').setAttribute('aria-pressed',String(pairView==='capability'));
       if(pairView==='capability')Viz.drawCapabilityRadar($('pair-capability-view'),Viz.capabilityRadarData(state.snapshot,visualSetting,left.value,right.value,taskTaxonomy.capabilities),left.value,right.value,name=>openModel(name,visualSetting),r=>new URL('benchmark/?'+new URLSearchParams({paper_id:r.paper,benchmark_id:r.benchmark,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href);
@@ -953,6 +1011,7 @@
   if(visitorEdition)window.RadarApp=Object.freeze({
     navigate(view){setView(view);window.scrollTo({top:0,behavior:'instant'});},
     async openModel(name,setting){if(!state.snapshot||state.snapshot.detail_loaded===false)await refresh({details:true});openModel(name,setting);},
+    async openCommonTests(name,setting){if(!state.snapshot||state.snapshot.detail_loaded===false)await refresh({details:true});openCommonTests(name,setting);},
     openBenchmark(paperId,benchmarkId){const benchmark=state.snapshot?.benchmarks.find(b=>b.paper_id===paperId&&b.benchmark_id===benchmarkId);if(benchmark&&state.snapshot.detail_loaded!==false){selectBenchmark(benchmark);return true;}return false;},
     useTemplate(id){const template=TASK_DEFAULTS.templates[id];if(!template)return;applyProfile(template);taskState.refsInitialized=false;setView('tasks');renderReferences();window.scrollTo({top:0,behavior:'instant'});}
   });

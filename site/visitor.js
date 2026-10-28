@@ -27,9 +27,12 @@
   document.querySelector('#view-tasks .section-head h2').textContent='任务选型';
   document.querySelector('#view-tasks .section-head .eyebrow').remove();
   const pair=document.querySelector('.paired-values'),pairDetails=node('details',null,'visitor-pair-details');
-  pairDetails.append(node('summary','双模型比较'));
+  pairDetails.append(node('summary','共同测试结果 · 双模型比较'));
   pair.before(pairDetails);pairDetails.append(pair);
   const modelRoot=$('view-models');modelRoot.append(pairDetails);
+  const commonJump=node('button','查看共同测试结果','common-evidence-jump');commonJump.type='button';
+  commonJump.onclick=()=>window.RadarApp?.openCommonTests();
+  modelRoot.querySelector('.section-head').append(commonJump);
   pairDetails.addEventListener('toggle',()=>{if(pairDetails.open)window.dispatchEvent(new Event('resize'));});
   const coverage=$('model-coverage'),coverageDetails=node('details',null,'visitor-coverage-details');
   coverageDetails.append(node('summary','查看各模型的评测覆盖'));coverage.before(coverageDetails);coverageDetails.append(coverage);
