@@ -376,12 +376,19 @@
     let cache=taskPreviewCache.get(snapshot);if(!cache){cache=new Map();taskPreviewCache.set(snapshot,cache);}if(cache.has(signature))return cache.get(signature);
     const weights=new Map(profile.capabilities.map(c=>[c.id,c.weight])),matched=new Map(),constraints=profile.constraints;
     const protocolUnknown=constraints.language!=='any'||constraints.knowledge_access!=='any'||constraints.min_context_tokens!=null;
-    if(!protocolUnknown)for(const b of snapshot.benchmarks||[]){
+    const stages={capability:new Set(),domain:new Set(),modality:new Set()};
+    const comparableNames=new Set(base.map(r=>r.name));
+    const comparableSources=new Set((snapshot.index?.groups||[]).filter(g=>!g.blocked_reasons?.length&&!g.extraction_in_progress&&['higher','lower'].includes(g.direction)&&(!g.metric_role||g.metric_role==='PERFORMANCE')&&(g.scores||[]).filter(s=>finite(s.value_numeric)&&comparableNames.has(s.model_canonical)).length>=2).map(key));
+    for(const b of snapshot.benchmarks||[]){
       const labels=b.catalog_labels;if(!b.catalog_label_sources?.length||!labels)continue;
       const caps=(labels.capabilities||[]).filter(c=>weights.has(c));if(!caps.length)continue;
+      const source=key(b);if(comparableSources.has(source))stages.capability.add(b.directory_identity||b.benchmark_identity||source);
       if(profile.domains.length&&!profile.domains.some(d=>labels.domains?.includes(d)))continue;
+      if(comparableSources.has(source))stages.domain.add(b.directory_identity||b.benchmark_identity||source);
       if(constraints.modality!=='any'&&!labels.modalities?.includes(constraints.modality))continue;
-      matched.set(key(b),{caps,exact:(profile.tasks||[]).some(t=>labels.tasks?.includes(t))});
+      if(comparableSources.has(source))stages.modality.add(b.directory_identity||b.benchmark_identity||source);
+      if(protocolUnknown)continue;
+      matched.set(source,{caps,exact:(profile.tasks||[]).some(t=>labels.tasks?.includes(t))});
     }
     const byName=new Map(base.map(r=>[r.name,{...r,benchmarks:new Set(),groups:new Set(),caps:new Set()}])),benches=new Set(),capBenches=new Map(profile.capabilities.map(c=>[c.id,new Set()]));
     const known=snapshot.index?.models?.length?new Set(snapshot.index.models.filter(m=>!m.general_model_issue).map(m=>m.model_canonical)):null;
@@ -395,7 +402,7 @@
     }
     const rows=[...byName.values()].map(({benchmarks,groups,caps,...r})=>({...r,nTaskBenchmarks:benchmarks.size,nTaskGroups:groups.size,taskCapabilities:[...caps],capabilityWeightCoverage:[...caps].reduce((n,c)=>n+weights.get(c),0)}));
     const matchScope=sameTask?'SAME_TASK':(profile.tasks||[]).length?'RELATED_CAPABILITIES_ONLY':'CAPABILITY_REFERENCE';
-    const result={configured:true,protocolUnknown,matchScope,rows,benchmarks:benches.size,capabilities:[...capBenches].map(([id,bs])=>({id,weight:weights.get(id),nBenchmarks:bs.size}))};
+    const result={configured:true,protocolUnknown,emptyReason:benches.size?null:!base.length?'NO_COMPARABLE_MODELS':!stages.capability.size?'NO_CAPABILITY_EVIDENCE':!stages.domain.size?'DOMAIN_FILTER':!stages.modality.size?'MODALITY_FILTER':protocolUnknown?'UNVERIFIED_PROTOCOL':'NO_CAPABILITY_EVIDENCE',matchingCounts:{capability:stages.capability.size,domain:stages.domain.size,modality:stages.modality.size},matchScope,rows,benchmarks:benches.size,capabilities:[...capBenches].map(([id,bs])=>({id,weight:weights.get(id),nBenchmarks:bs.size}))};
     cache.set(signature,result);while(cache.size>4)cache.delete(cache.keys().next().value);return result;
   }
   function sortTaskCandidates(rows){return [...rows].sort((a,b)=>(b.nTaskBenchmarks||0)-(a.nTaskBenchmarks||0)||(b.capabilityWeightCoverage||0)-(a.capabilityWeightCoverage||0)||b.nBenchmarks-a.nBenchmarks||a.name.localeCompare(b.name));}

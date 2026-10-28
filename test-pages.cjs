@@ -43,7 +43,7 @@ test('home initialization makes no network calls, and a source detail needs no b
  const code=fs.readFileSync(site+'radar.js','utf8');
  const block=code.slice(code.indexOf('  let refreshInFlight='),code.indexOf("  for(const btn of document.querySelectorAll('[data-view]'))"));
  const node={};let renders=0;
- Object.assign(s.context,{state:{snapshot:null,loading:false,view:'home'},requestedModel:null,lastRefreshAt:0,$:()=>node,setLoadingUI(){},date:x=>x,validate:x=>x,render(){renders++;},resumeInteractive(){},fetchSnapshotJSON(){throw Error('Home fetched the full archive');}});
+ Object.assign(s.context,{state:{snapshot:null,loading:false,view:'home'},requestedModel:null,lastRefreshAt:0,$:()=>node,setLoadingUI(){},renderReferences(){},date:x=>x,validate:x=>x,render(){renders++;},resumeInteractive(){},fetchSnapshotJSON(){throw Error('Home fetched the full archive');}});
  vm.runInContext(block,s.context);
  await s.context.refresh();assert.equal(renders,1);assert.equal(s.seen.length,0);assert.equal(s.context.state.snapshot.snapshot_id,manifest.snapshot_id);
  const pair=JSON.parse(Object.keys(manifest.details)[0]),q=new URLSearchParams({paper_id:pair[0],benchmark_id:pair[1]});
