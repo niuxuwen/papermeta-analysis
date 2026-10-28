@@ -293,15 +293,32 @@
   }
   let resumedInteractive=false;
   function resumeInteractive() {
-    if(resumedInteractive||!state.snapshot||state.snapshot.detail_loaded===false)return;resumedInteractive=true;if(taskState.revision>1)return;
+    if(resumedInteractive||!taskEvidenceSnapshot())return;resumedInteractive=true;if(taskState.revision>1)return;
     const profile=readPending('profile'),score=readPending('score');
     if(profile){$('task-description').value=profile.payload.description;setView('tasks');analyseTask();}
     else if(score){applyProfile(score.payload.profile);taskState.refs=new Set(score.payload.candidate_models||[]);taskState.candidateMode=Array.isArray(score.payload.candidate_models)?'custom':'all';taskState.refsInitialized=true;renderReferences();setView('tasks');scoreTask(false,score.payload);}
   }
+  function taskEvidenceSnapshot(){
+    return state.snapshot&&state.snapshot.detail_loaded!==false?state.snapshot:taskState.evidenceSnapshot||null;
+  }
+  let taskEvidenceInFlight;
+  function loadTaskEvidenceForPreview(){
+    if(taskEvidenceSnapshot())return Promise.resolve(taskEvidenceSnapshot());
+    if(taskEvidenceInFlight)return taskEvidenceInFlight;
+    taskEvidenceInFlight=(async()=>{
+      if(window.RadarLoadTaskEvidence){
+        const data=await window.RadarLoadTaskEvidence();
+        taskState.evidenceSnapshot=data.snapshot;
+        window.RadarTaskMeasurements=data.measurements;Viz.setTaskMeasurements(data.measurements);
+        if(state.snapshot?.detail_loaded===false)Viz.setModelRegistry(data.snapshot.model_registry);
+      }else await refresh({details:true});
+      if(!taskEvidenceSnapshot())throw Error('候选模型尚未加载，请重新读取。');
+      renderReferences();resumeInteractive();return taskEvidenceSnapshot();
+    })().finally(()=>{taskEvidenceInFlight=null;});
+    return taskEvidenceInFlight;
+  }
   async function ensureTaskEvidence(){
-    if(!state.snapshot||state.snapshot.detail_loaded===false)await refresh({details:true});
-    if(!state.snapshot||state.snapshot.detail_loaded===false)throw Error('完整评测数据尚未加载。请点击“重新读取候选模型”后再试。');
-    await ensureTaskMeasurements();
+    await loadTaskEvidenceForPreview();await ensureTaskMeasurements();
   }
   async function ensureTaskMeasurements(){
     if(window.RadarTaskConnection){await window.RadarTaskConnection.connect();Viz.setTaskMeasurements(window.RadarTaskMeasurements||null);return;}
@@ -311,19 +328,13 @@
       const response=await fetch(new URL('api/task-measurements',radarBase),{cache:'no-store',signal:ctrl.signal});
       if(!response.ok)throw Error('任务指标核验数据暂不可用，请更新服务后重试。');
       const metadata=await response.json();
-      if(metadata.schema_version!=='source-scoped-task-measurements-v2'||metadata.snapshot_id!==state.snapshot.snapshot_id)throw Error('任务指标核验与当前数据版本不同，请重新读取。');
+      if(!['source-scoped-task-measurements-v2','source-scoped-task-measurements-v3'].includes(metadata.schema_version)||metadata.snapshot_id!==state.snapshot.snapshot_id)throw Error('任务指标核验与当前数据版本不同，请重新读取。');
       window.RadarTaskMeasurements=metadata;Viz.setTaskMeasurements(metadata);
     }finally{clearTimeout(timer);}
   }
   async function analyseTask() {
     const description=$('task-description').value.trim();if(!description){taskMessage('profile-message','请先填写具体任务。');return;}
-    if(taskState.awaitingProfileEvidence)return;
-    if(!state.snapshot||state.snapshot.detail_loaded===false){
-      taskState.awaitingProfileEvidence=true;$('analyse-task').disabled=true;taskMessage('profile-message','正在加载评测与候选模型，完成后继续分析任务。');
-      try{await ensureTaskEvidence();}catch(error){taskMessage('profile-message',error.message);return;}
-      finally{taskState.awaitingProfileEvidence=false;$('analyse-task').disabled=false;}
-      if($('task-description').value.trim()!==description){taskMessage('profile-message','任务描述已修改，请重新提交分析。');return;}
-    }
+    loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));
     dirtyTask();const rev=taskState.revision,ctrl=new AbortController(),started=performance.now();taskState.profileRequest=ctrl;$('analyse-task').disabled=true;$('cancel-task-analysis').hidden=false;
     const progress=()=>{if(rev!==taskState.revision)return;if(backgroundStatus.profile){taskMessage('profile-message',backgroundStatus.profile);return;}const seconds=Math.floor((performance.now()-started)/1000);taskMessage('profile-message',seconds<15?`正在分析能力需求 · 已等待 ${seconds} 秒`:`模型回复较慢 · 已等待 ${seconds} 秒。可以取消等待，直接调整右侧能力与权重。`);};progress();const ticker=setInterval(progress,1000);
     try{const d=await taskPost('api/task-profile',{description},ctrl,65000);if(rev!==taskState.revision)return;applyProfile(d.profile);taskMessage('profile-message',`能力建议已就绪 · 请求耗时 ${((performance.now()-started)/1000).toFixed(1)} 秒。请确认能力与权重后计算。`);}
@@ -336,7 +347,7 @@
   }
   let candidatePreviewTimer;
   function scheduleCandidatePreview(){clearTimeout(candidatePreviewTimer);candidatePreviewTimer=setTimeout(()=>{if(state.snapshot)renderReferences();},180);}
-  function candidateContext(){let profile;try{profile=editorProfile(true);}catch{profile=null;}return Viz.taskMatchPreview(state.snapshot,profile);}
+  function candidateContext(){let profile;try{profile=editorProfile(true);}catch{profile=null;}return Viz.taskMatchPreview(taskEvidenceSnapshot(),profile);}
   function filteredCandidates(preview=candidateContext()){
     const scope=$('reference-scope').value,vendor=$('reference-vendor').value,query=$('reference-search').value.trim(),order=$('reference-model-order').value;
     const rows=preview.rows.filter(r=>(scope!=='task'||r.nTaskBenchmarks>0)&&(scope!=='selected'||taskState.candidateMode==='all'||taskState.refs.has(r.name))&&(!vendor||Viz.modelInfo(r.name).vendor===vendor)&&Viz.matchesModelQuery(r,query));
@@ -358,9 +369,9 @@
     NO_COMPARABLE_MODELS:'完整评测数据尚未就绪，请等待加载完成后重试。'
   };
   function renderReferences() {
-    if(!state.snapshot||state.snapshot.detail_loaded===false){
-      $('candidate-context').replaceChildren(el('strong','正在加载评测与候选模型'),el('small','首页摘要不包含完整成绩，加载完成后会自动显示可选模型；此时尚不能判断匹配数量。'));
-      const retry=el('button','重新读取候选模型');retry.type='button';retry.disabled=state.loading;retry.addEventListener('click',()=>refresh({details:true}));
+    if(!taskEvidenceSnapshot()){
+      $('candidate-context').replaceChildren(el('strong','正在加载评测与候选模型'),el('small','正在读取任务所需的评测与候选模型。'));
+      const retry=el('button','重新读取候选模型');retry.type='button';retry.disabled=Boolean(taskEvidenceInFlight);retry.addEventListener('click',()=>loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning')));
       $('reference-models').replaceChildren(el('p','正在读取真实评测数据…','candidate-empty'),retry);
       $('reference-visible-count').textContent='加载中';$('reference-count').textContent='候选模型加载中';
       $('reference-top').disabled=true;$('reference-all').disabled=true;$('score-task').disabled=true;return;
@@ -418,7 +429,7 @@
     let profile;try{profile=auto?taskState.confirmed.profile:editorProfile();}catch(e){taskMessage('task-score-message',e.message,'warning');return;}
     if(!resumePayload&&taskState.candidateMode!=='all'&&!taskState.refs.size){taskMessage('task-score-message','请先选择至少一个模型，或点击“选择筛选结果”。','warning');return;}
     const payload=resumePayload||{profile,reference_models:[],...(taskState.candidateMode!=='all'?{candidate_models:[...taskState.refs].sort()}:{})},rev=taskState.revision,ctrl=new AbortController();taskState.request=ctrl;taskState.busy=true;$('cancel-task-score').hidden=false;taskState.result=null;$('task-results').hidden=true;$('score-task').disabled=true;taskMessage('task-score-message',auto?'窗口更新，正在重新匹配任务证据…':'正在匹配来源能力标签并计算任务分… 此步骤不调用模型。');
-    try{const d=await taskPost('api/task-score',payload,ctrl,22000);if(rev!==taskState.revision)return;if(!d.task_index||!d.window||!Array.isArray(d.task_index.models))throw Error('任务评分响应不完整。');taskState.result=d;taskState.confirmed=payload;taskState.evidenceRevision=state.snapshot?.status?.task_evidence_revision;renderTaskResults();if(!auto)$('task-score-message').scrollIntoView({block:'start',behavior:'smooth'});}
+    try{const d=await taskPost('api/task-score',payload,ctrl,22000);if(rev!==taskState.revision)return;if(!d.task_index||!d.window||!Array.isArray(d.task_index.models))throw Error('任务评分响应不完整。');taskState.result=d;taskState.confirmed=payload;taskState.evidenceRevision=taskEvidenceSnapshot()?.status?.task_evidence_revision;renderTaskResults();if(!auto)$('task-score-message').scrollIntoView({block:'start',behavior:'smooth'});}
     catch(e){if(rev===taskState.revision){taskState.result=null;$('task-results').hidden=true;taskMessage('task-score-message',e.name==='AbortError'?'计算超时，当前未展示旧分数，请重试。':e.message,'error');}}
     finally{taskState.busy=false;$('cancel-task-score').hidden=true;if(taskState.request===ctrl)taskState.request=null;$('score-task').disabled=false;}
   }
@@ -447,13 +458,13 @@
     if(catalog){renderTaskEvidence(report);renderMatchedBenchmarks(report);}else{
       $('task-coverage').hidden=true;$('task-comparison').hidden=true;$('task-candidate-gaps').hidden=true;
     const matches=$('task-matches');matches.replaceChildren();const matched=new Map();for(const g of entries){const key=identity(g);if(!matched.has(key))matched.set(key,[]);matched.get(key).push(g);}
-    for(const [key,gs] of matched){const b=state.snapshot?.benchmarks.find(b=>identity(b)===key),card=el('article',null,'bench-card match-card'),direct=gs.some(g=>g.score_scope==='DIRECT_TASK');card.append(el('span',catalog?'任务相关 Benchmark':direct?'直接任务证据':'能力迁移参考','badge '+(catalog||direct?'good':'warning')),el('h3',b?.benchmark_name||gs[0].benchmark_id),el('p',`${gs.length} 个评测组 · ${[...new Set(gs.map(g=>titleFor(g.capability_id)))].join('、')}`,'method-note'));
+    for(const [key,gs] of matched){const b=taskEvidenceSnapshot()?.benchmarks.find(b=>identity(b)===key),card=el('article',null,'bench-card match-card'),direct=gs.some(g=>g.score_scope==='DIRECT_TASK');card.append(el('span',catalog?'任务相关 Benchmark':direct?'直接任务证据':'能力迁移参考','badge '+(catalog||direct?'good':'warning')),el('h3',b?.benchmark_name||gs[0].benchmark_id),el('p',`${gs.length} 个评测组 · ${[...new Set(gs.map(g=>titleFor(g.capability_id)))].join('、')}`,'method-note'));
       for(const g of gs.slice(0,2)){card.append(el('small',[g.metric,Viz.publicLabel(g.row_key),g.blocked_reasons?.length?'存在覆盖缺口':'已匹配实验条件'].filter(Boolean).join(' · ')));const quote=g.evidence?.find(e=>e.quote)?.quote;if(quote)card.append(el('blockquote',quote));}
       if(b){const btn=el('button','查看来源成绩与标签证据');btn.addEventListener('click',()=>selectBenchmark(b));card.append(btn);}matches.append(card);}
     if(!matched.size)empty(matches,'没有匹配的评测组','能力地图可查看当前窗口实际覆盖哪些能力。');
 
     }
-    const excluded=$('task-exclusions');excluded.replaceChildren();excluded.append(el('p',report.validation?.note||'当前分数未经真实专业任务校准。'));if(report.annotation_audit){const details=el('details');details.append(el('summary',`任务范围核查：${report.irrelevant_groups||0} 组已确认无关，${report.unresolved_scope_groups||0} 组关系待核`));for(const g of report.annotation_audit){const b=state.snapshot?.benchmarks.find(b=>identity(b)===identity(g));details.append(el('p',`${b?.benchmark_name||'来源 Benchmark'} · ${sourceLabel(g.paper_id,g.table_id)} · ${{OUT_OF_SCOPE:'已确认领域不符',UNKNOWN:'关系待核',REVIEWED:'已审核'}[g.state]||g.state}`));}excluded.append(details);}const reasons=new Map();for(const e of report.exclusions||[]){const key=e.reason||'其他';reasons.set(key,(reasons.get(key)||0)+1);}for(const [reason,count] of reasons)excluded.append(el('p',`${gapNames[reason]||reason} · ${count} 组`));if(!reasons.size)excluded.append(el('p',report.note||'没有额外的排除记录。'));
+    const excluded=$('task-exclusions');excluded.replaceChildren();excluded.append(el('p',report.validation?.note||'当前分数未经真实专业任务校准。'));if(report.annotation_audit){const details=el('details');details.append(el('summary',`任务范围核查：${report.irrelevant_groups||0} 组已确认无关，${report.unresolved_scope_groups||0} 组关系待核`));for(const g of report.annotation_audit){const b=taskEvidenceSnapshot()?.benchmarks.find(b=>identity(b)===identity(g));details.append(el('p',`${b?.benchmark_name||'来源 Benchmark'} · ${sourceLabel(g.paper_id,g.table_id)} · ${{OUT_OF_SCOPE:'已确认领域不符',UNKNOWN:'关系待核',REVIEWED:'已审核'}[g.state]||g.state}`));}excluded.append(details);}const reasons=new Map();for(const e of report.exclusions||[]){const key=e.reason||'其他';reasons.set(key,(reasons.get(key)||0)+1);}for(const [reason,count] of reasons)excluded.append(el('p',`${gapNames[reason]||reason} · ${count} 组`));if(!reasons.size)excluded.append(el('p',report.note||'没有额外的排除记录。'));
   }
   function candidateGapText(a){
     if(a.status==='NO_TASK_EVIDENCE')return '本快照暂无该模型符合当前任务计分范围的成绩；可继续查看原始来源。';
@@ -501,16 +512,16 @@
     const select=$('task-match-capability'),selectedCap=select.value;select.replaceChildren();let option=el('option','全部任务能力');option.value='';select.append(option);
     for(const c of report.capability_coverage||[]){option=el('option',`${titleFor(c.capability_id)} · ${c.n_benchmarks} 项`);option.value=c.capability_id;select.append(option);}select.value=(report.profile.capabilities||[]).some(c=>c.id===selectedCap)?selectedCap:'';
     const query=$('task-match-search').value.trim().toLocaleLowerCase(),caps=new Map(report.profile.capabilities.map(c=>[c.id,c.weight]));
-    const filtered=(report.benchmark_matches||[]).filter(b=>!state.snapshot?.visitor_catalog_filtered||state.snapshot.benchmarks.some(ref=>identity(ref)===identity(b))).filter(b=>(!select.value||b.matched_capabilities.includes(select.value))&&(!query||[b.benchmark_name,...b.metrics,...b.tasks.map(titleFor)].join(' ').toLocaleLowerCase().includes(query))).sort((a,b)=>Number(b.exact_task_match)-Number(a.exact_task_match)||b.relevance_weight-a.relevance_weight||a.benchmark_name.localeCompare(b.benchmark_name));
+    const filtered=(report.benchmark_matches||[]).filter(b=>!taskEvidenceSnapshot()?.visitor_catalog_filtered||taskEvidenceSnapshot().benchmarks.some(ref=>identity(ref)===identity(b))).filter(b=>(!select.value||b.matched_capabilities.includes(select.value))&&(!query||[b.benchmark_name,...b.metrics,...b.tasks.map(titleFor)].join(' ').toLocaleLowerCase().includes(query))).sort((a,b)=>Number(b.exact_task_match)-Number(a.exact_task_match)||b.relevance_weight-a.relevance_weight||a.benchmark_name.localeCompare(b.benchmark_name));
     const matches=$('task-matches');matches.replaceChildren();const limit=taskState.matchLimit||8;
     for(const match of filtered.slice(0,limit)){
-      const b=state.snapshot.benchmarks.find(b=>identity(b)===identity(match)),card=el('article',null,'bench-card task-match-card');
+      const b=taskEvidenceSnapshot().benchmarks.find(b=>identity(b)===identity(match)),card=el('article',null,'bench-card task-match-card');
       const top=el('div',null,'task-match-heading');top.append(el('span',match.exact_task_match?'同类型任务':'相近能力参考','badge'+(match.exact_task_match?' good':'')),el('span',`${match.groups} 组成绩`,'task-match-count'));card.append(top,el('h3',match.benchmark_name));
       const tags=el('div',null,'tags');for(const cap of match.matched_capabilities)tags.append(el('span',`${titleFor(cap)} · 权重 ${fmt((caps.get(cap)||0)*100)}%`,'tag'));card.append(tags,el('p',`${match.domains.map(titleFor).join('、')} · ${match.tasks.map(titleFor).join('、')}`,'method-note'));
       const selected=taskState.candidateMode==='all'?match.model_names:match.model_names.filter(n=>taskState.refs.has(n));card.append(el('p',`涉及 ${match.model_names.length} 个模型 · 当前所选 ${selected.length} 个有成绩`,'task-match-model-count'));
       if(selected.length)card.append(el('p',selected.slice(0,4).join('、')+(selected.length>4?` 等 ${selected.length} 个`:''),'task-match-model-names'));
       if(match.evidence?.length){const why=el('details',null,'task-match-proof');why.append(el('summary','评测匹配依据'));for(const e of match.evidence.slice(0,2)){why.append(el('strong',titleFor(e.id)),el('blockquote',e.quote));}card.append(why);}
-      const actions=el('div',null,'task-match-actions');if(b){const btn=el('button','查看来源成绩');btn.type='button';btn.addEventListener('click',()=>selectBenchmark(b));actions.append(btn);}actions.append(link(new URL('benchmark/?'+new URLSearchParams({paper_id:match.paper_id,benchmark_id:match.benchmark_id,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href,'新页查看'));card.append(actions);matches.append(card);
+      const actions=el('div',null,'task-match-actions'),detailURL=new URL('benchmark/?'+new URLSearchParams({paper_id:match.paper_id,benchmark_id:match.benchmark_id,...(taskEvidenceSnapshot()?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;if(b&&state.snapshot?.detail_loaded!==false){const btn=el('button','查看来源成绩');btn.type='button';btn.addEventListener('click',()=>selectBenchmark(b));actions.append(btn,link(detailURL,'新页查看'));}else actions.append(link(detailURL,'查看来源成绩'));card.append(actions);matches.append(card);
     }
     if(!filtered.length)empty(matches,'没有匹配的评测',select.value?'这项能力在当前来源中暂无匹配 Benchmark，其他能力的证据仍可查看。':'请调整检索关键词，或根据任务要求修改领域与能力配置。');
     $('task-match-count').textContent=`已显示 ${Math.min(filtered.length,limit)} / ${filtered.length} 项来源评测`;
@@ -557,7 +568,7 @@
     (!state.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(state.query.toLocaleLowerCase())))
   ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
   let uiReady=false;
-  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&(view!=='home'&&view!=='tasks'||view==='tasks'&&window.RadarTaskConnected)&&state.snapshot?.detail_loaded===false)refresh({details:true});if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
+  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&(view!=='home'&&view!=='tasks')&&state.snapshot?.detail_loaded===false)refresh({details:true});if(view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
   function sourceLabel(paper,table) {return Viz.publicLabel(table,'论文来源');}
   function renderCounts() {
     const d=state.snapshot;
@@ -897,9 +908,9 @@
     lastRefreshAt=Date.now();state.loading=true;$('refresh').disabled=true;let overviewLoaded=false;const previous=state.snapshot;setLoadingUI(true);
     const node=$('connection');node.className='connection';node.textContent=previous?'正在更新 · 保留当前内容':'正在加载目录与图表…';
     try {
-      if(window.RadarHomeSnapshot&&!details&&!requestedModel&&(state.view==='home'||state.view==='tasks'&&!window.RadarTaskConnected)){
+      if(window.RadarHomeSnapshot&&!details&&!requestedModel&&(state.view==='home'||state.view==='tasks')){
         if(!previous||previous.detail_loaded===false)state.snapshot=validate(window.RadarHomeSnapshot);
-        render();resumeInteractive();node.textContent='固定快照 · 数据截至 '+date(state.snapshot.generated_at);return;
+        render();resumeInteractive();node.textContent='固定快照 · 数据截至 '+date(state.snapshot.generated_at);if(state.view==='tasks')await loadTaskEvidenceForPreview();return;
       }
       if(window.RadarHomeSnapshot){
         if(!previous){state.snapshot=validate(window.RadarHomeSnapshot);render();resumeInteractive();}
@@ -931,7 +942,7 @@
     } finally {state.loading=false;$('refresh').disabled=false;setLoadingUI(false);renderReferences();}
   }
   for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',refresh);$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('model-sort').addEventListener('change',e=>{state.sort=e.target.value;state.modelLimit=100;renderModels();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
-  window.addEventListener('radar:task-connected',()=>{if(state.view==='tasks')refresh({details:true});});
+  window.addEventListener('radar:task-connected',()=>{if(state.view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));});
   const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   if(document.modelContext?.registerTool){
     const register=t=>Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});

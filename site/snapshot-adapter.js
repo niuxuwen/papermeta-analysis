@@ -27,6 +27,24 @@
     if(typeof DecompressionStream!=='function')throw Error('SNAPSHOT_BROWSER_UNSUPPORTED');
     return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
   }
+  let taskEvidencePromise;
+  window.RadarLoadTaskEvidence=function(){
+    if(taskEvidencePromise)return taskEvidencePromise;
+    taskEvidencePromise=(async()=>{
+      const m=await manifest(),meta=m.task_evidence;
+      if(!meta||meta.format!=='radar-static-task-evidence-v1'||meta.snapshot_id!==m.snapshot_id||!safePath(meta.path))throw Error('TASK_EVIDENCE_UNAVAILABLE');
+      const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
+      try{
+        const raw=await bytes(meta.path,ctrl.signal);
+        const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
+        if(raw.length!==meta.bytes||hash!==meta.sha256)throw Error('TASK_EVIDENCE_INTEGRITY_FAILURE');
+        const data=JSON.parse(new TextDecoder().decode(await gunzip(raw)));
+        if(data.format!==meta.format||data.snapshot_id!==m.snapshot_id||data.snapshot?.snapshot_id!==m.snapshot_id||data.measurements?.snapshot_id!==m.snapshot_id||data.task_method_version!==meta.task_method_version)throw Error('TASK_SNAPSHOT_MISMATCH');
+        return data;
+      }finally{clearTimeout(timer);}
+    })().catch(error=>{taskEvidencePromise=null;throw error;});
+    return taskEvidencePromise;
+  };
   async function loadWorkspace(){
     if(workspacePromise)return workspacePromise;
     workspacePromise=(async()=>{

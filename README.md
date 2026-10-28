@@ -16,7 +16,7 @@
 
 ## 验证
 
-node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs test-task-v8.cjs test-source-scoring-v14.cjs
+node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs test-task-v8.cjs test-source-scoring-v14.cjs test-task-loading.cjs
 
 该检查读取整份真实快照，验证根目录及项目子路径下的数据完整性、原分数、日期和详情身份。
 第三方图标许可见 site/vendor-logos/。
@@ -29,6 +29,10 @@ node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs 
 
 更新公开快照后运行 `node build-home.cjs`，再运行上述测试。该命令不重新评分，不调用模型 API。
 生成的 `performance-validation.json` 记录源快照指纹、首屏数据体积及首页真实结果。
+
+任务页使用同一快照派生的约 250 KB 任务数据，不下载约 10.7 MB 的完整归档。任务画像分析与候选数据加载并行，任务指标规则从同源的校验文件读取，不再经临时隧道重复下载。提交前仍核对后端快照和任务评分版本。完整榜单及模型来源详情按需读取完整数据，原始归档保留。
+
+`build-home.cjs` 会先运行 `build-task-evidence.cjs`，更新带 SHA-256 的任务数据及紧凑索引。七领域的轻量预览与完整快照逐项相同，验证见 `task-loading-validation.json` 与 `test-task-loading.cjs`。
 
 ## 访问者展示范围
 

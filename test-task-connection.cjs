@@ -53,3 +53,17 @@ test('v7 does not silently accept obsolete task attribution rules',async()=>{
  const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});
  assert.equal(r.status,503);assert(!s.requests.some(r=>r.method==='POST'));
 });
+
+test('static v8 task rules avoid downloading the same rules from the remote tunnel',async()=>{
+ const s=setup(manifest.snapshot_id,8);
+ s.window.RadarLoadTaskEvidence=async()=>({task_method_version:8,measurements:{schema_version:'source-scoped-task-measurements-v3',snapshot_id:manifest.snapshot_id,groups:{}}});
+ await s.connection.connect();assert(s.window.RadarTaskConnected);
+ assert(!s.requests.some(r=>r.url==='https://tasks.test/api/task-measurements'));
+});
+
+test('static rules from another scoring version block task submission',async()=>{
+ const s=setup(manifest.snapshot_id,8);
+ s.window.RadarLoadTaskEvidence=async()=>({task_method_version:7,measurements:{schema_version:'source-scoped-task-measurements-v3',snapshot_id:manifest.snapshot_id,groups:{}}});
+ const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});
+ assert.equal(r.status,503);assert(!s.requests.some(r=>r.method==='POST'));
+});

@@ -22,9 +22,16 @@
         if(service.snapshot_id!==bootstrap.snapshot.snapshot_id)throw Error('TASK_SNAPSHOT_MISMATCH');
         if(service.status!=='READY'||!service.task_score_available)throw Error('TASK_SERVICE_UNAVAILABLE');
         if(service.task_score_method_version>=6){
-          const response=await network(new URL('api/task-measurements',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
-          if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
-          const measurements=await response.json();
+          let measurements;
+          if(window.RadarLoadTaskEvidence){
+            const data=await window.RadarLoadTaskEvidence();
+            if(data.task_method_version!==service.task_score_method_version)throw Error('TASK_SNAPSHOT_MISMATCH');
+            measurements=data.measurements;
+          }else{
+            const response=await network(new URL('api/task-measurements',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
+            if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
+            measurements=await response.json();
+          }
           if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==(service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2'))throw Error('TASK_SNAPSHOT_MISMATCH');
           window.RadarTaskMeasurements=measurements;
         }

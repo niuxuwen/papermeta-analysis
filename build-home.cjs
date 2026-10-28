@@ -1,4 +1,5 @@
 /* Build the public landing page from the verified, unchanged source snapshot. */
+require('./build-task-evidence.cjs');
 const fs=require('node:fs'),vm=require('node:vm'),zlib=require('node:zlib'),crypto=require('node:crypto');
 const path=require('node:path'),site=path.join(__dirname,'site');
 const read=name=>fs.readFileSync(path.join(site,name),'utf8');
