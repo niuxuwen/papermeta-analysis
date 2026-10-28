@@ -1,7 +1,7 @@
 {
   "path": "D:\\FDU\\benchmark-radar\\dist\\papermeta-source-audited-scoring-v119-20261028.zip",
-  "sha256": "a27713b8a83aad0dd686861db7975bcac682f794be54d36b9fc36f780b6894e2",
-  "bytes": 230531,
+  "sha256": "51362e499ea2da6d04cbda0bb97e1c2e5189c0fe7f26bb74f6c29f808783feb4",
+  "bytes": 233749,
   "baselines_tested": [
     "benchmark-radar-full-v108-20261026.zip",
     "papermeta-server-v111-20261027.zip",
@@ -12,5 +12,6 @@
     "papermeta-vendor-consistency-v116-20261028.zip"
   ],
   "install_idempotence_rollback_data_preservation": "PASS",
-  "model_calls": 0
+  "model_calls": 0,
+  "complete_v111_baseline_audit_imports": "PASS"
 }
