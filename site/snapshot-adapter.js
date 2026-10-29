@@ -28,6 +28,19 @@
     return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
   }
   let taskEvidencePromise;
+  let rankingPromise;
+  window.RadarLoadRanking=function({signal}={}){
+    return rankingPromise||(rankingPromise=(async()=>{
+      const m=await manifest(),meta=m.ranking;
+      if(!meta||meta.snapshot_id!==m.snapshot_id||!safePath(meta.path))throw Error('RANKING_DATA_UNAVAILABLE');
+      const raw=await bytes(meta.path,signal);
+      const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
+      if(raw.length!==meta.bytes||hash!==meta.sha256)throw Error('RANKING_INTEGRITY_FAILURE');
+      const data=JSON.parse(new TextDecoder().decode(await gunzip(raw)));
+      if(data.snapshot_id!==m.snapshot_id||data.sources_loaded!==false)throw Error('RANKING_SNAPSHOT_MISMATCH');
+      return data;
+    })().catch(error=>{rankingPromise=null;throw error;}));
+  };
   window.RadarLoadTaskEvidence=function(){
     if(taskEvidencePromise)return taskEvidencePromise;
     taskEvidencePromise=(async()=>{

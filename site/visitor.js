@@ -33,7 +33,7 @@
   const commonJump=node('button','查看共同测试结果','common-evidence-jump');commonJump.type='button';
   commonJump.onclick=()=>window.RadarApp?.openCommonTests();
   modelRoot.querySelector('.section-head').append(commonJump);
-  pairDetails.addEventListener('toggle',()=>{if(pairDetails.open)window.dispatchEvent(new Event('resize'));});
+  pairDetails.addEventListener('toggle',()=>{if(pairDetails.open){window.RadarApp?.openCommonTests();window.dispatchEvent(new Event('resize'));}});
   const coverage=$('model-coverage'),coverageDetails=node('details',null,'visitor-coverage-details');
   coverageDetails.append(node('summary','查看各模型的评测覆盖'));coverage.before(coverageDetails);coverageDetails.append(coverage);
   coverageDetails.addEventListener('toggle',()=>{if(coverageDetails.open)window.dispatchEvent(new Event('resize'));});
@@ -90,7 +90,7 @@
     if(!snapshot)return;
     if(lastSnapshot===snapshot)return;lastSnapshot=snapshot;
     const ready=snapshot.detail_loaded!==false;
-    if(!ready)return;
+    if(!ready||snapshot.sources_loaded===false)return;
     const V=window.RadarViz;
     V.setModelRegistry(snapshot.model_registry);
     const models=V.modelData(snapshot,'').rows.filter(r=>typeof r.score==='number'&&Number.isFinite(r.score)).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));

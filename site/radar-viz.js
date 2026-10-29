@@ -355,6 +355,7 @@
     return [...collected.values()].map(item=>({...item,settings:[...item.settings].sort()})).sort((a,b)=>Boolean(b.verifiedRecords)-Boolean(a.verifiedRecords)||String(a.benchmark.benchmark_name).localeCompare(String(b.benchmark.benchmark_name)));
   }
   function modelData(snapshot, setting, panelId='') {
+    if(snapshot?.sources_loaded===false&&snapshot.ranking_charts?.[setting])return snapshot.ranking_charts[setting];
     const panels=(snapshot?.index?.score_panels||[]).filter(p=>p.model_setting===setting);
     const panel=panels.find(p=>p.panel_id===panelId)||panels[0]||(snapshot?.index?.score_panel?.model_setting===setting?snapshot.index.score_panel:null);
     const relative=snapshot?.index?.method?.score_unit==='z_score',global=Boolean(snapshot?.index?.method?.global_composite);

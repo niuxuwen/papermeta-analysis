@@ -51,7 +51,8 @@
   function modelLink(name,setting) {
     const button=el('button',name,'model-link');button.type='button';button.setAttribute('aria-label','查看 '+name+' 的模型详情');button.onclick=()=>openModel(name,setting);return button;
   }
-  function openModel(name,initialSetting,{section}={}) {
+  async function openModel(name,initialSetting,{section}={}) {
+    if(state.snapshot?.sources_loaded===false){await refresh({details:true});if(state.snapshot?.sources_loaded===false)return;}
     if(!state.snapshot||state.snapshot.detail_loaded===false)return;
     modelDialog?.close();
     const dialog=el('dialog',null,'model-dialog'),head=el('div',null,'model-dialog-head'),identityBlock=el('div',null,'model-dialog-identity'),title=el('h2',name),close=el('button','×','model-dialog-close');
@@ -604,7 +605,7 @@
     (!state.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(state.query.toLocaleLowerCase())))
   ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
   let uiReady=false;
-  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&(view!=='home'&&view!=='tasks')&&state.snapshot?.detail_loaded===false)refresh({details:true});if(view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
+  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&view!=='home'&&view!=='tasks'&&(state.snapshot?.detail_loaded===false||(view!=='models'&&state.snapshot?.sources_loaded===false)))refresh({details:view!=='models'});if(view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
   function sourceLabel(paper,table) {return Viz.publicLabel(table,'论文来源');}
   function renderCounts() {
     const d=state.snapshot;
@@ -669,7 +670,7 @@
     $('more-models').hidden=rows.length<=state.modelLimit;
     if(!rows.length){const tr=el('tr'),td=el('td','当前没有可发布的模型指数；有原始成绩的 benchmark 仍可在雷达页查看。');td.colSpan=6;tr.append(td);box.append(tr);}
   }
-  function selectBenchmark(b,scroll=true) {state.selected=identity(b);state.scoreLimit=80;state.group='';setView('benchmarks');renderDetail();if(scroll)$('detail').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+  function selectBenchmark(b,scroll=true) {if(state.snapshot?.sources_loaded===false){location.href=new URL('benchmark/?'+new URLSearchParams({paper_id:b.paper_id,benchmark_id:b.benchmark_id}),radarBase).href;return;}state.selected=identity(b);state.scoreLimit=80;state.group='';setView('benchmarks');renderDetail();if(scroll)$('detail').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
   function renderDetail() {
     const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(!b){state.selected=null;$('detail').hidden=true;return;}
     $('detail').hidden=state.view!=='benchmarks';$('detail-title').textContent=b.benchmark_name;$('detail-paper').textContent=b.paper_title;const meta=$('detail-meta');meta.replaceChildren(badge(b.eligibility,b.eligibility==='ELIGIBLE'),el('span',`发布日期 ${date(b.release_date)}`,'badge'),el('span',`arXiv ${text(b.arxiv_id)}`,'badge'));
@@ -762,7 +763,7 @@
     if(!group||!bench){modelVisuals.clear();return;}
     modelVisuals.update(Viz.sourceGroupData(snap,bench,group));
   }
-  $('ranking-mode').addEventListener('change',e=>{rankingMode=e.target.value;rankingModeChosen=true;renderRanking(rankingData());});
+  $('ranking-mode').addEventListener('change',async e=>{rankingMode=e.target.value;rankingModeChosen=true;if(state.snapshot?.sources_loaded===false&&rankingMode==='source'){await refresh({details:true});return;}renderRanking(rankingData());});
   $('ranking-panel').addEventListener('change',e=>{rankingPanels.set(visualSetting,e.target.value);renderRanking(rankingData());renderModels();modelDialog?.refresh();});
   $('ranking-benchmark').addEventListener('change',e=>{rankingBenchmark=e.target.value;rankingGroup='';renderRanking(rankingData());});
   $('ranking-group').addEventListener('change',e=>{rankingGroup=e.target.value;renderRanking(rankingData());});
@@ -802,7 +803,8 @@
   }
   const pairPreferences=new Map();
   let pairView='benchmark';
-  function openCommonTests(name,setting) {
+  async function openCommonTests(name,setting) {
+    if(state.snapshot?.sources_loaded===false){await refresh({details:true});if(state.snapshot?.sources_loaded===false)return;}
     setView('models');
     if(typeof setting==='string'&&setting!==visualSetting){visualSetting=setting;renderVisuals();}
     const left=$('pair-left'),right=$('pair-right');
@@ -857,6 +859,7 @@
     }
   }
   function renderPairedSources(data) {
+    if(state.snapshot?.sources_loaded===false)return;
     const left=$('pair-left'),right=$('pair-right'),body=$('pair-rows');
     const leftPicker=pairModelPicker(left,'模型 A'),rightPicker=pairModelPicker(right,'模型 B');
     const names=[...data.rows].sort((a,b)=>b.nBenchmarks-a.nBenchmarks||a.name.localeCompare(b.name)).map(r=>r.name);
@@ -1014,7 +1017,12 @@
         overviewLoaded=true;if(!previous||previous.detail_loaded===false){state.snapshot=overview;render();resumeInteractive();setLoadingUI(true);}
         node.textContent=previous?.detail_loaded!==false&&previous?'正在更新 · 保留当前图表':'目录已就绪 · 正在加载图表…';
       } catch {}
-      const d=await fetchSnapshotJSON('api/workspace',120000,true);
+      let d;
+      if(!details&&!requestedModel&&state.view==='models'&&window.RadarLoadRanking){
+        node.textContent='正在读取模型榜单…';
+        const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
+        try{d=validate(await window.RadarLoadRanking({signal:ctrl.signal}));}finally{clearTimeout(timer);}
+      }else d=await fetchSnapshotJSON('api/workspace',120000,true);
       state.snapshot=d;Viz.setModelRegistry(d.model_registry);if(state.view==='tasks'&&!window.RadarSnapshotMode)try{await ensureTaskMeasurements();}catch(error){taskMessage('task-score-message',error.message,'warning');}render();resumeInteractive();
       if(taskState.confirmed&&!taskState.busy&&taskState.evidenceRevision!==d.status.task_evidence_revision)scoreTask(true);
       const preview=d.status.preview_note,stale=d.status.stale;
@@ -1023,7 +1031,7 @@
     } catch(err) {
       if(!overviewLoaded&&!previous){state.snapshot=null;taskState.result=null;state.selected=null;render();}
       node.className='connection '+(overviewLoaded||previous?'warning':'error');
-      const retry='页面按 10 分钟间隔自动刷新，也可点击“刷新数据”。';
+      const retry=window.RadarSnapshotMode?'请点击“重新载入”重试，当前快照内容会保留。':'页面按 10 分钟间隔自动刷新，也可点击“刷新数据”。';
       node.textContent=err.name==='AbortError'?(overviewLoaded?'首页可用；完整图表和来源成绩读取超时。':'完整快照读取超时。')+retry:
         err.message==='snapshot_initializing'?'后台正在生成首批快照。'+retry:
         err.message==='snapshot_refreshing'?'当前日期窗口的榜单正在更新。'+retry:
