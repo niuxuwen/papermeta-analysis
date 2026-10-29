@@ -1,9 +1,9 @@
 {
   "snapshot_id": "56f4d633a658169561b70217",
   "task_method_version": 8,
-  "task_evidence_bytes": 250286,
+  "task_evidence_bytes": 207874,
   "full_archive_bytes": 10730025,
-  "archive_reduction": 0.9766742388764239,
+  "archive_reduction": 0.9806268857714684,
   "groups": 1583,
   "models": 1094,
   "raw_scores_unchanged": true

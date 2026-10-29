@@ -12,22 +12,30 @@
     const rows=directorySources(b).flatMap(ref=>(snapshot?.observations||[]).filter(row=>key(row)===key(ref)));
     return {observations:rows.length,models:new Set(rows.map(o=>o.model_canonical).filter(Boolean)).size,tables:new Set(rows.filter(o=>o.table_id!=null).map(o=>JSON.stringify([o.paper_id,o.table_id]))).size};
   }
-  function publicBenchmarkVisible(b) {
+  function publicBenchmarkIdentityVisible(b) {
     return Boolean(b)&&b.name_audit?.status!=='REVIEW_REQUIRED'&&
       !/^(?:名称待核验|名称待核实|名称待确认)$/.test(String(b.benchmark_name||'').trim())&&
       ![b.eligibility,b.status,b.history_status,b.progress?.paper_status].includes('EXCLUDED');
   }
+  function publicBenchmarkVisible(b, observations) {
+    if(!publicBenchmarkIdentityVisible(b))return false;
+    if(Array.isArray(observations)) {
+      const members=new Set([b,...directorySources(b)].filter(publicBenchmarkIdentityVisible).map(key));
+      return observations.some(row=>members.has(key(row)));
+    }
+    const count=b.catalog_display_stats?.observations??b.progress?.observations??b.summary?.observations;
+    return finite(count)&&count>0;
+  }
   function visitorSnapshot(snapshot) {
     if(snapshot.visitor_catalog_filtered)return snapshot;
-    const all=snapshot.benchmarks||[],blocked=new Set(all.filter(b=>!publicBenchmarkVisible(b)).map(key)),allowed=new Set(all.filter(publicBenchmarkVisible).map(key));
-    const benchmarks=all.filter(publicBenchmarkVisible).map(b=>{
-      allowed.add(key(b));
-      const directory=b.directory_sources?.filter(ref=>allowed.has(key(ref))&&publicBenchmarkVisible(ref));
-      if(!b.catalog_sources?.length)return directory?{...b,directory_sources:directory}:b;
-      const sources=b.catalog_sources.filter(ref=>!blocked.has(key(ref))&&publicBenchmarkVisible(ref));
-      sources.forEach(ref=>allowed.add(key(ref)));
-      return {...b,catalog_sources:sources,...(directory?{directory_sources:directory}:{})};
-    });
+    const all=snapshot.benchmarks||[],blocked=new Set(all.filter(b=>!publicBenchmarkIdentityVisible(b)).map(key)),allowed=new Set();
+    const rows=snapshot.sources_loaded===false||snapshot.detail_loaded===false?undefined:(snapshot.observations||[]);
+    const benchmarks=all.filter(publicBenchmarkIdentityVisible).map(b=>{
+      const visibleRef=ref=>!blocked.has(key(ref))&&publicBenchmarkIdentityVisible(ref);
+      return {...b,...(b.directory_sources?{directory_sources:b.directory_sources.filter(visibleRef)}:{}),
+        ...(b.catalog_sources?{catalog_sources:b.catalog_sources.filter(visibleRef)}:{})};
+    }).filter(b=>publicBenchmarkVisible(b,rows));
+    benchmarks.forEach(b=>{allowed.add(key(b));directorySources(b).forEach(ref=>allowed.add(key(ref)));});
     const visible=row=>allowed.has(key(row));
     const projected={...snapshot,benchmarks,observations:(snapshot.observations||[]).filter(visible),
       index:{...snapshot.index,groups:(snapshot.index?.groups||[]).filter(visible)},
