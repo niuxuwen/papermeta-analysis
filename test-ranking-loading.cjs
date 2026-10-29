@@ -37,6 +37,28 @@ test('corrupted ranking data fails closed and can be retried',async()=>{
   const s=setup('/');s.corrupt(true);await assert.rejects(s.context.window.RadarLoadRanking(),/RANKING_INTEGRITY_FAILURE/);
   s.corrupt(false);assert.equal((await s.context.window.RadarLoadRanking()).snapshot_id,m.snapshot_id);
 });
+const dossiers=JSON.parse(zlib.gunzipSync(fs.readFileSync(root+m.model_details.path)));
+test('real per-model dossiers preserve all model observations, scores and catalog counts',()=>{
+  for(const name of ['GPT-6-Astra','GPT-5.2','Gemini 3.1 Pro','Claude 5 Opus']){
+    const meta=dossiers.models[name],raw=fs.readFileSync(root+meta.path),d=JSON.parse(zlib.gunzipSync(raw));
+    assert.equal(createHash('sha256').update(raw).digest('hex'),meta.sha256);
+    assert.deepEqual(d.observations,JSON.parse(JSON.stringify(full.observations.filter(r=>r.model_canonical===name))));
+    assert.deepEqual(d.index.models,JSON.parse(JSON.stringify(full.index.models.filter(r=>r.model_canonical===name))));
+    const catalog=data=>V.modelBenchmarkCatalog(data,name).map(r=>[r.id,r.records,r.verifiedRecords,r.comparableRecords,r.settings,r.benchmark.benchmark_name]);
+    assert.deepEqual(catalog(d),catalog(full));
+    assert(meta.bytes<500000,name);
+  }
+});
+for(const prefix of ['/','/papermeta-analysis/'])test('model details fetch only an index and the selected model at '+prefix,async()=>{
+  const s=setup(prefix),d=await s.context.window.RadarLoadModel('GPT-6-Astra');
+  assert.equal(d.model_name,'GPT-6-Astra');assert.equal(s.seen.length,2);assert(s.seen.every(p=>p.includes('/models/')));
+  await s.context.window.RadarLoadModel('GPT-6-Astra');assert.equal(s.seen.length,2);
+  await s.context.window.RadarLoadModel('GPT-5.2');assert.equal(s.seen.length,3);
+});
+test('model dossier failures do not prevent a later retry',async()=>{
+  const s=setup('/');s.corrupt(true);await assert.rejects(s.context.window.RadarLoadModel('GPT-6-Astra'),/MODEL_SOURCE_INTEGRITY_FAILURE/);
+  s.corrupt(false);assert.equal((await s.context.window.RadarLoadModel('GPT-6-Astra')).model_name,'GPT-6-Astra');
+});
 test('model-page refresh uses the compact loader; explicit source request uses the archive',async()=>{
   const s=setup('/'),code=fs.readFileSync(root+'radar.js','utf8'),node={},calls=[];
   Object.assign(s.context,{AbortController,setTimeout,clearTimeout,state:{snapshot:null,loading:false,view:'models'},requestedModel:null,lastRefreshAt:0,

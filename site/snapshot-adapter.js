@@ -28,6 +28,26 @@
     return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
   }
   let taskEvidencePromise;
+  let modelIndexPromise;const modelPromises=new Map();
+  async function verifiedAsset(meta,signal){
+    if(!meta||!safePath(meta.path))throw Error('INVALID_SNAPSHOT_PATH');
+    const raw=await bytes(meta.path,signal),hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
+    if(raw.length!==meta.bytes||hash!==meta.sha256)throw Error('MODEL_SOURCE_INTEGRITY_FAILURE');
+    return JSON.parse(new TextDecoder().decode(await gunzip(raw)));
+  }
+  window.RadarLoadModel=function(name,{signal}={}){
+    if(modelPromises.has(name))return modelPromises.get(name);
+    const promise=(async()=>{
+      const m=await manifest();
+      if(!modelIndexPromise)modelIndexPromise=verifiedAsset(m.model_details,signal).catch(error=>{modelIndexPromise=null;throw error;});
+      const index=await modelIndexPromise;
+      if(index.snapshot_id!==m.snapshot_id||!Object.hasOwn(index.models,name))throw Error('MODEL_SOURCE_UNAVAILABLE');
+      const data=await verifiedAsset(index.models[name],signal);
+      if(data.snapshot_id!==m.snapshot_id||data.model_name!==name)throw Error('MODEL_SOURCE_SNAPSHOT_MISMATCH');
+      return data;
+    })().catch(error=>{modelPromises.delete(name);throw error;});
+    modelPromises.set(name,promise);return promise;
+  };
   let rankingPromise;
   window.RadarLoadRanking=function({signal}={}){
     return rankingPromise||(rankingPromise=(async()=>{
