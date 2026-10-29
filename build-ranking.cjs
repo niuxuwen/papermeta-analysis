@@ -27,11 +27,30 @@ module.exports=function(snapshot,publicData,V,manifest,site){
     charts[setting]={...chart,cells:chart.cells.map(c=>({...c,proof:(c.proof||[]).map(p=>pick(p,['paper','benchmark','group','table','metric','row','raw']))}))};
   }
   const modelKeys=['model_canonical','model_setting','score','publication_score','publication_eligible','publication_status','status','score_panel_id','provisional','blocked_group_ids','n_benchmarks','n_groups','coverage_pct','score_unit','publication_min_source_papers','available_benchmarks'];
+  const identity=b=>JSON.stringify([b.paper_id,b.benchmark_id]),byBenchmark=new Map(),annotations=new Map();
+  for(const row of publicData.observations){const id=identity(row);if(!byBenchmark.has(id))byBenchmark.set(id,[]);byBenchmark.get(id).push(row);}
+  for(const row of publicData.capability_annotations?.items||[]){const id=identity(row);if(!annotations.has(id))annotations.set(id,[]);annotations.get(id).push(row);}
+  const catalog=publicData.benchmarks.map(b=>{
+    const item=pick(b,['paper_id','benchmark_id','benchmark_name','paper_title','release_date','paper_first_published','eligibility','arxiv_id','source_benchmark_name','benchmark_aliases','catalog_identity','catalog_aliases','directory_identity','directory_aliases','directory_grouping_basis','name_audit']);
+    for(const key of ['catalog_sources','directory_sources'])if(b[key])item[key]=b[key].map(ref=>pick(ref,['paper_id','benchmark_id','paper_title']));
+    item.progress=pick(b.progress||{},['paper_status','observations','models','tables']);
+    item.catalog_display_tags={};
+    for(const layer of ['domains','tasks','capabilities']){
+      const labels=b.enrichment?.labels,values=labels?.supported?.[layer]||(labels?.status==='SUPPORTED'?labels[layer]:[]);
+      const ids=new Set((Array.isArray(values)?values:[]).map(x=>typeof x==='string'?x:x.id).filter(Boolean));
+      for(const id of b.catalog_labels?.[layer]||[])ids.add(id);
+      for(const a of annotations.get(identity(b))||[])if(a.status==='SUPPORTED')for(const id of a[layer]||[])ids.add(id);
+      item.catalog_display_tags[layer]=[...ids];
+    }
+    const rows=V.directorySources(b).flatMap(ref=>byBenchmark.get(identity(ref))||[]);
+    item.catalog_display_stats={observations:rows.length,models:new Set(rows.map(o=>o.model_canonical).filter(Boolean)).size,tables:new Set(rows.filter(o=>o.table_id!=null).map(o=>JSON.stringify([o.paper_id,o.table_id]))).size};
+    return item;
+  });
   const browse={snapshot_id:snapshot.snapshot_id,generated_at:snapshot.generated_at,window:snapshot.window,status:{...snapshot.status,jobs:[]},
-    detail_loaded:true,sources_loaded:false,visitor_catalog_filtered:true,visitor_catalog_count:publicData.visitor_catalog_count,
-    benchmarks:publicData.benchmarks.map(b=>pick(b,['paper_id','benchmark_id','benchmark_name','paper_title','release_date','eligibility'])),observations:[],
+    detail_loaded:true,sources_loaded:false,catalog_loaded:true,visitor_catalog_filtered:true,visitor_catalog_count:publicData.visitor_catalog_count,
+    benchmarks:catalog,observations:[],
     model_registry:publicData.model_registry,index:{method:publicData.index.method,models:publicData.index.models.map(m=>pick(m,modelKeys)),groups:publicData.index.groups.map(g=>pick(g,['group_id','paper_id','benchmark_id','model_setting','relative_status','blocked_reasons','extraction_in_progress']))},
-    capability_annotations:{items:[]},ranking_charts:charts};
+    capability_annotations:{...pick(publicData.capability_annotations||{},['total_groups','unannotated_groups']),items:(publicData.capability_annotations?.items||[]).map(a=>pick(a,['group_id','paper_id','benchmark_id','status','capabilities','domains','tasks']))},capability_atlas:publicData.capability_atlas,ranking_charts:charts};
   const bytes=zlib.gzipSync(JSON.stringify(browse),{level:9}),sha=crypto.createHash('sha256').update(bytes).digest('hex');
   const relative=`snapshot/${manifest.snapshot_id}/ranking-${sha.slice(0,16)}.json.gz`;
   fs.writeFileSync(path.join(site,relative),bytes);

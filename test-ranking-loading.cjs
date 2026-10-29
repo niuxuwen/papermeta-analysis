@@ -8,7 +8,7 @@ V.setModelRegistry(full.model_registry);
 test('all real settings preserve exact ranking rows, chart values and visitor exports',()=>{
   assert.equal(light.snapshot_id,full.snapshot_id);assert.equal(light.sources_loaded,false);
   assert.equal(bytes.length,m.ranking.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),m.ranking.sha256);
-  assert(bytes.length<400000);assert(bytes.length<m.parts.reduce((n,p)=>n+p.bytes,0)*0.04);
+  assert(bytes.length<600000);assert(bytes.length<m.parts.reduce((n,p)=>n+p.bytes,0)*0.06);
   assert.deepEqual(V.settings(light),V.settings(full));
   for(const setting of V.settings(full)){
     const expected=V.visitorChartData(V.modelData(full,setting)),actual=V.modelData(light,setting);

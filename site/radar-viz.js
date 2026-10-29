@@ -6,6 +6,12 @@
   const key = b => JSON.stringify([b.paper_id,b.benchmark_id]);
   function directoryKey(b) {return b.directory_identity||b.catalog_identity||key(b);}
   function directorySources(b) {return b.directory_sources?.length?b.directory_sources:b.catalog_sources?.length?b.catalog_sources:[b];}
+  function directoryStats(snapshot,b){
+    if(b.catalog_display_stats)return b.catalog_display_stats;
+    if(snapshot?.sources_loaded===false||snapshot?.detail_loaded===false)return {observations:null,models:null,tables:null};
+    const rows=directorySources(b).flatMap(ref=>(snapshot?.observations||[]).filter(row=>key(row)===key(ref)));
+    return {observations:rows.length,models:new Set(rows.map(o=>o.model_canonical).filter(Boolean)).size,tables:new Set(rows.filter(o=>o.table_id!=null).map(o=>JSON.stringify([o.paper_id,o.table_id]))).size};
+  }
   function publicBenchmarkVisible(b) {
     return Boolean(b)&&b.name_audit?.status!=='REVIEW_REQUIRED'&&
       !/^(?:名称待核验|名称待核实|名称待确认)$/.test(String(b.benchmark_name||'').trim())&&
@@ -603,7 +609,7 @@
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={taskOverview,commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  const api={directoryStats,taskOverview,commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   host.RadarViz=api;
   if(typeof document==='undefined')return;
