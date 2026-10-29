@@ -5,9 +5,9 @@
   "initial_snapshot_download_bytes": 0,
   "ranking_snapshot_download_bytes": 577494,
   "full_archive_download_bytes": 10730025,
-  "previous_required_snapshot_bytes": 14817417,
-  "embedded_bootstrap_bytes": 4194,
-  "compact_manifest_bytes": 1495,
+  "previous_required_snapshot_bytes": 14817646,
+  "embedded_bootstrap_bytes": 4423,
+  "compact_manifest_bytes": 1724,
   "models": [
     {
       "name": "GPT-6-Astra",

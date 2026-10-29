@@ -28,6 +28,42 @@
     return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
   }
   let taskEvidencePromise;
+  const sha256=async raw=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
+  async function resilientPart(meta,{signal,onBytes=()=>{}}={}){
+    for(let attempt=0;attempt<3;attempt++){
+      abort(signal);const ctrl=new AbortController(),cancel=()=>ctrl.abort(signal.reason),timer=setTimeout(()=>ctrl.abort(),20000);
+      signal?.addEventListener('abort',cancel,{once:true});
+      try{
+        const raw=await bytes(meta.path,ctrl.signal);
+        if(raw.length!==meta.bytes||await sha256(raw)!==meta.sha256)throw Error('COMPARISON_INTEGRITY_FAILURE');
+        onBytes(raw.length);return raw;
+      }catch(error){
+        abort(signal);
+        const temporary=ctrl.signal.aborted||['AbortError','TimeoutError','TypeError'].includes(error.name)||[502,503,504].includes(error.status);
+        if(!temporary||attempt===2)throw error;
+      }finally{clearTimeout(timer);signal?.removeEventListener('abort',cancel);}
+    }
+  }
+  let comparisonPromise;
+  window.RadarLoadComparison=function({signal,onProgress=()=>{}}={}){
+    return comparisonPromise||(comparisonPromise=(async()=>{
+      const m=await manifest(),meta=m.comparisons;
+      if(!meta||meta.snapshot_id!==m.snapshot_id)throw Error('COMPARISON_DATA_UNAVAILABLE');
+      const index=JSON.parse(new TextDecoder().decode(await resilientPart(meta,{signal})));
+      if(index.snapshot_id!==m.snapshot_id||!index.parts?.length||!index.parts.every(p=>safePath(p.path)))throw Error('COMPARISON_SNAPSHOT_MISMATCH');
+      let cursor=0,received=0;const parts=new Array(index.parts.length);
+      onProgress('正在读取共同测试来源…');
+      async function download(){while(cursor<index.parts.length){const i=cursor++;parts[i]=await resilientPart(index.parts[i],{signal,onBytes:n=>{received+=n;onProgress(`正在读取共同测试来源 · ${Math.round(received/index.bytes*100)}%`);}});}}
+      await Promise.all(Array.from({length:Math.min(4,index.parts.length)},download));abort(signal);
+      const joined=new Uint8Array(index.bytes);let offset=0;for(const part of parts){joined.set(part,offset);offset+=part.length;}
+      if(offset!==index.bytes||await sha256(joined)!==index.sha256)throw Error('COMPARISON_INTEGRITY_FAILURE');
+      const data=JSON.parse(new TextDecoder().decode(await gunzip(joined)));
+      if(data.snapshot_id!==m.snapshot_id||!Array.isArray(data.groups))throw Error('COMPARISON_SNAPSHOT_MISMATCH');
+      const browse=await window.RadarLoadRanking({signal}),labels=new Map(data.labels.map(row=>[JSON.stringify([row.paper_id,row.benchmark_id]),row.labels]));
+      return {...browse,comparison_loaded:true,index:{...browse.index,groups:data.groups},capability_annotations:data.annotations,
+        benchmarks:browse.benchmarks.map(b=>({...b,enrichment:{labels:labels.get(JSON.stringify([b.paper_id,b.benchmark_id]))||{}}}))};
+    })().catch(error=>{comparisonPromise=null;throw error;}));
+  };
   let modelIndexPromise;const modelPromises=new Map();
   async function verifiedAsset(meta,signal){
     if(!meta||!safePath(meta.path))throw Error('INVALID_SNAPSHOT_PATH');

@@ -55,7 +55,19 @@ module.exports=function(snapshot,publicData,V,manifest,site){
   const relative=`snapshot/${manifest.snapshot_id}/ranking-${sha.slice(0,16)}.json.gz`;
   fs.writeFileSync(path.join(site,relative),bytes);
   manifest.ranking={path:relative,bytes:bytes.length,sha256:sha,snapshot_id:manifest.snapshot_id};
+  // Comparison controls need original groups and annotations, not every model's
+  // scoring audit and every observation's repeated paper context.
+  const comparisons={snapshot_id:snapshot.snapshot_id,groups:publicData.index.groups,annotations:publicData.capability_annotations,
+    labels:publicData.benchmarks.map(b=>({paper_id:b.paper_id,benchmark_id:b.benchmark_id,labels:pick(b.enrichment?.labels||{},['status','supported','capabilities','domains','tasks'])}))};
+  const comparisonBytes=zlib.gzipSync(JSON.stringify(comparisons),{level:9}),comparisonRoot=`snapshot/${manifest.snapshot_id}/comparisons/`,parts=[];
+  fs.mkdirSync(path.join(site,comparisonRoot),{recursive:true});
+  for(let offset=0;offset<comparisonBytes.length;offset+=262144){
+    const raw=comparisonBytes.subarray(offset,offset+262144),hash=crypto.createHash('sha256').update(raw).digest('hex'),file=comparisonRoot+hash.slice(0,24)+'.bin';
+    fs.writeFileSync(path.join(site,file),raw);parts.push({path:file,bytes:raw.length,sha256:hash});
+  }
+  const comparisonIndex=Buffer.from(JSON.stringify({snapshot_id:snapshot.snapshot_id,parts,bytes:comparisonBytes.length,sha256:crypto.createHash('sha256').update(comparisonBytes).digest('hex')})),comparisonHash=crypto.createHash('sha256').update(comparisonIndex).digest('hex'),comparisonPath=comparisonRoot+'index-'+comparisonHash.slice(0,16)+'.json';
+  fs.writeFileSync(path.join(site,comparisonPath),comparisonIndex);manifest.comparisons={path:comparisonPath,bytes:comparisonIndex.length,sha256:comparisonHash,snapshot_id:snapshot.snapshot_id};
   fs.writeFileSync(path.join(site,'snapshot/manifest.json'),JSON.stringify(manifest));
-  console.log(JSON.stringify({ranking_bytes:bytes.length,archive_bytes:manifest.parts.reduce((n,p)=>n+p.bytes,0),settings:Object.keys(charts).length,models:browse.index.models.length}));
+  console.log(JSON.stringify({ranking_bytes:bytes.length,comparison_bytes:comparisonBytes.length,comparison_parts:parts.length,archive_bytes:manifest.parts.reduce((n,p)=>n+p.bytes,0),settings:Object.keys(charts).length,models:browse.index.models.length}));
   return browse;
 };

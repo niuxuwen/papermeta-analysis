@@ -774,7 +774,7 @@
     if(!group||!bench){modelVisuals.clear();return;}
     modelVisuals.update(Viz.sourceGroupData(snap,bench,group));
   }
-  $('ranking-mode').addEventListener('change',async e=>{rankingMode=e.target.value;rankingModeChosen=true;if(state.snapshot?.sources_loaded===false&&rankingMode==='source'){await refresh({details:true});return;}renderRanking(rankingData());});
+  $('ranking-mode').addEventListener('change',async e=>{rankingMode=e.target.value;rankingModeChosen=true;if(state.snapshot?.sources_loaded===false&&!state.snapshot.comparison_loaded&&rankingMode==='source'){await refresh({details:true});return;}renderRanking(rankingData());});
   $('ranking-panel').addEventListener('change',e=>{rankingPanels.set(visualSetting,e.target.value);renderRanking(rankingData());renderModels();modelDialog?.refresh();});
   $('ranking-benchmark').addEventListener('change',e=>{rankingBenchmark=e.target.value;rankingGroup='';renderRanking(rankingData());});
   $('ranking-group').addEventListener('change',e=>{rankingGroup=e.target.value;renderRanking(rankingData());});
@@ -815,7 +815,7 @@
   const pairPreferences=new Map();
   let pairView='benchmark';
   async function openCommonTests(name,setting) {
-    if(state.snapshot?.sources_loaded===false){await refresh({details:true});if(state.snapshot?.sources_loaded===false)return;}
+    if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded)){await refresh({details:true});if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded))return;}
     setView('models');
     if(typeof setting==='string'&&setting!==visualSetting){visualSetting=setting;renderVisuals();}
     const left=$('pair-left'),right=$('pair-right');
@@ -870,7 +870,7 @@
     }
   }
   function renderPairedSources(data) {
-    if(state.snapshot?.sources_loaded===false)return;
+    if(state.snapshot?.sources_loaded===false&&!state.snapshot.comparison_loaded)return;
     const left=$('pair-left'),right=$('pair-right'),body=$('pair-rows');
     const leftPicker=pairModelPicker(left,'模型 A'),rightPicker=pairModelPicker(right,'模型 B');
     const names=[...data.rows].sort((a,b)=>b.nBenchmarks-a.nBenchmarks||a.name.localeCompare(b.name)).map(r=>r.name);
@@ -975,7 +975,8 @@
     const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeoutMs);
     try {
       if(window.RadarSnapshotMode&&window.RadarLoadWorkspace&&['api/workspace','api/snapshot'].includes(path)){
-        const data=await window.RadarLoadWorkspace({signal:ctrl.signal,onProgress:text=>{$('connection').textContent=text;}});
+        const loader=window.RadarLoadComparison||window.RadarLoadWorkspace;
+        const data=await loader({signal:ctrl.signal,onProgress:text=>{$('connection').textContent=text;}});
         return validate(decodeSnapshot(data));
       }
       for(let attempt=0;;attempt++){
@@ -1003,7 +1004,7 @@
   let refreshInFlight=null,refreshHasDetails=false;
   function refresh(options={}) {
     if(refreshInFlight){
-      if(options.details&&!refreshHasDetails)return refreshInFlight.then(()=>!state.snapshot||state.snapshot.detail_loaded===false||state.snapshot.sources_loaded===false?refresh(options):undefined);
+      if(options.details&&!refreshHasDetails)return refreshInFlight.then(()=>!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded)?refresh(options):undefined);
       return refreshInFlight;
     }
     refreshHasDetails=Boolean(options.details);
@@ -1043,7 +1044,7 @@
       if(!overviewLoaded&&!previous){state.snapshot=null;taskState.result=null;state.selected=null;render();}
       node.className='connection '+(overviewLoaded||previous?'warning':'error');
       const retry=window.RadarSnapshotMode?'请点击“重新载入”重试，当前快照内容会保留。':'页面按 10 分钟间隔自动刷新，也可点击“刷新数据”。';
-      node.textContent=err.name==='AbortError'?(overviewLoaded?'首页可用；完整图表和来源成绩读取超时。':'完整快照读取超时。')+retry:
+      node.textContent=err.name==='AbortError'?(overviewLoaded?'来源比较数据读取超时，已加载页面仍可使用。':'评测数据读取超时。')+retry:
         err.message==='snapshot_initializing'?'后台正在生成首批快照。'+retry:
         err.message==='snapshot_refreshing'?'当前日期窗口的榜单正在更新。'+retry:
         err.message==='snapshot_unavailable'?'完整快照生成失败，请检查服务日志。'+retry:
@@ -1058,13 +1059,13 @@
   const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   if(document.modelContext?.registerTool){
     const register=t=>Promise.resolve(document.modelContext.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});
-    register({name:'get_radar_catalog',title:'读取当前窗口评测目录',description:'读取已加载的评测目录与窗口，不运行检索或评测。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||Array.isArray(input)||typeof input!=='object'||Object.keys(input).length)throw Error('输入必须为空对象');if(!state.snapshot)throw Error('评测数据源未连接');return {generated_at:state.snapshot.generated_at,window:state.snapshot.window,source_note:state.snapshot.status.preview_note||'评测 API',benchmarks:state.snapshot.benchmarks.map(b=>({paper_id:b.paper_id,benchmark_id:b.benchmark_id,name:b.benchmark_name,eligibility:b.eligibility,observations:observations(b).length}))};}});
+    register({name:'get_radar_catalog',title:'读取当前窗口评测目录',description:'读取已加载的评测目录与窗口，不运行检索或评测。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||Array.isArray(input)||typeof input!=='object'||Object.keys(input).length)throw Error('输入必须为空对象');if(!state.snapshot)throw Error('评测数据源未连接');return {generated_at:state.snapshot.generated_at,window:state.snapshot.window,source_note:state.snapshot.status.preview_note||'评测 API',benchmarks:state.snapshot.benchmarks.map(b=>({paper_id:b.paper_id,benchmark_id:b.benchmark_id,name:b.benchmark_name,eligibility:b.eligibility,observations:Viz.directoryStats(state.snapshot,b).observations}))};}});
     register({name:'set_radar_view',title:'切换评测数据视图',description:'切换当前页面视图与 benchmark 筛选，只改变显示，不修改队列。',inputSchema:{type:'object',properties:{view:{enum:['benchmarks','tasks','capabilities','models']},query:{type:'string',maxLength:200},eligibility:{enum:['all','ELIGIBLE','review']}},required:['view','query','eligibility'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['view','query','eligibility'].includes(k))||!['benchmarks','tasks','capabilities','models'].includes(input.view)||typeof input.query!=='string'||input.query.length>200||!['all','ELIGIBLE','review'].includes(input.eligibility))throw Error('视图或筛选输入无效');state.query=input.query;state.eligibility=input.eligibility;state.benchmarkLimit=40;$('search').value=state.query;$('eligibility').value=state.eligibility;setView(input.view);if(input.view==='benchmarks')renderBenchmarks();return {view:state.view,visible_benchmarks:visibleBenchmarks().length,connected:!!state.snapshot};}});
   }
   if(visitorEdition)window.RadarApp=Object.freeze({
     navigate(view){setView(view);window.scrollTo({top:0,behavior:'instant'});},
     async openModel(name,setting){if(!state.snapshot)await refresh();return openModel(name,setting);},
-    async openCommonTests(name,setting){if(!state.snapshot||state.snapshot.detail_loaded===false)await refresh({details:true});openCommonTests(name,setting);},
+    async openCommonTests(name,setting){return openCommonTests(name,setting);},
     openBenchmark(paperId,benchmarkId){const benchmark=state.snapshot?.benchmarks.find(b=>b.paper_id===paperId&&b.benchmark_id===benchmarkId);if(benchmark&&state.snapshot.detail_loaded!==false){selectBenchmark(benchmark);return true;}return false;},
     useTemplate(id){const template=TASK_DEFAULTS.templates[id];if(!template)return;taskState.autoCandidates=true;applyProfile(template);taskState.refsInitialized=false;setView('tasks');renderReferences();window.scrollTo({top:0,behavior:'instant'});}
   });
