@@ -478,6 +478,21 @@
     cache.set(signature,result);while(cache.size>4)cache.delete(cache.keys().next().value);return result;
   }
   function sortTaskCandidates(rows){return [...rows].sort((a,b)=>(b.nTaskBenchmarks||0)-(a.nTaskBenchmarks||0)||(b.capabilityWeightCoverage||0)-(a.capabilityWeightCoverage||0)||b.nBenchmarks-a.nBenchmarks||a.name.localeCompare(b.name));}
+  function taskOverview(report){
+    const models=report?.models||[],sources=report?.panel||[],matches=new Map((report?.benchmark_matches||[]).map(b=>[key(b),b])),panels=new Map(),scenarios=new Map();
+    for(const m of models){if(!panels.has(m.panel_id))panels.set(m.panel_id,{id:m.panel_id,models:[],entries:[]});panels.get(m.panel_id).models.push(m);}
+    for(const g of sources)if(panels.has(g.panel_id))panels.get(g.panel_id).entries.push(g);
+    for(const p of panels.values()){
+      const first=p.models[0],facet=first.measurement_facets?.[0]||'other',scenario=facet.replace(/:condition:[^:]+$/,'');
+      const label=report.method?.measurement_facets?.[facet]||facet;
+      p.label=label;p.setting=first.model_setting||'';p.benchmarks=[...new Map(p.entries.map(g=>[g.benchmark_identity||key(g),matches.get(key(g))||g])).values()];
+      p.groups=new Set(p.entries.map(g=>g.group_id)).size;
+      if(!scenarios.has(scenario))scenarios.set(scenario,{id:scenario,label:label.replace(/\s*·\s*来源条件\s*\d+$/,''),panels:[]});
+      scenarios.get(scenario).panels.push(p);
+    }
+    const result=[...scenarios.values()].sort((a,b)=>Number(a.id.startsWith('related_reference:'))-Number(b.id.startsWith('related_reference:'))||new Set(b.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size-new Set(a.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size||a.label.localeCompare(b.label));
+    return {scenarios:result,panels:[...panels.values()],benchmarks:new Set(sources.map(g=>g.benchmark_identity||key(g))).size,groups:new Set(sources.map(g=>g.group_id)).size,models:new Set(models.filter(m=>m.publication_eligible).map(m=>m.model_canonical)).size};
+  }
   function taskData(report,panel,labels={}) {
     const fixed=report?.method?.name==='task_source_fixed_scale_weighted'&&report.method.version>=3;
     const catalog=report?.method?.name==='catalog_task_pairwise_reference';
@@ -587,7 +602,7 @@
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  const api={taskOverview,commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   host.RadarViz=api;
   if(typeof document==='undefined')return;

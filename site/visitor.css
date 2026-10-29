@@ -63,3 +63,24 @@ a.visitor-benchmark-row{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){.common-evidence-paper>summary,.common-evidence-paper>summary::after{transition:none}}
 
 .model-common-shortcut{align-self:end;white-space:nowrap}
+.task-scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:22px}
+.task-scenario{min-width:0;padding:22px;background:#fff;border:1px solid var(--line,#dce5ef);border-radius:14px}
+.task-scenario-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}
+.task-scenario-heading h4{font-size:17px;line-height:1.5;margin:0;color:var(--ink,#243446)}
+.task-scenario-heading>span,.task-scenario-related,.task-scenario-source{font-size:12px;line-height:1.7;color:var(--muted,#64748b)}
+.task-scenario-related{margin:-8px 0 12px}
+.task-scenario-condition{border-top:1px solid var(--line,#dce5ef);padding:12px 0 0;margin-top:12px}
+.task-scenario-condition>summary{display:flex;align-items:flex-start;flex-direction:column;gap:5px;cursor:pointer;border-radius:8px;padding:8px;transition:background-color .18s ease}
+.task-scenario-condition>summary:hover{background:#f3f7fb}
+.task-scenario-condition>summary strong{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.task-scenario-condition>summary small{font-size:12px;line-height:1.6;color:var(--muted,#64748b)}
+.task-scenario-body{padding:4px 8px}
+.task-scenario .task-comparison-table{min-width:440px;table-layout:auto}
+.task-scenario .task-comparison-table th,.task-scenario .task-comparison-table td{font-size:12px;line-height:1.6;padding:11px 9px;white-space:normal;word-break:normal}
+.task-scenario .task-comparison-table th:first-child{min-width:150px}
+.task-scenario-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px}
+.task-scenario-actions button,.task-scenario-actions a{font-size:12px;text-decoration:none;border-radius:8px;transition:background-color .18s ease,color .18s ease}
+.task-scenario-actions a:hover{background:#edf4fc;color:#135da9}
+@media(max-width:1000px){.task-scenario-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.task-scenario{padding:14px}.task-scenario-heading{flex-direction:column;gap:4px}}
+@media(prefers-reduced-motion:reduce){.task-scenario-condition>summary,.task-scenario-actions button,.task-scenario-actions a{transition:none}}

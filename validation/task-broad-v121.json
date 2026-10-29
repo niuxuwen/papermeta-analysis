@@ -1,0 +1,51 @@
+{
+  "release": "task-broad-v121",
+  "snapshot_id": "56f4d633a658169561b70217",
+  "scoring_method_changed": false,
+  "default_candidates": "all task-related models",
+  "default_result_view": "all related scenarios",
+  "tests_passed": 65,
+  "model_api_calls": 0,
+  "profiles": {
+    "code-development": {
+      "benchmarks": 10,
+      "models": 54,
+      "condition_groups": 28
+    },
+    "medical-literature-review": {
+      "benchmarks": 6,
+      "models": 60,
+      "condition_groups": 11
+    },
+    "structured-extraction": {
+      "benchmarks": 15,
+      "models": 108,
+      "condition_groups": 31
+    },
+    "finance": {
+      "benchmarks": 2,
+      "models": 31,
+      "condition_groups": 4
+    },
+    "law": {
+      "benchmarks": 3,
+      "models": 30,
+      "condition_groups": 5
+    },
+    "mathematics": {
+      "benchmarks": 8,
+      "models": 99,
+      "condition_groups": 32
+    },
+    "science": {
+      "benchmarks": 10,
+      "models": 132,
+      "condition_groups": 34
+    }
+  },
+  "assets": {
+    "radar.js": "c0dd0c7bc58be40fc7597500cdbc3866a3bca19b06b758cd4cf51195142cde18",
+    "radar-viz.js": "5f00b603bb89413d6016221136db483374827acd826f10fca7a750376d62c047",
+    "visitor.css": "3ad03b013bcb2359c825ac7a13530db0e6c8fa305c18b946aabcedefb96bf8b5"
+  }
+}
