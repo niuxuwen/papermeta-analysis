@@ -204,7 +204,7 @@
     for(const a of annotationItems().filter(x=>identity(x)===identity(b)&&x.status==='SUPPORTED'))for(const id of a[layer]||[])ids.add(id);
     return [...ids];
   }
-  function taskMessage(id,message,kind='') {const n=$(id);n.textContent=message;if(id==='task-score-message')n.className='connection '+kind;}
+  function taskMessage(id,message,kind='') {const n=$(id);n.textContent=/signal is aborted|operation was aborted|aborterror|failed to fetch|load failed/i.test(String(message))?'网络连接中断，当前输入已保留。请重试；已提交的任务会继续查询。':message;if(id==='task-score-message')n.className='connection '+kind;}
   function dirtyTask() {
     if(taskState.profileRequest)taskMessage('profile-message','任务要求已修改，已停止等待旧分析；可直接调整能力与权重。');
     taskState.revision++;taskState.request?.abort();taskState.profileRequest?.abort();taskState.result=null;taskState.confirmed=null;
@@ -268,20 +268,22 @@
   const forgetPending=kind=>{try{sessionStorage.removeItem(jobStorageKey(kind));}catch{}};
   async function jobFetch(path,options={},parent=null) {
     const ctrl=new AbortController(),abort=()=>ctrl.abort();if(parent?.aborted)ctrl.abort();else parent?.addEventListener('abort',abort,{once:true});
-    const timer=setTimeout(abort,15000);
-    try{const response=await fetch(new URL(path,radarBase),{...options,signal:ctrl.signal,cache:'no-store'});let d;try{d=await response.json();}catch{throw Error('任务接口返回格式不正确。');}if(!response.ok){const error=Error(jobMessages[d.error]||'后台任务暂不可用，请稍后重试。');error.code=d.error;throw error;}return d;}
+    let timedOut=false;const timer=setTimeout(()=>{timedOut=true;abort();},15000);
+    try{const response=await fetch(new URL(path,radarBase),{...options,signal:ctrl.signal,cache:'no-store'});let d;try{d=await response.json();}catch(error){if(ctrl.signal.aborted)throw error;throw Error('任务接口返回格式不正确。');}if(!response.ok){const error=Error(jobMessages[d.error]||'后台任务暂不可用，请稍后重试。');error.code=d.error;error.transient=[502,503,504].includes(response.status)&&!['task_snapshot_mismatch','task_profile_auth_failed','task_profile_quota_exceeded'].includes(d.error);throw error;}return d;}
+    catch(error){if(parent?.aborted)throw new DOMException('Cancelled','AbortError');if(timedOut||error.name==='AbortError'||error.name==='TimeoutError'||error instanceof TypeError){const failure=Error('任务服务连接中断，当前输入已保留。请重试以继续查看同一任务。');failure.code='task_connection_interrupted';failure.transient=true;throw failure;}throw error;}
     finally{clearTimeout(timer);parent?.removeEventListener('abort',abort);}
   }
-  const pauseJob=signal=>new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(t);signal.removeEventListener('abort',abort);reject(new DOMException('Cancelled','AbortError'));};const t=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},1500);if(signal.aborted)abort();else signal.addEventListener('abort',abort,{once:true});});
+  const pauseJob=(signal,delay=1500)=>new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(t);signal.removeEventListener('abort',abort);reject(new DOMException('Cancelled','AbortError'));};const t=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},delay);if(signal.aborted)abort();else signal.addEventListener('abort',abort,{once:true});});
   async function taskPost(route,payload,ctrl) {
     const kind=route==='api/task-profile'?'profile':'score';let saved=readPending(kind),id=null;
     if(saved&&JSON.stringify(saved.payload)!==JSON.stringify(payload)){if(saved.id)jobFetch('api/interactive-jobs/'+saved.id,{method:'DELETE'}).catch(()=>{});forgetPending(kind);saved=null;}
     const cancel=()=>{if(id)jobFetch('api/interactive-jobs/'+id,{method:'DELETE'}).catch(()=>{});forgetPending(kind);backgroundStatus[kind]=null;};
     ctrl.signal.addEventListener('abort',cancel,{once:true});
+    const request=async(path,options={})=>{for(let attempt=0;;attempt++){try{return await jobFetch(path,options,ctrl.signal);}catch(error){if(!error.transient||attempt>=2||ctrl.signal.aborted)throw error;const status=`网络连接暂时中断，正在重新连接（${attempt+1}/2） · 当前输入已保留`;backgroundStatus[kind]=status;taskMessage(kind==='profile'?'profile-message':'task-score-message',status);await pauseJob(ctrl.signal,1500*(attempt+1));}}};
     try{
       const intent=saved||{request_id:crypto.randomUUID(),created_at:Date.now(),payload};let recoverable=false;
       try{sessionStorage.setItem(jobStorageKey(kind),JSON.stringify(intent));recoverable=true;}catch{}
-      let job=intent.id?await jobFetch('api/interactive-jobs/'+intent.id,{},ctrl.signal):await jobFetch('api/interactive-jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,payload,request_id:intent.request_id})},ctrl.signal);
+      let job=intent.id?await request('api/interactive-jobs/'+intent.id):await request('api/interactive-jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,payload,request_id:intent.request_id})});
       id=job.id;if(ctrl.signal.aborted){cancel();throw new DOMException('Cancelled','AbortError');}
       try{sessionStorage.setItem(jobStorageKey(kind),JSON.stringify({...intent,id}));}catch{recoverable=false;}
       for(;;){
@@ -289,7 +291,7 @@
         if(['FAILED','CANCELLED'].includes(job.state)){forgetPending(kind);throw Error(jobMessages[job.error]||'任务未完成；请检查要求或稍后重试。');}
         const message=job.state==='QUEUED'?`已排队 · 前方 ${Math.max(0,(job.position||1)-1)} 个任务`:`${kind==='profile'?'正在分析能力需求':'正在匹配证据并计算'} · 已运行 ${job.elapsed_seconds||0} 秒`;
         const status=message+(recoverable?' · 刷新页面可继续查看':' · 浏览器无法保存恢复记录，请保持页面打开');backgroundStatus[kind]=status;taskMessage(kind==='profile'?'profile-message':'task-score-message',status);
-        await pauseJob(ctrl.signal);job=await jobFetch('api/interactive-jobs/'+id,{},ctrl.signal);
+        await pauseJob(ctrl.signal);job=await request('api/interactive-jobs/'+id);
       }
     }catch(e){if(e.code==='job_expired_or_unknown')forgetPending(kind);throw e;}finally{ctrl.signal.removeEventListener('abort',cancel);backgroundStatus[kind]=null;}
   }

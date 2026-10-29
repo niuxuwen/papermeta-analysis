@@ -14,9 +14,10 @@ for(const [name,item]of Object.entries(report.profiles))test('compact task data 
  assert.deepEqual(actual,expected);assert.equal(actual.benchmarks,item.matched_benchmarks);
 });
 
-function adapter(corrupt=false){
+function adapter(corrupt=false,failures=0){
  const requests=[],home='https://viewer.test/papermeta-analysis/';
  const original=async(input)=>{const url=new URL(input),path=url.pathname.slice('/papermeta-analysis/'.length);requests.push(path);
+  if(failures-->0)throw new DOMException('signal is aborted without reason','AbortError');
   const bytes=fs.readFileSync(site+path);return new Response(corrupt&&path===manifest.task_evidence.path?Buffer.concat([bytes,Buffer.from('x')]):bytes);};
  const context={URL,Request,Response,Blob,DecompressionStream,TextDecoder,TextEncoder,Uint8Array,Array,DOMException,AbortController,setTimeout,clearTimeout,crypto:webcrypto,console,location:{href:home},
   document:{currentScript:{src:home+'snapshot-adapter.js'},readyState:'loading',addEventListener(){},getElementById(){return{textContent:JSON.stringify({manifest,snapshot:{snapshot_id:manifest.snapshot_id}})};}},window:{fetch:original}};
@@ -31,6 +32,14 @@ test('task loader fetches one verified small asset and never the complete archiv
 });
 test('tampered task asset fails integrity verification',async()=>{
  await assert.rejects(adapter(true).context.window.RadarLoadTaskEvidence(),/TASK_EVIDENCE_INTEGRITY_FAILURE/);
+});
+test('interrupted real task asset retries once and retains integrity checks',async()=>{
+ const s=adapter(false,1),data=await s.context.window.RadarLoadTaskEvidence();
+ assert.equal(data.snapshot_id,manifest.snapshot_id);assert.deepEqual(s.requests,[manifest.task_evidence.path,manifest.task_evidence.path]);
+});
+test('exhausted task downloads show a readable error and allow a later retry',async()=>{
+ const s=adapter(false,2);await assert.rejects(s.context.window.RadarLoadTaskEvidence(),/任务评测数据读取超时或连接中断/);
+ assert.equal((await s.context.window.RadarLoadTaskEvidence()).snapshot_id,manifest.snapshot_id);
 });
 test('task analysis submits while candidate data is still downloading',async()=>{
  const nodes=new Map(),requests=[],state={revision:0};let applied=false;

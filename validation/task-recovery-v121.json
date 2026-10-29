@@ -1,0 +1,21 @@
+{
+  "release": "task-recovery-v121",
+  "snapshot_id": "56f4d633a658169561b70217",
+  "task_method_version": 8,
+  "tests_passed": 55,
+  "real_browser_task": "整理医学文献",
+  "real_browser_result": "COMPLETE",
+  "model_api_calls": 0,
+  "changes": [
+    "bounded task-evidence retry with SHA-256 verification",
+    "idempotent job submission retry",
+    "resume existing job after poll failure",
+    "preserve recovery record on exhausted network retry",
+    "Chinese cancellation/connection messages"
+  ],
+  "snapshot_archive_sha256": "67cb0a6a84041dd50caef197ee40fb3fbb009728777e1d7d5f5e177d2961b61a",
+  "assets": {
+    "radar.js": "1d365c0a72da1e102cf7f02995e3f1e743be51ed4a6f975d597322c208511d50",
+    "snapshot-adapter.js": "5814d6a50942588832008b1fc81f100ec30974ac0ee5adef37b2000acafc9336"
+  }
+}

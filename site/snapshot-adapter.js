@@ -33,15 +33,21 @@
     taskEvidencePromise=(async()=>{
       const m=await manifest(),meta=m.task_evidence;
       if(!meta||meta.format!=='radar-static-task-evidence-v1'||meta.snapshot_id!==m.snapshot_id||!safePath(meta.path))throw Error('TASK_EVIDENCE_UNAVAILABLE');
-      const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
-      try{
-        const raw=await bytes(meta.path,ctrl.signal);
+      let raw;
+      for(let attempt=0;attempt<2;attempt++){
+        const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),25000);
+        try{raw=await bytes(meta.path,ctrl.signal);break;}
+        catch(error){
+          const temporary=ctrl.signal.aborted||error.name==='AbortError'||error.name==='TimeoutError'||error instanceof TypeError||[502,503,504].includes(error.status);
+          if(!temporary)throw error;
+          if(attempt===1)throw Error('任务评测数据读取超时或连接中断。当前输入已保留，请点击“重新读取候选模型”后重试。');
+        }finally{clearTimeout(timer);}
+      }
         const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
         if(raw.length!==meta.bytes||hash!==meta.sha256)throw Error('TASK_EVIDENCE_INTEGRITY_FAILURE');
         const data=JSON.parse(new TextDecoder().decode(await gunzip(raw)));
         if(data.format!==meta.format||data.snapshot_id!==m.snapshot_id||data.snapshot?.snapshot_id!==m.snapshot_id||data.measurements?.snapshot_id!==m.snapshot_id||data.task_method_version!==meta.task_method_version)throw Error('TASK_SNAPSHOT_MISMATCH');
         return data;
-      }finally{clearTimeout(timer);}
     })().catch(error=>{taskEvidencePromise=null;throw error;});
     return taskEvidencePromise;
   };
