@@ -24,7 +24,7 @@
   candidate.querySelector('.task-submit').before(candidates);
   candidate.querySelector('h3').textContent='候选模型比较';
   document.querySelector('#view-tasks .journey').remove();
-  document.querySelector('#view-tasks .section-head h2').textContent='任务选型';
+  document.querySelector('#view-tasks .section-head h2').textContent='任务选模型';
   document.querySelector('#view-tasks .section-head .eyebrow').remove();
   const pair=document.querySelector('.paired-values'),pairDetails=node('details',null,'visitor-pair-details');
   pairDetails.append(node('summary','共同测试结果 · 双模型比较'));

@@ -113,7 +113,7 @@
     const task=document.getElementById('visitor-task')?.closest('.visitor-composer');
     if(task){task.hidden=true;const info=document.createElement('article');info.className='visitor-composer snapshot-notice';const h=document.createElement('h2');h.textContent='评测数据快照';const p=document.createElement('p');p.textContent='浏览模型综合评分、评测原始成绩和论文来源。当前页面展示固定日期的评测数据，更新情况以页面标注时间为准。';const asof=document.createElement('p');asof.id='snapshot-asof';info.append(h,p,asof);task.after(info);manifest().then(m=>{asof.textContent='快照截至 '+new Date(m.generated_at).toLocaleString('zh-CN',{hour12:false});}).catch(()=>{});}
     const hint=document.querySelector('.visitor-hero-links span');if(hint)hint.textContent='查看评测范围与原始来源。';
-    const view=document.getElementById('view-tasks');if(view){const note=document.createElement('section');note.id='snapshot-task-gate';note.className='snapshot-notice';const h=document.createElement('h2');h.textContent='任务选型暂未开放';const p=document.createElement('p');p.textContent='当前版本提供模型表现、评测目录和来源查询。任务需求分析与选型暂不可用，可先查阅相关评测和原始成绩。';note.append(h,p);view.append(note);}
+    const view=document.getElementById('view-tasks');if(view){const note=document.createElement('section');note.id='snapshot-task-gate';note.className='snapshot-notice';const h=document.createElement('h2');h.textContent='任务选模型暂未开放';const p=document.createElement('p');p.textContent='当前版本提供模型表现、评测目录和来源查询。任务需求分析与选型暂不可用，可先查阅相关评测和原始成绩。';note.append(h,p);view.append(note);}
     const refresh=document.getElementById('refresh');if(refresh){refresh.textContent='重新载入';refresh.title='重新读取同一份固定快照';}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyReadOnlyUI,{once:true});else applyReadOnlyUI();
