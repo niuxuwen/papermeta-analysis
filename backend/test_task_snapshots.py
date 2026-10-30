@@ -1,4 +1,5 @@
 import gzip,hashlib,json,unittest
+from urllib.parse import urlsplit
 from task_snapshots import PublishedSnapshots,SnapshotUnavailable
 
 class Context:
@@ -11,7 +12,7 @@ class PublishedSnapshotsTests(unittest.TestCase):
     def fetch(self,url,limit):
         raw=gzip.compress(json.dumps({'format':'radar-task-inputs-v1','snapshot_id':self.sid,
             'task_method_version':8,'measurements':{'snapshot_id':self.sid}}).encode(),mtime=0)
-        if url.endswith('snapshot/current.json'):
+        if urlsplit(url).path.endswith('snapshot/current.json'):
             return json.dumps({'snapshot_id':self.sid,'task_inputs':{'snapshot_id':self.sid,
                 'path':self.path or f'snapshot/{self.sid}/task-inputs.json.gz','bytes':len(raw),
                 'sha256':hashlib.sha256(raw).hexdigest()}}).encode()
@@ -34,5 +35,11 @@ class PublishedSnapshotsTests(unittest.TestCase):
     def test_non_https_publication_roots_are_refused(self):
         for url in ('http://cowhors.com/','https://user:secret@cowhors.com/','https://cowhors.com/?secret=x'):
             with self.assertRaises(ValueError):PublishedSnapshots(url,Context)
+    def test_on_demand_refresh_loads_new_page_and_bounds_repeated_unknown_ids(self):
+        s=self.store();s.refresh();self.sid='b'*24;self.now=4
+        s.refresh(wait=True,min_interval=3);self.assertEqual(s.get(self.sid).sid,self.sid)
+        self.sid='c'*24;s.refresh(wait=True,min_interval=3)
+        with self.assertRaises(SnapshotUnavailable):s.get(self.sid)
+        self.now=8;s.refresh(wait=True,min_interval=3);self.assertEqual(s.get(self.sid).sid,self.sid)
 
 if __name__=='__main__':unittest.main()

@@ -115,7 +115,10 @@ def main():
             if (not allowed(self.command,parts.path)or set(query)-{'snapshot_id'}
                 or sid is not None and (len(query['snapshot_id'])!=1 or not re.fullmatch('[a-f0-9]{24}',sid))):return self.reply(404,{'error':'not_found'})
             try:current=context(sid)
-            except SnapshotUnavailable:return self.reply(503,{'error':'task_snapshot_not_loaded','retry_after_seconds':10})
+            except SnapshotUnavailable:
+                if store:store.refresh(wait=True,min_interval=3)
+                try:current=context(sid)
+                except SnapshotUnavailable:return self.reply(503,{'error':'task_snapshot_not_loaded','retry_after_seconds':3})
             if parts.path=='/api/task-service':return self.reply(200,{'status':'READY',**current.snapshot,'taxonomy_version':TAXONOMY_VERSION,'task_score_method_version':TASK_SCORE_VERSION,'task_score_available':True,'task_profile_available':profile_available,'versioned_snapshots':True})
             if parts.path=='/api/task-measurements':return self.reply(200,current.measurements)
             body=None

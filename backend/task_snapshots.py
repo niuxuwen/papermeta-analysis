@@ -14,7 +14,7 @@ class PublishedSnapshots:
         self.base=base.rstrip('/')+'/'
         self.factory,self.fetch,self.clock=factory,fetch or self._fetch,clock
         self.max_contexts,self.ttl=max_contexts,ttl
-        self.entries=OrderedDict();self.latest=None;self.error=None
+        self.entries=OrderedDict();self.latest=None;self.error=None;self.last_attempt=-float('inf')
         self.lock=threading.RLock();self.loading=threading.Lock()
 
     @staticmethod
@@ -24,10 +24,15 @@ class PublishedSnapshots:
         if len(data)>limit:raise SnapshotUnavailable('publication_too_large')
         return data
 
-    def refresh(self):
-        if not self.loading.acquire(blocking=False):return
+    def refresh(self,*,wait=False,min_interval=0):
+        acquired=self.loading.acquire(timeout=8)if wait else self.loading.acquire(blocking=False)
+        if not acquired:return
         try:
-            manifest=json.loads(self.fetch(urljoin(self.base,'snapshot/current.json'),1024*1024))
+            if self.clock()-self.last_attempt<min_interval:return
+            self.last_attempt=self.clock()
+            # Pages/CDN may cache this mutable pointer even when its immutable
+            # generation assets are already available. Do not wait ten minutes.
+            manifest=json.loads(self.fetch(urljoin(self.base,'snapshot/current.json')+'?task-service='+str(int(time.time())),1024*1024))
             sid=manifest.get('snapshot_id','')
             if not re.fullmatch('[a-f0-9]{24}',sid):raise SnapshotUnavailable('invalid_publication_identity')
             with self.lock:
