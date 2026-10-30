@@ -39,7 +39,7 @@ def main():
     from recent_benchmarks.live_web import make_server
     from recent_benchmarks.catalog_task_scoring import prepare_inputs,score_task,VERSION as TASK_SCORE_VERSION
     from recent_benchmarks.task_labels import validate_profile
-    from recent_benchmarks.interactive_profile import analyse_task,TaskProfileFailure
+    from recent_benchmarks.interactive_profile import analyse_task,TaskProfileFailure,PROMPT_VERSION as PROFILE_POLICY
     from recent_benchmarks.taxonomy import TAXONOMY_VERSION
     from recent_benchmarks.task_measurements import projection
     service=SimpleNamespace(args=SimpleNamespace(llm_url=os.environ.get('RADAR_LLM_URL','https://aigateway.paperbypass.com/api/v1/chat/completions'),
@@ -122,7 +122,7 @@ def main():
                 if store:store.refresh(wait=True,min_interval=3)
                 try:current=context(sid)
                 except SnapshotUnavailable:return self.reply(503,{'error':'task_snapshot_not_loaded','retry_after_seconds':3})
-            if parts.path=='/api/task-service':return self.reply(200,{'status':'READY',**current.snapshot,'taxonomy_version':TAXONOMY_VERSION,'task_score_method_version':TASK_SCORE_VERSION,'task_score_available':True,'task_profile_available':profile_available,'versioned_snapshots':True})
+            if parts.path=='/api/task-service':return self.reply(200,{'status':'READY',**current.snapshot,'taxonomy_version':TAXONOMY_VERSION,'task_score_method_version':TASK_SCORE_VERSION,'task_profile_prompt_version':PROFILE_POLICY,'task_score_available':True,'task_profile_available':profile_available,'versioned_snapshots':True})
             if parts.path=='/api/task-measurements':return self.reply(200,current.measurements)
             body=None
             if self.command=='POST':
