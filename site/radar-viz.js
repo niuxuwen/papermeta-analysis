@@ -471,7 +471,7 @@
       const source=key(b);if(comparableSources.has(source))stages.capability.add(b.directory_identity||b.benchmark_identity||source);
       if(profile.domains.length&&!profile.domains.some(d=>labels.domains?.includes(d)))continue;
       if(comparableSources.has(source))stages.domain.add(b.directory_identity||b.benchmark_identity||source);
-      if(constraints.modality!=='any'&&!labels.modalities?.includes(constraints.modality))continue;
+      if(constraints.modality!=='any'&&!(constraints.modality==='multimodal'?(labels.modalities||[]).some(m=>['image','audio','video'].includes(m)):labels.modalities?.includes(constraints.modality)))continue;
       if(comparableSources.has(source))stages.modality.add(b.directory_identity||b.benchmark_identity||source);
       if(protocolUnknown)continue;
       matched.set(source,{caps,benchmark:b,exact:(profile.tasks||[]).some(t=>labels.tasks?.includes(t))});
@@ -502,10 +502,11 @@
       const label=report.method?.measurement_facets?.[facet]||facet;
       p.label=label;p.setting=first.model_setting||'';p.benchmarks=[...new Map(p.entries.map(g=>[g.benchmark_identity||key(g),matches.get(key(g))||g])).values()];
       p.groups=new Set(p.entries.map(g=>g.group_id)).size;
-      if(!scenarios.has(scenario))scenarios.set(scenario,{id:scenario,label:label.replace(/\s*·\s*来源条件\s*\d+$/,''),panels:[]});
+      p.evidenceKind=first.evidence_kind||(facet.startsWith('related_reference:')?'RELATED_REFERENCE':'DIRECT_TASK');
+      if(!scenarios.has(scenario))scenarios.set(scenario,{id:scenario,evidenceKind:p.evidenceKind,label:label.replace(/\s*·\s*来源条件\s*\d+$/,''),panels:[]});
       scenarios.get(scenario).panels.push(p);
     }
-    const result=[...scenarios.values()].sort((a,b)=>Number(a.id.startsWith('related_reference:'))-Number(b.id.startsWith('related_reference:'))||new Set(b.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size-new Set(a.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size||a.label.localeCompare(b.label));
+    const result=[...scenarios.values()].sort((a,b)=>Number(a.evidenceKind==='RELATED_REFERENCE')-Number(b.evidenceKind==='RELATED_REFERENCE')||new Set(b.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size-new Set(a.panels.flatMap(p=>p.models.map(m=>m.model_canonical))).size||a.label.localeCompare(b.label));
     return {scenarios:result,panels:[...panels.values()],benchmarks:new Set(sources.map(g=>g.benchmark_identity||key(g))).size,groups:new Set(sources.map(g=>g.group_id)).size,models:new Set(models.filter(m=>m.publication_eligible).map(m=>m.model_canonical)).size};
   }
   function taskData(report,panel,labels={}) {

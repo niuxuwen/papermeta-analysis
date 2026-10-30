@@ -47,7 +47,7 @@ class PublishedSnapshots:
             if len(raw)!=size or hashlib.sha256(raw).hexdigest()!=sha:raise SnapshotUnavailable('task_publication_integrity')
             data=json.loads(gzip.decompress(raw))
             if (data.get('format')!='radar-task-inputs-v1' or data.get('snapshot_id')!=sid
-                or data.get('task_method_version')!=8 or data.get('measurements',{}).get('snapshot_id')!=sid):
+                or data.get('task_method_version')not in (8,9) or data.get('measurements',{}).get('snapshot_id')!=sid):
                 raise SnapshotUnavailable('task_publication_identity_mismatch')
             with self.lock:
                 now=self.clock()

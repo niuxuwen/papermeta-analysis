@@ -63,6 +63,18 @@ test('v7 source schema enables the actual broad-reference service',async()=>{
  assert(s.window.RadarTaskConnected);
 });
 
+test('v9 upgrades old prepared inputs only through same-snapshot authoritative rules',async()=>{
+ const s=setup(manifest.snapshot_id,9,manifest.snapshot_id,'source-scoped-task-measurements-v4',true);
+ s.window.RadarLoadTaskEvidence=async()=>({task_method_version:8,measurements:{schema_version:'source-scoped-task-measurements-v3',snapshot_id:manifest.snapshot_id,groups:{}}});
+ await s.connection.connect();assert.equal(s.window.RadarTaskMeasurements.schema_version,'source-scoped-task-measurements-v4');
+ assert(s.requests.some(r=>new URL(r.url).pathname==='/api/task-measurements'));
+});
+test('v9 rejects old role projection even when snapshot identity matches',async()=>{
+ const s=setup(manifest.snapshot_id,9,manifest.snapshot_id,'source-scoped-task-measurements-v3');
+ assert.equal((await s.connection.request('/api/task-score',{method:'POST',body:'{}'})).status,503);
+ assert(!s.requests.some(r=>r.method==='POST'));
+});
+
 test('v7 does not silently accept obsolete task attribution rules',async()=>{
  const s=setup(manifest.snapshot_id,7,manifest.snapshot_id,'source-scoped-task-measurements-v2');
  const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});

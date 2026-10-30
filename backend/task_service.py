@@ -34,6 +34,8 @@ def main():
     parser.add_argument('--allow-origin',action='append',default=['https://niuxuwen.github.io','https://cowhors.com','https://www.cowhors.com'])
     parser.add_argument('--profile-calls-per-day',type=int,default=24)
     args=parser.parse_args();sys.path.insert(0,str(args.radar_root.resolve()))
+    import recent_benchmarks
+    recent_benchmarks.__path__.insert(0,str(Path(__file__).parent/'task_rules'))
     from recent_benchmarks.live_web import make_server
     from recent_benchmarks.catalog_task_scoring import prepare_inputs,score_task,VERSION as TASK_SCORE_VERSION
     from recent_benchmarks.task_labels import validate_profile
@@ -54,7 +56,8 @@ def main():
     class Context:
         def __init__(self,data):
             self.snapshot={k:data[k]for k in ('snapshot_id','generated_at','window')}
-            self.measurements=data['measurements'];self.index=data['index'];self.catalog=data['catalog']
+            self.index=data['index'];self.catalog=data['catalog']
+            self.measurements=projection(self.index,self.catalog,self.snapshot['snapshot_id'])
             self.cache=OrderedDict();self.score_lock=threading.Lock()
             self.internal=make_server('127.0.0.1',0,lambda:self.snapshot,
                 task_score_provider=self.score,task_profile_provider=profile if profile_available else None)

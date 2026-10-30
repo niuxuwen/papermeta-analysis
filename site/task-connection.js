@@ -37,9 +37,10 @@
           let measurements;
           if(window.RadarLoadTaskEvidence){
             const data=await window.RadarLoadTaskEvidence();
-            if(data.task_method_version!==service.task_score_method_version)throw Error('TASK_SNAPSHOT_MISMATCH');
-            measurements=data.measurements;
-          }else{
+            if(data.task_method_version===service.task_score_method_version)measurements=data.measurements;
+            else if(!(data.task_method_version===8&&service.task_score_method_version===9))throw Error('TASK_SNAPSHOT_MISMATCH');
+          }
+          if(!measurements){
             const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
             try{
               const response=await network(taskUrl(url,'api/task-measurements',service.versioned_snapshots&&info.snapshotId),{cache:'no-store',credentials:'omit',signal:controller.signal});
@@ -47,7 +48,8 @@
               measurements=await response.json();
             }finally{clearTimeout(timeout);}
           }
-          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==(service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2'))throw Error('TASK_SNAPSHOT_MISMATCH');
+          const schema=service.task_score_method_version>=9?'source-scoped-task-measurements-v4':service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2';
+          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==schema)throw Error('TASK_SNAPSHOT_MISMATCH');
           window.RadarTaskMeasurements=measurements;
       })().catch(error=>{measurementConnection=null;connection=null;throw error;});
       await measurementConnection;

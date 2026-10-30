@@ -16,7 +16,8 @@ const groups=snapshot.index.groups.map(g=>{
  if(!rules.groups[g.group_id]&&!g.blocked_reasons?.length&&!g.extraction_in_progress)fallbackSources.add(JSON.stringify([g.paper_id,g.benchmark_id]));
  return {...pick(g,['group_id','paper_id','benchmark_id','benchmark_identity','direction','blocked_reasons','extraction_in_progress','metric_role']),...extra,scores:(g.scores||[]).map(s=>pick(s,['model_canonical','value_numeric']))};
 });
-const task={format:'radar-static-task-evidence-v1',snapshot_id:snapshot.snapshot_id,task_method_version:8,
+const taskVersion=rules.schema_version==='source-scoped-task-measurements-v4'?9:8;
+const task={format:'radar-static-task-evidence-v1',snapshot_id:snapshot.snapshot_id,task_method_version:taskVersion,
   measurements:{schema_version:rules.schema_version,snapshot_id:rules.snapshot_id,groups:Object.fromEntries(groups.filter(g=>rules.groups[g.group_id]).map(g=>[g.group_id,pick(rules.groups[g.group_id],['models','aliases','capabilities','domains','tasks'])]))},
   snapshot:{snapshot_id:snapshot.snapshot_id,generated_at:snapshot.generated_at,window:snapshot.window,status:snapshot.status,
     task_evidence_only:true,detail_loaded:false,visitor_catalog_filtered:true,model_registry:snapshot.model_registry,observations:[],
@@ -25,8 +26,8 @@ const task={format:'radar-static-task-evidence-v1',snapshot_id:snapshot.snapshot
 const bytes=zlib.gzipSync(Buffer.from(JSON.stringify(task)),{level:9});
 const sha=crypto.createHash('sha256').update(bytes).digest('hex'),asset=`snapshot/${snapshot.snapshot_id}/task-evidence-${sha.slice(0,16)}.json.gz`;
 fs.writeFileSync(path.join(site,asset),bytes);
-manifest.task_evidence={format:task.format,path:asset,bytes:bytes.length,sha256:sha,snapshot_id:task.snapshot_id,task_method_version:8};
+manifest.task_evidence={format:task.format,path:asset,bytes:bytes.length,sha256:sha,snapshot_id:task.snapshot_id,task_method_version:taskVersion};
 fs.writeFileSync(manifestPath,JSON.stringify(manifest));
-const report={snapshot_id:snapshot.snapshot_id,task_method_version:8,task_evidence_bytes:bytes.length,full_archive_bytes:packed.length,archive_reduction:1-bytes.length/packed.length,groups:groups.length,models:task.snapshot.index.models.length,raw_scores_unchanged:true};
+const report={snapshot_id:snapshot.snapshot_id,task_method_version:taskVersion,task_evidence_bytes:bytes.length,full_archive_bytes:packed.length,archive_reduction:1-bytes.length/packed.length,groups:groups.length,models:task.snapshot.index.models.length,raw_scores_unchanged:true};
 fs.writeFileSync(path.join(__dirname,'task-loading-validation.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report));

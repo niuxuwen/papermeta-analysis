@@ -69,6 +69,8 @@ def main():
         except BlockingIOError:
             return
         sys.path.insert(0, str(root))
+        import recent_benchmarks
+        recent_benchmarks.__path__.insert(0, str(Path(__file__).parent / 'task_rules'))
         from recent_benchmarks.snapshot_wire import unpack
         from recent_benchmarks.catalog_task_scoring import prepare_inputs
         from recent_benchmarks.task_measurements import projection
@@ -94,7 +96,8 @@ def main():
             ('benchmarks', 'observations', 'index', 'score_groups', 'capability_annotations', 'model_registry')})).hexdigest()
         previous_file = state / 'last-published.json'
         previous = json.loads(previous_file.read_text()) if previous_file.exists() else {}
-        if previous.get('fingerprint') == fingerprint and previous.get('task_inputs_sha256'):
+        from recent_benchmarks.catalog_task_scoring import VERSION as TASK_VERSION
+        if previous.get('fingerprint') == fingerprint and previous.get('task_inputs_sha256') and previous.get('task_method_version')==TASK_VERSION:
             print('No new verified evidence; website unchanged', flush=True)
             return
         task_index, catalog = prepare_inputs(source['index'], source['benchmarks'], source['observations'])
@@ -108,7 +111,7 @@ def main():
         public_index, public_catalog = prepare_inputs(source['index'],
             [b for b in source['benchmarks'] if public_benchmark(b)], source['observations'])
         task_inputs = {k: source[k] for k in ('snapshot_id','generated_at','window')}
-        task_inputs.update(format='radar-task-inputs-v1', task_method_version=8,
+        task_inputs.update(format='radar-task-inputs-v1', task_method_version=TASK_VERSION,
                            index=public_index, catalog=public_catalog,
                            measurements=projection(public_index, public_catalog, source['snapshot_id']))
         task_bytes = encode(task_inputs)
@@ -161,6 +164,7 @@ def main():
             'source_sha256': hashlib.sha256(packed).hexdigest(), 'source_bytes': len(packed),
             'rules_sha256': hashlib.sha256(packed_rules).hexdigest(), 'rules_bytes': len(packed_rules),
             'task_inputs_sha256': hashlib.sha256(packed_tasks).hexdigest(), 'task_inputs_bytes': len(packed_tasks),
+            'task_method_version': TASK_VERSION,
             'observations': len(source['observations']), 'method_version': 15, 'model_calls': 0}
         (directory / 'publication.json').write_bytes(encode(report))
         workflow_file = feed / '.github/workflows/pages.yml'
