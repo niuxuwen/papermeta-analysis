@@ -1,7 +1,7 @@
 name: Publish visitor website
 on:
   push:
-    branches: [main]
+    branches: [main, live-data]
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,6 +18,25 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: main
+      - uses: actions/checkout@v6
+        id: feed
+        with:
+          ref: live-data
+          path: .live-feed
+      - uses: actions/setup-node@v4
+        if: steps.feed.outcome == 'success'
+        with:
+          node-version: '24'
+      - name: Build and validate latest verified public data
+        if: steps.feed.outcome == 'success'
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: |
+          python3 backend/build_live.py .live-feed/feed
+          node build-home.cjs
+          node validate-live.cjs .live-feed/feed/publication.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

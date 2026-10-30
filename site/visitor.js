@@ -90,7 +90,7 @@
     if(!snapshot)return;
     if(lastSnapshot===snapshot)return;lastSnapshot=snapshot;
     const ready=snapshot.detail_loaded!==false;
-    if(!ready||snapshot.sources_loaded===false)return;
+    if(!ready||(snapshot.sources_loaded===false&&snapshot.catalog_loaded!==true))return;
     const V=window.RadarViz;
     V.setModelRegistry(snapshot.model_registry);
     const models=V.modelData(snapshot,'').rows.filter(r=>typeof r.score==='number'&&Number.isFinite(r.score)).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));
@@ -105,15 +105,16 @@
     }
     if(!unique.length)top.append(node('p','当前数据版本尚未发布综合评分，单项评测成绩仍可查询。','visitor-loading'));
     const byBenchmark=new Map();for(const r of snapshot.observations||[]){const key=JSON.stringify([r.paper_id,r.benchmark_id]);const stat=byBenchmark.get(key)||{count:0,models:new Set()};stat.count++;if(r.model_canonical)stat.models.add(r.model_canonical);byBenchmark.set(key,stat);}
+    const sourceStats=b=>snapshot.catalog_loaded===true?V.directoryStats(snapshot,b):(()=>{const s=byBenchmark.get(JSON.stringify([b.paper_id,b.benchmark_id]));return {observations:s?.count||0,models:s?.models.size||0};})();
     const directorySeen=new Set();
-    const featured=snapshot.benchmarks.filter(b=>b.eligibility==='ELIGIBLE'&&byBenchmark.has(JSON.stringify([b.paper_id,b.benchmark_id])))
+    const featured=snapshot.benchmarks.filter(b=>b.eligibility==='ELIGIBLE'&&sourceStats(b).observations>0)
       .sort((a,b)=>(Date.parse(b.paper_first_published)||0)-(Date.parse(a.paper_first_published)||0)||a.benchmark_name.localeCompare(b.benchmark_name)).filter(b=>{const key=V.directoryKey(b);if(directorySeen.has(key))return false;directorySeen.add(key);return true;}).slice(0,4);
     const list=$('visitor-featured');list.replaceChildren();
     for(const b of featured){
-      const stat=byBenchmark.get(JSON.stringify([b.paper_id,b.benchmark_id]));
-      const button=node('button',null,'visitor-benchmark-row');button.type='button';button.setAttribute('aria-label',`查看 ${b.benchmark_name} 的评测详情`);
-      const copy=node('span',null,'visitor-benchmark-copy');copy.append(node('strong',b.benchmark_name),node('span',b.paper_title,'visitor-benchmark-description'),node('small',`${stat.models.size} 个模型 · ${format(stat.count)} 条来源成绩`));
-      button.append(copy);button.onclick=()=>window.RadarApp.openBenchmark(b.paper_id,b.benchmark_id);list.append(button);
+      const stat=sourceStats(b);
+      const button=node('a',null,'visitor-benchmark-row');button.href=new URL('benchmark/?'+new URLSearchParams({paper_id:b.paper_id,benchmark_id:b.benchmark_id}),document.baseURI).href;button.setAttribute('aria-label',`查看 ${b.benchmark_name} 的评测详情`);
+      const copy=node('span',null,'visitor-benchmark-copy');copy.append(node('strong',b.benchmark_name),node('span',b.paper_title,'visitor-benchmark-description'),node('small',`${stat.models} 个模型 · ${format(stat.observations)} 条来源成绩`));
+      button.append(copy);list.append(button);
     }
     if(!featured.length)list.append(node('p','当前窗口尚无可展示的已核验成绩。','visitor-loading'));
   });

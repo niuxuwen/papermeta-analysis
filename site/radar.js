@@ -56,7 +56,7 @@
     if(window.RadarLoadModel&&(state.snapshot?.sources_loaded===false||state.snapshot?.detail_loaded===false)){
       const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000),connection=$('connection');
       connection.textContent='正在读取 '+name+' 的来源成绩…';
-      try{detailSnapshot=await window.RadarLoadModel(name,{signal:ctrl.signal});Viz.setModelRegistry(detailSnapshot.model_registry);connection.textContent='固定快照 · 数据截至 '+date(detailSnapshot.generated_at);}
+      try{detailSnapshot=await window.RadarLoadModel(name,{signal:ctrl.signal});Viz.setModelRegistry(detailSnapshot.model_registry);connection.textContent='数据截至 '+date(detailSnapshot.generated_at);}
       catch(error){connection.textContent='模型来源读取未完成，请再次点击模型重试。';return;}
       finally{clearTimeout(timer);}
     }
@@ -1002,6 +1002,25 @@
     for(const root of document.querySelectorAll('.viz-card,.paired-values'))root.setAttribute('aria-busy',String(loading&&(!state.snapshot||state.snapshot.detail_loaded===false)));
   }
   let refreshInFlight=null,refreshHasDetails=false;
+  let publicationUpdating=false;
+  async function checkPublishedUpdate(){
+    if(!window.RadarCheckPublication||publicationUpdating||refreshInFlight||state.loading||document.hidden||state.view==='tasks'||document.querySelector('dialog[open]'))return;
+    publicationUpdating=true;
+    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
+    try{
+      const next=await window.RadarCheckPublication({signal:ctrl.signal});
+      if(!next||refreshInFlight||state.loading||state.view==='tasks'||document.querySelector('dialog[open]'))return;
+      const snapshot=validate(next.snapshot);next.commit();state.snapshot=snapshot;
+      taskState.evidenceSnapshot=null;taskState.result=null;
+      if(state.selected&&!snapshot.benchmarks.some(b=>identity(b)===state.selected))state.selected=null;
+      Viz.setModelRegistry(snapshot.model_registry);render();resumeInteractive();
+      const asof=$('snapshot-asof');if(asof)asof.textContent='数据截至 '+date(snapshot.generated_at);
+      const node=$('connection');node.className='connection';node.textContent='自动更新 · 数据截至 '+date(snapshot.generated_at);
+    }catch(error){
+      // A failed or incomplete publication never replaces the last verified one.
+      const node=$('connection');if(state.snapshot){node.className='connection';node.textContent='数据截至 '+date(state.snapshot.generated_at)+' · 更新检查暂未完成，稍后自动重试';}
+    }finally{clearTimeout(timer);publicationUpdating=false;}
+  }
   function refresh(options={}) {
     if(refreshInFlight){
       if(options.details&&!refreshHasDetails)return refreshInFlight.then(()=>!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded)?refresh(options):undefined);
@@ -1018,7 +1037,7 @@
     try {
       if(window.RadarHomeSnapshot&&!details&&!requestedModel&&(state.view==='home'||state.view==='tasks')){
         if(!previous||previous.detail_loaded===false)state.snapshot=validate(window.RadarHomeSnapshot);
-        render();resumeInteractive();node.textContent='固定快照 · 数据截至 '+date(state.snapshot.generated_at);if(state.view==='tasks')await loadTaskEvidenceForPreview();return;
+        render();resumeInteractive();node.textContent='数据截至 '+date(state.snapshot.generated_at);if(state.view==='tasks')await loadTaskEvidenceForPreview();return;
       }
       if(window.RadarHomeSnapshot){
         if(!previous){state.snapshot=validate(window.RadarHomeSnapshot);render();resumeInteractive();}
@@ -1039,7 +1058,7 @@
       if(taskState.confirmed&&!taskState.busy&&taskState.evidenceRevision!==d.status.task_evidence_revision)scoreTask(true);
       const preview=d.status.preview_note,stale=d.status.stale;
       node.className=`connection ${preview||stale?'warning':''}`;
-      node.textContent=window.RadarSnapshotMode?'固定快照 · 数据截至 '+date(d.generated_at):d.status.window_refreshing?`日期窗口更新中 · 显示 ${date(d.window.end)} 截至的核验快照`:preview?'本地数据预览':stale?'数据已连接 · 后台更新较慢':'已连接 · 已核验来源数据';node.title=d.status.window_refreshing?d.status.reason:preview||'成绩来自公开论文，未独立复现。';
+      node.textContent=window.RadarSnapshotMode?'数据截至 '+date(d.generated_at):d.status.window_refreshing?`日期窗口更新中 · 显示 ${date(d.window.end)} 截至的核验快照`:preview?'本地数据预览':stale?'数据已连接 · 后台更新较慢':'已连接 · 已核验来源数据';node.title=d.status.window_refreshing?d.status.reason:preview||'成绩来自公开论文，未独立复现。';
     } catch(err) {
       if(!overviewLoaded&&!previous){state.snapshot=null;taskState.result=null;state.selected=null;render();}
       node.className='connection '+(overviewLoaded||previous?'warning':'error');
@@ -1054,7 +1073,7 @@
       if(previous)node.textContent='更新未完成，显示上次已加载内容。'+node.textContent;
     } finally {state.loading=false;$('refresh').disabled=false;setLoadingUI(false);renderReferences();}
   }
-  for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',refresh);$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('model-sort').addEventListener('change',e=>{state.sort=e.target.value;state.modelLimit=100;renderModels();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
+  for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',()=>checkPublishedUpdate().then(()=>refresh()));$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('model-sort').addEventListener('change',e=>{state.sort=e.target.value;state.modelLimit=100;renderModels();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
   window.addEventListener('radar:task-connected',()=>{if(state.view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));});
   const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   if(document.modelContext?.registerTool){
@@ -1071,5 +1090,5 @@
   });
   const hashView=()=>{const requested=location.hash.slice(1).replace(/-view$/,'');const view=requested==='pipeline'?'benchmarks':requested;if(['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))setView(view);};
   hashView();window.addEventListener('hashchange',hashView);
-  initTaskWorkspace();if(visitorEdition)setView(state.view);uiReady=true;render();refresh();if(!window.RadarSnapshotMode)setInterval(()=>{if(!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();},REFRESH_INTERVAL_MS);document.addEventListener('visibilitychange',()=>{if(!window.RadarSnapshotMode&&!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();});
+  initTaskWorkspace();if(visitorEdition)setView(state.view);uiReady=true;render();refresh();if(window.RadarSnapshotMode){setTimeout(checkPublishedUpdate,1500);setInterval(checkPublishedUpdate,60000);}else setInterval(()=>{if(!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();},REFRESH_INTERVAL_MS);document.addEventListener('visibilitychange',()=>{if(window.RadarSnapshotMode)checkPublishedUpdate();else if(!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();});
 })();

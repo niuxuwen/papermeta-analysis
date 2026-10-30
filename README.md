@@ -11,7 +11,7 @@
 4. 使用 Pages 设置页或成功任务返回的真实网址访问。仅浏览网站不需要 GitHub 账号。
 
 支持个人站点根目录和项目站点 /仓库名/ 子路径；Benchmark 独立详情使用 benchmark/ 目录。
-网页展示固定快照。任务分析与评分通过独立的任务后端提供，连接配置与运行方式见 `backend/README.md`。
+网页展示后台已核验的最新一批公开数据。服务器每五分钟检查一次，发现新成绩、标签或评分结果后自动发布；网页每分钟检查新版本，并在完整性校验通过后切换。构建、发布及网络缓存带来额外延迟，不保证秒级更新。任务分析与评分通过独立的任务后端提供，连接配置与运行方式见 `backend/README.md`。
 发布仓库：https://github.com/niuxuwen/papermeta-analysis。GitHub Pages 地址：https://niuxuwen.github.io/papermeta-analysis/。
 
 ## 验证
@@ -43,3 +43,13 @@ node --test test-pages.cjs test-task-connection.cjs test-candidate-recovery.cjs 
 任务后端当前通过本机临时 HTTPS 隧道连接，依赖本机任务服务与隧道进程运行。没有后台服务时，页面会显示不可用并保留成绩浏览；不会以演示结果代替任务计算。
 
 共同测试结果可在模型表现页面及模型详情中打开。统一厂商规则候选已完成开发与新来源检验，未达到替换现版的依据；线上评分仍为 v15。详见 [实验与发布范围](UNIFORM-EVIDENCE-V121.md)。
+
+## 自动发布
+
+`backend/publish_live.py --project /path/to/benchmark-radar` 从已运行服务的只读 workspace 获取当前核验结果，去除进程信息并扫描凭据。只把公开数据写入专用 `live-data` 分支；该分支由发布器管理，每次以租约更新独立的最新一版，不积累全部快照历史，不改写 main。服务器专用部署私钥只保存在服务器 `deployment/publication/`，不进入 Git、网站或 Actions。
+
+GitHub Actions 从 main 读取网页代码，从 live-data 读取公开数据，执行 `backend/build_live.py`、`build-home.cjs` 和 `validate-live.cjs`。榜单、目录统计、模型原始来源与服务器公开结果逐项核对后才部署；数据读取、版本核验或构建失败时保留上次成功网站。此流程不启动新采集任务、不调用模型接口，也不重算综合评分。服务器任务规则投影只用于构建同版本的静态数据。
+
+浏览器先验证新数据再替换整个版本；阅读详情弹窗或编辑任务时暂缓切换。网络失败、内容损坏或较旧 CDN 响应不会清空已加载数据。新发布数据可能因为部署或缓存延迟稍后才可见。
+
+更新协议检查：`node --test test-publication-updates.cjs`；发布边界检查：`python backend/test_live_publication.py`。冻结的真实样本回归仍使用现有测试，自动发布校验使用当批真实数据，不硬编码旧型号数量或成绩。
