@@ -15,8 +15,10 @@ python backend/task_service.py \
   --port 1894
 ```
 
-通过 HTTPS 网关将任务服务接入公网，然后在 `site/task-backend.json` 填写 `enabled: true` 和 HTTPS `base_url`。前端会核对 `snapshot_id`，数据版本不一致时不提交任务。服务默认允许来源 `https://niuxuwen.github.io`；其他前端来源使用 `--allow-origin` 显式添加。
+自动发布的网站使用 `--publication-url https://cowhors.com/` 替代 `--snapshot`。发布器为每一批公开数据生成带 SHA-256 的轻量任务输入包；任务服务每 45 秒检查公开清单，校验后加载新版本。每次任务请求携带页面的 `snapshot_id`，进行中的任务继续使用提交时的数据；未准备好的版本返回明确的暂不可用响应，不退回其他数据。旧版本至少保留 20 分钟，正在计算的版本不会被回收。
 
-本机试用入口使用临时隧道，依赖本机进程持续运行，不作为长期部署。正式更新数据时须同时更新网页快照和任务服务。
+通过 HTTPS 网关将任务服务接入公网，然后在 `site/task-backend.json` 填写 `enabled: true` 和 HTTPS `base_url`。前端会核对 `snapshot_id`，数据版本不一致时不提交任务。服务默认允许 `https://niuxuwen.github.io`、`https://cowhors.com` 和 `https://www.cowhors.com`；其他前端来源使用 `--allow-origin` 显式添加。
+
+本机试用入口使用临时隧道，依赖本机进程持续运行，不作为长期部署。任务服务自动加载网页已发布的数据，不再人工替换固定快照。
 
 任务能力分析使用服务端配置的模型，每日默认最多接受 24 次分析执行，重复输入可复用内存结果；任务评分不调用模型。请求体、并发、队列和结果大小均有限制，不开放采集、管理或凭据接口。任务描述与结果不写入文件，异步查询使用随机任务凭据。

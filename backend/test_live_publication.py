@@ -56,6 +56,17 @@ class PublicationTests(unittest.TestCase):
             detail=json.loads(gzip.decompress((site/next(iter(manifest['details'].values()))).read_bytes()))
             self.assertEqual(detail['observations'],source['observations'])
             self.assertEqual(detail['benchmark'],source['benchmarks'][0])
+            tasks=gzip.compress(encode({'format':'radar-task-inputs-v1','snapshot_id':source['snapshot_id'],
+                'task_method_version':8,'index':{'groups':[]},'catalog':[],
+                'measurements':{'snapshot_id':source['snapshot_id']}}),mtime=0)
+            (feed/'task-inputs.json.gz').write_bytes(tasks)
+            report.update(task_inputs_sha256=hashlib.sha256(tasks).hexdigest(),task_inputs_bytes=len(tasks))
+            (feed/'publication.json').write_bytes(encode(report))
+            build(feed,site,root/'rules.json')
+            manifest=json.loads((site/'snapshot/manifest.json').read_text())
+            self.assertEqual((site/manifest['task_inputs']['path']).read_bytes(),tasks)
+            (feed/'task-inputs.json.gz').write_bytes(b'corrupt')
+            with self.assertRaises(AssertionError):build(feed,site,root/'rules.json')
             (feed/'source.json.gz').write_bytes(b'broken')
             with self.assertRaises(AssertionError):build(feed,site,root/'rules.json')
 

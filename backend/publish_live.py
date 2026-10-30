@@ -94,16 +94,31 @@ def main():
             ('benchmarks', 'observations', 'index', 'score_groups', 'capability_annotations', 'model_registry')})).hexdigest()
         previous_file = state / 'last-published.json'
         previous = json.loads(previous_file.read_text()) if previous_file.exists() else {}
-        if previous.get('fingerprint') == fingerprint:
+        if previous.get('fingerprint') == fingerprint and previous.get('task_inputs_sha256'):
             print('No new verified evidence; website unchanged', flush=True)
             return
         task_index, catalog = prepare_inputs(source['index'], source['benchmarks'], source['observations'])
         rules = projection(task_index, catalog, source['snapshot_id'])
+        # Match the visitor's public catalogue policy before exposing task inputs.
+        def public_benchmark(b):
+            return ((b.get('name_audit') or {}).get('status') != 'REVIEW_REQUIRED'
+                and str(b.get('benchmark_name') or '').strip() not in {'名称待核验','名称待核实','名称待确认'}
+                and 'EXCLUDED' not in [b.get('eligibility'),b.get('status'),b.get('history_status'),
+                                      (b.get('progress') or {}).get('paper_status')])
+        public_index, public_catalog = prepare_inputs(source['index'],
+            [b for b in source['benchmarks'] if public_benchmark(b)], source['observations'])
+        task_inputs = {k: source[k] for k in ('snapshot_id','generated_at','window')}
+        task_inputs.update(format='radar-task-inputs-v1', task_method_version=8,
+                           index=public_index, catalog=public_catalog,
+                           measurements=projection(public_index, public_catalog, source['snapshot_id']))
+        task_bytes = encode(task_inputs)
+        credential_scan(task_bytes)
         source_bytes, rule_bytes = encode(source), encode(rules)
         credential_scan(source_bytes)
         credential_scan(rule_bytes)
         packed = gzip.compress(source_bytes, compresslevel=6, mtime=0)
         packed_rules = gzip.compress(rule_bytes, compresslevel=6, mtime=0)
+        packed_tasks = gzip.compress(task_bytes, compresslevel=6, mtime=0)
         feed = state / 'feed'
         feed.mkdir(exist_ok=True)
         env = {**os.environ, 'GIT_TERMINAL_PROMPT': '0', 'RADAR_NETWORK_ENV': str(root / 'deployment/network.env')}
@@ -140,10 +155,12 @@ def main():
         directory.mkdir(exist_ok=True)
         (directory / 'source.json.gz').write_bytes(packed)
         (directory / 'task-measurements.json.gz').write_bytes(packed_rules)
+        (directory / 'task-inputs.json.gz').write_bytes(packed_tasks)
         report = {'publisher': 'radar-publication-v1', 'snapshot_id': source['snapshot_id'],
             'generated_at': source['generated_at'], 'fingerprint': fingerprint,
             'source_sha256': hashlib.sha256(packed).hexdigest(), 'source_bytes': len(packed),
             'rules_sha256': hashlib.sha256(packed_rules).hexdigest(), 'rules_bytes': len(packed_rules),
+            'task_inputs_sha256': hashlib.sha256(packed_tasks).hexdigest(), 'task_inputs_bytes': len(packed_tasks),
             'observations': len(source['observations']), 'method_version': 15, 'model_calls': 0}
         (directory / 'publication.json').write_bytes(encode(report))
         workflow_file = feed / '.github/workflows/pages.yml'

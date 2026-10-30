@@ -62,6 +62,16 @@ def build(feed, site, rules_path):
         'source_sha256': report['source_sha256'], 'observations': report['observations'], 'method_version': 15,
         'score_version': snapshot['index']['method'].get('score_version'), 'model_calls': 0,
         'automatic_publication': True}
+    if report.get('task_inputs_sha256'):
+        task_raw = (feed / 'task-inputs.json.gz').read_bytes()
+        assert len(task_raw) == report['task_inputs_bytes']
+        assert hashlib.sha256(task_raw).hexdigest() == report['task_inputs_sha256']
+        task = json.loads(gzip.decompress(task_raw))
+        assert task['snapshot_id'] == sid and task['format'] == 'radar-task-inputs-v1'
+        task_path = root / 'task-inputs.json.gz'
+        task_path.write_bytes(task_raw)
+        manifest['task_inputs'] = {'path': task_path.relative_to(site).as_posix(), 'bytes': len(task_raw),
+                                  'sha256': report['task_inputs_sha256'], 'snapshot_id': sid}
     (site / 'snapshot/manifest.json').write_bytes(encode(manifest))
     rules_path.parent.mkdir(parents=True, exist_ok=True)
     rules_path.write_bytes(gzip.decompress(rules_raw))

@@ -2,10 +2,15 @@
 (function(){
   'use strict';
   const base=new URL('./',document.currentScript.src),network=window.fetch.bind(window);
-  let connection,measurementConnection;
+  let connection,measurementConnection,connectionSnapshot;
+  const jobSnapshots=new Map();
+  function snapshotId(){return window.RadarHomeSnapshot?.snapshot_id||JSON.parse(document.getElementById('snapshot-bootstrap').textContent).snapshot.snapshot_id;}
+  function taskUrl(url,route,sid){const result=new URL(route.replace(/^\//,''),url);if(sid)result.searchParams.set('snapshot_id',sid);return result;}
   const supports=(route,method)=>['/api/task-profile','/api/task-score','/api/interactive-jobs'].includes(route)?method==='POST':['/api/taxonomy','/api/task-measurements'].includes(route)?method==='GET':/^\/api\/interactive-jobs\/[A-Za-z0-9_-]{43}$/.test(route)&&['GET','DELETE'].includes(method);
   async function health(){
-    if(connection)return connection;
+    const requested=snapshotId();
+    if(connection&&connectionSnapshot===requested)return connection;
+    connectionSnapshot=requested;measurementConnection=null;
     connection=(async()=>{
       const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
       try{
@@ -15,13 +20,12 @@
         const url=new URL(config.base_url);
         const local=['127.0.0.1','localhost'].includes(url.hostname)&&['127.0.0.1','localhost'].includes(location.hostname);
         if((url.protocol!=='https:'&&!local)||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw Error('INVALID_TASK_SERVICE');
-        const health=await network(new URL('api/task-service',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
+        const health=await network(taskUrl(url,'api/task-service',requested),{cache:'no-store',credentials:'omit',signal:controller.signal});
         if(!health.ok)throw Error('TASK_SERVICE_UNAVAILABLE');
         const service=await health.json();
-        const bootstrap=JSON.parse(document.getElementById('snapshot-bootstrap').textContent);
-        if(service.snapshot_id!==bootstrap.snapshot.snapshot_id)throw Error('TASK_SNAPSHOT_MISMATCH');
+        if(service.snapshot_id!==requested)throw Error('TASK_SNAPSHOT_MISMATCH');
         if(service.status!=='READY'||!service.task_score_available)throw Error('TASK_SERVICE_UNAVAILABLE');
-        return {url,service};
+        return {url,service,snapshotId:requested};
       }finally{clearTimeout(timeout);}
     })().catch(error=>{connection=null;throw error;});
     return connection;
@@ -38,7 +42,7 @@
           }else{
             const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
             try{
-              const response=await network(new URL('api/task-measurements',url),{cache:'no-store',credentials:'omit',signal:controller.signal});
+              const response=await network(taskUrl(url,'api/task-measurements',service.versioned_snapshots&&info.snapshotId),{cache:'no-store',credentials:'omit',signal:controller.signal});
               if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
               measurements=await response.json();
             }finally{clearTimeout(timeout);}
@@ -63,7 +67,14 @@
     if(!supports(route,(init?.method||'GET').toUpperCase()))return new Response(JSON.stringify({error:'not_found'}),{status:404,headers:{'Content-Type':'application/json'}});
     let measurements=route==='/api/task-score';
     if(route==='/api/interactive-jobs'){try{measurements=JSON.parse(init?.body||'{}').kind!=='profile';}catch{measurements=true;}}
-    try{const {url}=await connect({measurements});return network(new URL(route.slice(1),url),{...init,credentials:'omit',redirect:'error'});}
+    try{
+      const token=route.match(/^\/api\/interactive-jobs\/([A-Za-z0-9_-]{43})$/)?.[1];
+      const info=(token&&jobSnapshots.get(token))||await connect({measurements});
+      const {url,service}=info;
+      const response=await network(taskUrl(url,route,service.versioned_snapshots&&info.snapshotId),{...init,credentials:'omit',redirect:'error'});
+      if(route==='/api/interactive-jobs'&&response.ok){const job=await response.clone().json();if(job.id){jobSnapshots.set(job.id,info);if(jobSnapshots.size>64)jobSnapshots.delete(jobSnapshots.keys().next().value);}}
+      return response;
+    }
     catch(error){if(error.name==='AbortError')throw error;return new Response(JSON.stringify({error:error.message==='TASK_SNAPSHOT_MISMATCH'?'task_snapshot_mismatch':'task_service_unavailable'}),{status:503,headers:{'Content-Type':'application/json'}});}
   }
   window.RadarTaskConnection=Object.freeze({supports,connect,request});
