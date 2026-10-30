@@ -535,6 +535,7 @@
     const ordered=all.slice().sort((a,b)=>(b.publication_score??-1)-(a.publication_score??-1)||b.n_benchmarks-a.n_benchmarks);
     const comparison=$('task-comparison');comparison.hidden=false;comparison.replaceChildren();
     const currentFacet=all[0]?.measurement_facets?.[0],facetLabel=report.method?.measurement_facets?.[currentFacet];
+    if(all[0]?.evidence_kind)comparison.append(el('span',all[0].evidence_kind==='DIRECT_TASK'?'直接任务成绩':'相关能力参考','badge'));
     comparison.append(el('h3',facetLabel?facetLabel+' · 模型比较':related?'所选模型 · 相近能力参考':'所选模型 · 并排比较'),el('p',calibrated?'完整权重参考分包含待测能力的中性估计；已测能力参考分只描述有成绩的部分。不同可比来源组分开显示。':'按具体任务类型、已测能力和来源条件分组；缺测留空。每项参考分可查阅对应成绩，不同组不混排。','method-note'));
     const wrap=el('div',null,'task-comparison-wrap'),table=el('table',null,'task-comparison-table'),thead=el('thead'),tr=el('tr');
     const headings=['模型',calibrated?'完整权重参考分':'参考分',...(calibrated?['已测能力参考分']:[]),'相关评测','已测能力权重',...caps.map(c=>capTitle(c.capability_id))];

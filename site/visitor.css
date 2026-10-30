@@ -84,3 +84,5 @@ a.visitor-benchmark-row{text-decoration:none;color:inherit}
 @media(max-width:1000px){.task-scenario-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.task-scenario{padding:14px}.task-scenario-heading{flex-direction:column;gap:4px}}
 @media(prefers-reduced-motion:reduce){.task-scenario-condition>summary,.task-scenario-actions button,.task-scenario-actions a{transition:none}}
+
+.task-evidence-section{margin-top:28px}.task-evidence-section>h3{margin-bottom:8px}.task-evidence-section>.method-note{margin-bottom:18px}
