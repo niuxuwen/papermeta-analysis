@@ -2,9 +2,9 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {webcrypto,createHash}=require('node:crypto');
 const site=__dirname+'/site/',current=JSON.parse(fs.readFileSync(site+'snapshot/current.json'));
 const original=JSON.parse(zlib.gunzipSync(fs.readFileSync(site+current.ranking.path)));
-function setup(prefix='/'){
+function setup(prefix='/',sameId=false){
  const seen=[],next=structuredClone(current),light=structuredClone(original);
- next.snapshot_id=light.snapshot_id='aaaaaaaaaaaaaaaaaaaaaaaa';next.generated_at=light.generated_at='2026-10-30T09:00:00Z';
+ next.snapshot_id=light.snapshot_id=sameId?current.snapshot_id:'aaaaaaaaaaaaaaaaaaaaaaaa';next.generated_at=light.generated_at='2026-10-30T09:00:00Z';
  const raw=zlib.gzipSync(JSON.stringify(light));
  next.ranking={snapshot_id:next.snapshot_id,path:'snapshot/'+next.snapshot_id+'/ranking-test.json.gz',bytes:raw.length,sha256:createHash('sha256').update(raw).digest('hex')};
  let manifest=next,corrupt=false;
@@ -32,6 +32,10 @@ for(const prefix of ['/','/papermeta-analysis/'])test('new publication verifies 
 test('unchanged version checks one small no-store descriptor and no archive',async()=>{
  const s=setup();s.manifest(current);assert.equal(await s.c.window.RadarCheckPublication(),null);
  assert.deepEqual(s.seen,['snapshot/current.json']);
+});
+test('rebuilt assets are detected even if the underlying evidence id is unchanged',async()=>{
+ const s=setup('/',true),pending=await s.c.window.RadarCheckPublication();assert(pending);
+ pending.commit();assert.equal((await s.c.window.RadarLoadRanking()).generated_at,s.next.generated_at);
 });
 test('corrupt or incomplete publication leaves the verified version usable and retryable',async()=>{
  const s=setup();s.corrupt(true);await assert.rejects(s.c.window.RadarCheckPublication(),/INTEGRITY/);

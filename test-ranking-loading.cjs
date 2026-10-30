@@ -52,6 +52,7 @@ test('real per-model dossiers preserve all model observations, scores and catalo
 for(const prefix of ['/','/papermeta-analysis/'])test('model details fetch only an index and the selected model at '+prefix,async()=>{
   const s=setup(prefix),d=await s.context.window.RadarLoadModel('GPT-6-Astra');
   assert.equal(d.model_name,'GPT-6-Astra');assert.equal(s.seen.length,2);assert(s.seen.every(p=>p.includes('/models/')));
+  assert.deepEqual(JSON.parse(JSON.stringify(d.model_registry)),JSON.parse(JSON.stringify(full.model_registry)));
   await s.context.window.RadarLoadModel('GPT-6-Astra');assert.equal(s.seen.length,2);
   await s.context.window.RadarLoadModel('GPT-5.2');assert.equal(s.seen.length,3);
 });

@@ -13,13 +13,15 @@ module.exports=function(snapshot,publicData,V,manifest,site){
   for(const name of new Set([...observations.keys(),...models.keys()])){
     const sources=observations.get(name)||[],ids=new Set(sources.map(r=>JSON.stringify([r.paper_id,r.benchmark_id])));
     const detail={snapshot_id:snapshot.snapshot_id,generated_at:snapshot.generated_at,model_name:name,window:snapshot.window,
-      visitor_catalog_filtered:true,detail_loaded:true,status:{jobs:[]},model_registry:publicData.model_registry,
+      visitor_catalog_filtered:true,detail_loaded:true,status:{jobs:[]},
       observations:sources,index:{method:publicData.index.method,models:models.get(name)||[],groups:groups.get(name)||[]},
       benchmarks:publicData.benchmarks.filter(b=>ids.has(JSON.stringify([b.paper_id,b.benchmark_id]))).map(b=>pick(b,['paper_id','benchmark_id','benchmark_name','paper_title','name_audit','eligibility']))};
     const raw=zlib.gzipSync(JSON.stringify(detail),{level:9}),sha=crypto.createHash('sha256').update(raw).digest('hex'),file=modelRoot+sha.slice(0,24)+'.json.gz';
     fs.writeFileSync(path.join(site,file),raw);dossiers[name]={path:file,bytes:raw.length,sha256:sha};
   }
-  const indexBytes=zlib.gzipSync(JSON.stringify({snapshot_id:snapshot.snapshot_id,models:dossiers}),{level:9}),indexHash=crypto.createHash('sha256').update(indexBytes).digest('hex'),indexPath=modelRoot+'index-'+indexHash.slice(0,16)+'.json.gz';
+  // Model identity metadata is shared verbatim; repeating it in every dossier
+  // makes large live generations slow to compress and unnecessarily large.
+  const indexBytes=zlib.gzipSync(JSON.stringify({snapshot_id:snapshot.snapshot_id,models:dossiers,model_registry:publicData.model_registry}),{level:9}),indexHash=crypto.createHash('sha256').update(indexBytes).digest('hex'),indexPath=modelRoot+'index-'+indexHash.slice(0,16)+'.json.gz';
   fs.writeFileSync(path.join(site,indexPath),indexBytes);manifest.model_details={path:indexPath,bytes:indexBytes.length,sha256:indexHash,snapshot_id:snapshot.snapshot_id};
   const charts={};
   for(const setting of V.settings(publicData)){

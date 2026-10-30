@@ -80,7 +80,7 @@
       if(index.snapshot_id!==m.snapshot_id||!Object.hasOwn(index.models,name))throw Error('MODEL_SOURCE_UNAVAILABLE');
       const data=await verifiedAsset(index.models[name],signal);
       if(data.snapshot_id!==m.snapshot_id||data.model_name!==name)throw Error('MODEL_SOURCE_SNAPSHOT_MISMATCH');
-      return data;
+      return index.model_registry?{...data,model_registry:index.model_registry}:data;
     })().catch(error=>{modelPromises.delete(name);throw error;});
     modelPromises.set(name,promise);return promise;
   };
@@ -90,7 +90,8 @@
     return publicationCheck||(publicationCheck=(async()=>{
       const current=await manifest();
       const next=JSON.parse(new TextDecoder().decode(await bytes('snapshot/current.json',signal)));
-      if(next.snapshot_id===current.snapshot_id)return null;
+      if(next.snapshot_id===current.snapshot_id&&['ranking','model_details','comparisons','task_evidence'].every(key=>
+        next[key]?.path===current[key]?.path&&next[key]?.sha256===current[key]?.sha256))return null;
       if(next.format!=='radar-static-snapshot-v1'||!Array.isArray(next.parts)||!next.parts.every(p=>safePath(p.path))||
         !next.ranking||next.ranking.snapshot_id!==next.snapshot_id||!Number.isFinite(Date.parse(next.generated_at))||
         Date.parse(next.generated_at)<Date.parse(current.generated_at))throw Error('INVALID_PUBLICATION');
