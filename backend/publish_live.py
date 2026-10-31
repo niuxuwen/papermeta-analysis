@@ -60,6 +60,7 @@ def credential_scan(raw):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--project', type=Path, required=True)
+    parser.add_argument('--from-published-feed',action='store_true',help='Re-score the last hash-verified publication when explicitly requested; never queries extraction.')
     args = parser.parse_args()
     root = args.project.resolve()
     state = root / 'deployment/publication'
@@ -75,16 +76,24 @@ def main():
         from recent_benchmarks.snapshot_wire import unpack
         from recent_benchmarks.catalog_task_scoring import prepare_inputs
         from recent_benchmarks.task_measurements import projection
-        address = json.loads((root / 'deployment/runtime-address.json').read_text())
-        ip = ipaddress.ip_address(address['host'])
-        if not (ip.is_private or ip in ipaddress.ip_network('100.64.0.0/10')) or address['port'] != 8765:
-            raise ValueError('Unexpected Radar backend')
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-        req = urllib.request.Request(f'http://{ip}:8765/api/workspace', headers={'Accept-Encoding': 'gzip'})
-        with opener.open(req, timeout=150) as response:
-            raw = response.read()
-            if response.headers.get('Content-Encoding') == 'gzip':
-                raw = gzip.decompress(raw)
+        if args.from_published_feed:
+            feed_root=state/'feed/feed'
+            prior=json.loads((feed_root/'publication.json').read_text())
+            packed_source=(feed_root/'source.json.gz').read_bytes()
+            if prior.get('publisher')!='radar-publication-v1' or hashlib.sha256(packed_source).hexdigest()!=prior['source_sha256']:
+                raise ValueError('Previous verified source integrity failure')
+            raw=gzip.decompress(packed_source)
+        else:
+            address = json.loads((root / 'deployment/runtime-address.json').read_text())
+            ip = ipaddress.ip_address(address['host'])
+            if not (ip.is_private or ip in ipaddress.ip_network('100.64.0.0/10')) or address['port'] != 8765:
+                raise ValueError('Unexpected Radar backend')
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+            req = urllib.request.Request(f'http://{ip}:8765/api/workspace', headers={'Accept-Encoding': 'gzip'})
+            with opener.open(req, timeout=150) as response:
+                raw = response.read()
+                if response.headers.get('Content-Encoding') == 'gzip':
+                    raw = gzip.decompress(raw)
         wire = json.loads(raw)
         if wire.get('wire_format'):
             decoded = unpack(wire['payload'])
