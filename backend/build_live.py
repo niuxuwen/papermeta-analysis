@@ -24,7 +24,7 @@ def build(feed, site, rules_path):
     sid = snapshot['snapshot_id']
     assert re.fullmatch(r'[a-f0-9]{24}', sid)
     assert sid == report['snapshot_id'] == rules['snapshot_id']
-    assert snapshot['index']['method']['version'] == 15
+    assert snapshot['index']['method']['version'] in (15,16)
     assert len(snapshot['observations']) == report['observations'] > 0
     root = site / 'snapshot' / sid
     (root / 'details').mkdir(parents=True, exist_ok=True)
@@ -59,7 +59,7 @@ def build(feed, site, rules_path):
     manifest = {'format': 'radar-static-snapshot-v1', 'snapshot_id': sid,
         'generated_at': snapshot['generated_at'], 'workspace_sha256': report['source_sha256'], 'parts': parts,
         'overview': (root / 'overview.json.gz').relative_to(site).as_posix(), 'details': details,
-        'source_sha256': report['source_sha256'], 'observations': report['observations'], 'method_version': 15,
+        'source_sha256': report['source_sha256'], 'observations': report['observations'], 'method_version': snapshot['index']['method']['version'],
         'score_version': snapshot['index']['method'].get('score_version'), 'model_calls': 0,
         'automatic_publication': True}
     if report.get('task_inputs_sha256'):

@@ -1,6 +1,7 @@
 """Publish verified service results to the owned, replaceable live-data branch.
 
-This exports public data only. It does not run extraction, scoring or model calls.
+This exports public data only. It never runs extraction or model calls. Legacy
+v15 publications are re-fitted on a copy with the reviewed vendor-blind policy.
 The main source branch is never written. A lease protects concurrent feed updates.
 """
 import argparse
@@ -31,7 +32,7 @@ def public_source(snapshot):
     result = {k: snapshot[k] for k in keys if k in snapshot}
     if not result.get('observations') or not result.get('index', {}).get('models'):
         raise ValueError('Verified publication is not ready')
-    if result['index']['method']['version'] != 15:
+    if result['index']['method']['version'] not in (15,16):
         raise ValueError('Unreviewed scoring method; previous website remains published')
     source_status = snapshot.get('status', {})
     result['status'] = {'state': 'PUBLICATION', 'jobs': [], 'stale': False,
@@ -92,14 +93,23 @@ def main():
             snapshot = wire
         source = public_source(snapshot)
         # Ignore HTTP read time; only evidence, labels, scores and window dates trigger publication.
-        fingerprint = hashlib.sha256(encode({k: source.get(k) for k in
-            ('benchmarks', 'observations', 'index', 'score_groups', 'capability_annotations', 'model_registry')})).hexdigest()
+        fingerprint = hashlib.sha256(encode({'scoring_policy':'vendor-blind-v16-task-v10',**{k: source.get(k) for k in
+            ('benchmarks', 'observations', 'index', 'score_groups', 'capability_annotations', 'model_registry')}})).hexdigest()
         previous_file = state / 'last-published.json'
         previous = json.loads(previous_file.read_text()) if previous_file.exists() else {}
         from recent_benchmarks.catalog_task_scoring import VERSION as TASK_VERSION
         if previous.get('fingerprint') == fingerprint and previous.get('task_inputs_sha256') and previous.get('task_method_version')==TASK_VERSION:
             print('No new verified evidence; website unchanged', flush=True)
             return
+        if source['index']['method']['version']==15:
+            from copy import deepcopy
+            from recent_benchmarks.global_scoring import apply_global_scores
+            original_sid=source['snapshot_id']
+            source['index']=deepcopy(source['index'])
+            apply_global_scores(source['index'],benchmark_catalog=source['benchmarks'],as_of=source['window']['end'])
+            if source['index']['method']['version']!=16:raise ValueError('Reviewed vendor-blind scorer is not installed')
+            source['snapshot_id']=hashlib.sha256(encode([original_sid,source['index']['method']['score_version'],'task-v10'])).hexdigest()[:24]
+            source['index']['method']['source_snapshot_id']=original_sid
         task_index, catalog = prepare_inputs(source['index'], source['benchmarks'], source['observations'])
         rules = projection(task_index, catalog, source['snapshot_id'])
         # Match the visitor's public catalogue policy before exposing task inputs.
@@ -165,7 +175,7 @@ def main():
             'rules_sha256': hashlib.sha256(packed_rules).hexdigest(), 'rules_bytes': len(packed_rules),
             'task_inputs_sha256': hashlib.sha256(packed_tasks).hexdigest(), 'task_inputs_bytes': len(packed_tasks),
             'task_method_version': TASK_VERSION,
-            'observations': len(source['observations']), 'method_version': 15, 'model_calls': 0}
+            'observations': len(source['observations']), 'method_version': source['index']['method']['version'], 'model_calls': 0}
         (directory / 'publication.json').write_bytes(encode(report))
         workflow_file = feed / '.github/workflows/pages.yml'
         workflow_file.parent.mkdir(parents=True, exist_ok=True)

@@ -75,6 +75,19 @@ test('v9 rejects old role projection even when snapshot identity matches',async(
  assert(!s.requests.some(r=>r.method==='POST'));
 });
 
+test('v10 replaces v9 preview rules with the same-snapshot v5 source projection',async()=>{
+ const s=setup(manifest.snapshot_id,10,manifest.snapshot_id,'source-scoped-task-measurements-v5',true);
+ s.window.RadarLoadTaskEvidence=async()=>({task_method_version:9,measurements:{schema_version:'source-scoped-task-measurements-v4',snapshot_id:manifest.snapshot_id,groups:{}}});
+ await s.connection.connect();assert.equal(s.window.RadarTaskMeasurements.schema_version,'source-scoped-task-measurements-v5');
+ assert(s.requests.some(r=>new URL(r.url).pathname==='/api/task-measurements'));
+});
+
+test('v10 refuses a v4 projection even when the snapshot matches',async()=>{
+ const s=setup(manifest.snapshot_id,10,manifest.snapshot_id,'source-scoped-task-measurements-v4');
+ assert.equal((await s.connection.request('/api/task-score',{method:'POST',body:'{}'})).status,503);
+ assert(!s.requests.some(r=>r.method==='POST'));
+});
+
 test('v7 does not silently accept obsolete task attribution rules',async()=>{
  const s=setup(manifest.snapshot_id,7,manifest.snapshot_id,'source-scoped-task-measurements-v2');
  const r=await s.connection.request('/api/task-score',{method:'POST',body:'{}'});

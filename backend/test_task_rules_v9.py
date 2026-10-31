@@ -47,7 +47,7 @@ class RealTaskPolicyTests(unittest.TestCase):
         profile=json.loads(gzip.decompress((self.root/'task-audit-medical-20261031.json.gz').read_bytes()))['task_index']['profile']
         before=json.dumps(self.data,sort_keys=True)
         full=score_task(deepcopy(self.data['index']),self.data['catalog'],profile,min_benchmarks=1)
-        self.assertEqual(VERSION,9);self.assertEqual(full['evidence_summary']['DIRECT_TASK']['benchmarks'],0)
+        self.assertGreaterEqual(VERSION,9);self.assertEqual(full['evidence_summary']['DIRECT_TASK']['benchmarks'],0)
         self.assertGreater(full['evidence_summary']['RELATED_REFERENCE']['benchmarks'],0)
         groups={g['group_id']:g for g in self.data['index']['groups']}
         for m in full['models']:

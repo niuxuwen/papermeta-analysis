@@ -20,7 +20,7 @@ from .measurement_semantics import POLICY as MEASUREMENT_POLICY
 from .task_measurement_policy import modality_matches,task_metric_role
 
 METHOD='catalog_task_pairwise_reference'
-VERSION=9
+VERSION=10
 
 def prepare_inputs(index, catalog, observations=None):
     fields=('group_id','paper_id','benchmark_id','benchmark_identity','table_id','row_key',
@@ -41,12 +41,12 @@ def prepare_inputs(index, catalog, observations=None):
         if not labels['capabilities']:continue
         evidence=[{k:e.get(k) for k in ('layer','id','source_id','quote')} for e in raw.get('evidence',[])
             if isinstance(e,dict) and e.get('id') in labels.get(e.get('layer'),[]) and e.get('bound_to_benchmark') is True]
-        benches.append({**{k:b[k] for k in ('paper_id','benchmark_id','benchmark_name','benchmark_identity') if k in b},
+        benches.append({**{k:b[k] for k in ('paper_id','benchmark_id','benchmark_name','benchmark_identity','release_date','date_basis') if k in b},
             'catalog_labels':labels,'catalog_label_sources':deepcopy(b.get('catalog_label_sources',[])),
             'label_evidence':evidence})
     return {'groups':groups,'models':models,'exclusions':[]},benches
 
-def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=None):
+def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=None, as_of=None):
     profile=validate_profile(profile)
     cap_weights={c['id']:c['weight'] for c in profile['capabilities']}
     total=math.fsum(cap_weights.values())
@@ -112,7 +112,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
     names={(s['model_canonical'],g['model_setting']) for g in selected for s in g['scores']}
     work={'groups':deepcopy(selected),'models':[deepcopy(m) for m in index['models']
         if (m['model_canonical'],m['model_setting']) in names],'exclusions':[]}
-    fitted,fit_audit=fit_references(work,matched)
+    fitted,fit_audit=fit_references(work,matched,as_of=as_of)
     # Selection only filters finished results; it never changes the reference fit.
     kept=None if candidate_models is None else set(candidate_models)
     models=[];panel=[];comparisons=[]
@@ -124,7 +124,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
             if key in fitted:model_groups[key].append((g,s))
     reference_version=digest([METHOD,VERSION,sorted((g['group_id'],g['reference_profile']['reference_id']) for g in ready),
                               sorted((g['group_id'],g['metric_capabilities']) for g in ready),ATTRIBUTION_POLICY,
-                              {k:fit_audit[k] for k in ('policy','neutral_prior_strength','task_coupling_strength','capability_residual_mix')}])[:24]
+                              {k:fit_audit[k] for k in ('policy','neutral_prior_strength','task_coupling_strength','capability_residual_mix','temporal_scoring','common_source_calibration')}])[:24]
     def panel_id(setting,component):
         return 'task:'+digest([METHOD,VERSION,reference_version,setting,component,profile])[:24]
     required=defaultdict(set)
@@ -187,6 +187,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         models.append({**{k:m[k] for k in ('model_canonical','model_setting')},
             'evidence_kind':'DIRECT_TASK' if all(g['exact_task_match']for g,_ in records) else 'RELATED_REFERENCE',
             'source_papers':len({g['paper_id']for g,_ in records}),
+            'evidence_level':('SINGLE_BENCHMARK_REFERENCE' if count==1 else 'MULTI_PAPER_COMPOSITE' if len({g['paper_id']for g,_ in records})>=2 else 'MULTI_BENCHMARK_REFERENCE'),
             'score_components':[{k:v for k,v in c.items() if k!='opponents'} for c in entries],
             'scored_benchmarks':count,'scored_groups':len(entries),
             'direct_opponents':len({n for c in entries for n in c['opponents']}),
@@ -277,6 +278,9 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         'measurement_facets':facet_labels(g['measurement_facet']for g in ready),
         'measurement_scope':'Final task performance only; source-defined prompt/intervention effects and statistical diagnostics remain raw evidence and never enter fitted capability references.',
         'minimum_related_benchmarks':1,
+        'temporal_scoring':fit_audit['temporal_scoring'],
+        'common_source_calibration':fit_audit['common_source_calibration'],
+        'shared_comparison_policy':fit_audit['contrast_policy'],
         'score_formula':'Within each task facet, sum(weight * observed reference) / measured weight. Single-benchmark components use fixed empirical peers without neutral shrinkage; multi-benchmark components use independent comparison fitting. Never combine different facets into an overall order.',
         'missing_data':'One valid related measurement suffices. Missing values remain null, not 50 or 0. Measured capability masks define separate comparison cohorts. Numeric zero remains evidence.',
         'matching':'Keep all usable matched sources. Exact task outcomes and catalogue-related measurements have separate facets and never share a fitted score.',

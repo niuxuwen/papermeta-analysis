@@ -6,7 +6,7 @@ Raw source records are retained; only the scoring projection is filtered.
 import re
 from collections import defaultdict
 
-POLICY='source-scoped-task-measurements-v4'
+POLICY='source-scoped-task-measurements-v5'
 FACETS={
  'software_delivery':'软件工作交付','web_functionality':'网页功能实现',
  'code_implementation':'规格实现与验收','code_repair':'已有代码修复',
@@ -164,13 +164,14 @@ def inspect(group,benchmark,profile):
     if re.search(r'information extraction|field extraction|structured extraction|extract.{0,35}(?:entit|relation|field)',evidence):
         return result(['information_extraction'],'document_extraction')
     scope=text+' '+' '.join(subsets)
-    task_evidence=scope if len(benchmark.get('catalog_labels',{}).get('tasks',[]))>1 else evidence
+    catalogue=benchmark.get('catalog_labels',{})
+    task_evidence=scope if (len(catalogue.get('tasks',[]))>1 or len(catalogue.get('domains',[]))>1) else evidence
     if re.search(r'mathematical|math problem|mathematics|theorem|proof',task_evidence):
         return result(['reasoning','mathematical_reasoning'],'mathematical_problem_solving')
     if re.search(r'logical reasoning|reasoning tasks|constraint satisfaction',task_evidence):return result(['reasoning','logical_reasoning'],'logical_problem_solving')
     if re.search(r'visual question.answer|image question.answer',task_evidence):return result(['visual_perception','multimodal_understanding'],'visual_question_answering')
     if re.search(r'document question.answer|reading comprehension',task_evidence):return result(['reading_comprehension'],'document_question_answering')
-    if re.search(r'(?:clinical|medical|medicine).{0,70}(?:question|knowledge|accuracy)|(?:question|knowledge).{0,70}(?:clinical|medical)',evidence):
+    if re.search(r'(?:clinical|medical|medicine).{0,70}(?:question|knowledge|accuracy)|(?:question|knowledge).{0,70}(?:clinical|medical)',task_evidence):
         return result(['domain_knowledge','factual_accuracy'],'medical_knowledge_qa')
     if re.search(r'scientific question|science question|scientific reasoning',task_evidence):return result(['domain_knowledge','reasoning'],'scientific_problem_solving')
     if re.search(r'instruction.following|format compliance',evidence):return result(['instruction_following'],'language_generation')

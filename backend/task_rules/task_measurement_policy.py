@@ -1,8 +1,8 @@
-"""Task-only source roles and audited modality matching; never edits raw cells."""
+"""Shared final-outcome roles and audited modality matching; raw cells stay exact."""
 import re
 import unicodedata
 
-POLICY = 'task-source-roles-and-modalities-v1'
+POLICY = 'shared-source-roles-and-modalities-v2'
 
 def modality_matches(requested, modalities):
     tags = set(modalities or [])
@@ -27,6 +27,13 @@ def task_metric_role(group):
         return 'INTERVENTION_EFFECT'
     change = bool(re.search(r'[Δ∆]|\\[Dd]elta|(?i:\b(?:delta|gain|improvement|lift)\b)', label))
     if change:
+        # A caption-defined action-prediction target is a physical displacement,
+        # not an improvement from a prompt or intervention.
+        if (re.search(r'per.step prediction performance|action prediction',context)
+                and re.search(r'mean absolute error|pearson correlation',context)
+                and re.search(r'(?i)(?:[Δ∆]|\\delta)\s*(?:x|y|z|ψ|theta)',label)
+                and re.search(r'(?i)\b(?:mae|rmse|pearson)\b',label)):
+            return 'PERFORMANCE'
         # Color error is an absolute outcome with a conventional delta symbol.
         if re.fullmatch(r'(?i)(?:[Δ∆]|delta)\s*E(?:\s*00|\s*2000)?\s*[↓↑]?', label.strip()) and re.search(r'colou?r|ciede2000|colorimetric', context):
             return 'PERFORMANCE'

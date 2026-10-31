@@ -68,7 +68,7 @@ def main():
             key=json.dumps([task_profile,sorted(candidates)if candidates is not None else None],sort_keys=True,ensure_ascii=False)
             with self.score_lock:
                 if key in self.cache:self.cache.move_to_end(key);return deepcopy(self.cache[key])
-                task=score_task(self.index,self.catalog,task_profile,min_benchmarks=1,candidate_models=candidates)
+                task=score_task(self.index,self.catalog,task_profile,min_benchmarks=1,candidate_models=candidates,as_of=self.snapshot['window'].get('end') or self.snapshot['generated_at'])
                 result={**self.snapshot,'task_index':task};self.cache[key]=result
                 while len(self.cache)>4:self.cache.popitem(last=False)
                 return deepcopy(result)
