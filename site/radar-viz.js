@@ -172,7 +172,7 @@
       const scored=new Set(data.cells.filter(c=>axes.has(c.axis)&&finite(c.value)).map(c=>c.name));
       return data.rows.filter(r=>scored.has(r.name));
     }
-    return data.rows.filter(r=>finite(r.score));
+    return data.rows.filter(r=>finite(r.score)&&(data.kind!=='coverage'||r.selectionEligible!==false));
   }
   function defaultRows(data,count=6) {
     const coverageView=(data.kind==='models'&&!data.fixedPanel)||data.kind==='coverage';
