@@ -92,8 +92,10 @@ def main():
         else:
             snapshot = wire
         source = public_source(snapshot)
+        policy_files=['global_scoring.py','common_source_calibration.py','task_reference_fit_v6.py','catalog_task_scoring.py','task_measurements.py','task_measurement_policy.py']
+        policy_hash=hashlib.sha256(b''.join((Path(__file__).parent/'task_rules'/name).read_bytes()for name in policy_files)).hexdigest()
         # Ignore HTTP read time; only evidence, labels, scores and window dates trigger publication.
-        fingerprint = hashlib.sha256(encode({'scoring_policy':'vendor-blind-v16-task-v10',**{k: source.get(k) for k in
+        fingerprint = hashlib.sha256(encode({'scoring_policy':policy_hash,**{k: source.get(k) for k in
             ('benchmarks', 'observations', 'index', 'score_groups', 'capability_annotations', 'model_registry')}})).hexdigest()
         previous_file = state / 'last-published.json'
         previous = json.loads(previous_file.read_text()) if previous_file.exists() else {}
@@ -108,7 +110,7 @@ def main():
             source['index']=deepcopy(source['index'])
             apply_global_scores(source['index'],benchmark_catalog=source['benchmarks'],as_of=source['window']['end'])
             if source['index']['method']['version']!=16:raise ValueError('Reviewed vendor-blind scorer is not installed')
-            source['snapshot_id']=hashlib.sha256(encode([original_sid,source['index']['method']['score_version'],'task-v10'])).hexdigest()[:24]
+            source['snapshot_id']=hashlib.sha256(encode([original_sid,source['index']['method']['score_version'],policy_hash])).hexdigest()[:24]
             source['index']['method']['source_snapshot_id']=original_sid
         task_index, catalog = prepare_inputs(source['index'], source['benchmarks'], source['observations'])
         rules = projection(task_index, catalog, source['snapshot_id'])

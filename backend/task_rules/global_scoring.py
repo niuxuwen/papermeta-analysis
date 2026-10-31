@@ -235,7 +235,7 @@ def apply_global_scores(index, *, min_benchmarks=3, prior_strength=PRIOR_STRENGT
             interval['standard_error']=max(interval['standard_error'],baseline_intervals[i]['standard_error'])
         calibrated={n:theta[pos[n]] for n in primary}
         consistency=dict(enabled=False,constraints=0,rules=[],changed_models=0,conflicting_cycles=[],
-            policy='RETIRED_SCORE_ORDER_PROJECTION',reason='No hard projection. Repeated common-source calibration, including a disclosed finite within-vendor penalty, is part of the fitted objective; no release-order input.')
+            policy='RETIRED_SCORE_ORDER_PROJECTION',reason='No hard projection. Vendor-blind repeated common-source direct calibration is part of the fitted objective; no manufacturer or release-order input.')
         conditional={}
         published = []
         membership = {n:digest(c)[:16] for c in connected for n in c}
@@ -331,7 +331,7 @@ def apply_global_scores(index, *, min_benchmarks=3, prior_strength=PRIOR_STRENGT
                 order_status='SOURCE_FITTED_POINT_ESTIMATE',
                 above_model=above['model_canonical'] if above else None,
                 above_comparison=proof,
-                interpretation='Soft-calibrated shared-strength estimate. Repeated consistent common-source directions receive finite regularization, stronger within known vendors. No release-order or hard rank projection. Adjacent evidence remains inspectable.')
+                interpretation='Soft-calibrated shared-strength estimate. Repeated consistent common-source directions receive the same finite regularization for all model pairs. No manufacturer, release-order or hard rank projection. Adjacent evidence remains inspectable.')
         summaries.append(dict(model_setting=setting,reference_groups=len(groups),reference_benchmarks=len(benchmark_counts),
             core_selection=core_audit,source_papers=len({g['paper_id'] for g in groups}),
             published_models=len(published),status='PUBLISHED' if published else 'INSUFFICIENT_EVIDENCE',
