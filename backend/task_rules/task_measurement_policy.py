@@ -2,7 +2,7 @@
 import re
 import unicodedata
 
-POLICY = 'shared-source-roles-and-modalities-v2'
+POLICY = 'shared-source-roles-and-modalities-v3'
 
 def modality_matches(requested, modalities):
     tags = set(modalities or [])
@@ -10,7 +10,7 @@ def modality_matches(requested, modalities):
         return True
     if requested == 'multimodal':
         return bool(tags & {'image', 'audio', 'video'})
-    return requested in tags
+    return set(requested.split('+')) <= tags
 
 def task_metric_role(group):
     from .source_comparison_context import resolved_role
@@ -20,6 +20,8 @@ def task_metric_role(group):
     label = unicodedata.normalize('NFKC', str(group.get('metric') or ''))
     context = ' '.join(str(group.get('metric_role_context') or '').split()).casefold()
     plain = re.sub(r'[^a-z0-9]', '', label.casefold())
+    if plain in {'rank','avgrank','averagerank','meanrank'} and re.search(r'ordered by (?:the )?mean|equal displayed scores share a rank|average (?:of )?.*ranks|average ranks',context):
+        return 'DERIVED_RANK'
     if re.fullmatch(r'(?:ece|expectedcalibrationerror|brier(?:raw|score)?)(?:percent)?', plain):
         return 'CALIBRATION_DIAGNOSTIC'
     if (plain in {'increase', 'decrease', 'unchanged'}

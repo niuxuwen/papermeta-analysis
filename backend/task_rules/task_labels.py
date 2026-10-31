@@ -400,7 +400,8 @@ def validate_profile(profile: dict) -> dict:
         raise ValueError("constraints字段必须完整且不含未知字段")
     constraints = dict(constraints)
     _language(constraints["language"], "any")
-    if constraints["modality"] not in {"any", "text", "multimodal"}:
+    from .task_constraints import valid_modality
+    if not valid_modality(constraints["modality"]):
         raise ValueError("任务modality非法")
     if constraints["knowledge_access"] not in {"any", "closed_book", "retrieval", "tools"}:
         raise ValueError("任务knowledge_access非法")
@@ -417,10 +418,15 @@ def validate_profile(profile: dict) -> dict:
 def _constraint_is_literal(key, value, quote):
     """Reject hard constraints the user never stated; ambiguous claims use any."""
     lowered = quote.casefold()
+    from .task_constraints import literal_media,literal_access,literal_context
+    if key=='modality':
+        found=literal_media(quote)
+        return found==value or value=='multimodal' and found not in (None,'text')
+    if key=='knowledge_access':return literal_access(quote)==value
     if key == "min_context_tokens":
         # Require explicit token units and the exact amount, avoiding a guess
         # from document length, character count or model capacity.
-        return bool(re.search(r"(?<!\d)" + re.escape(str(value)) + r"\s*(?:tokens?|令牌)(?![a-z])", lowered))
+        return literal_context(quote)==value
     if key == "language":
         names = {"zh": ("中文", "汉语", "chinese"), "en": ("英文", "英语", "english"),
                  "ja": ("日语", "日文", "japanese"), "ko": ("韩语", "韩文", "korean"),

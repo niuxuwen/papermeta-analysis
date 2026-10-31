@@ -1,0 +1,1081 @@
+{
+  "snapshot_id": "43f0249220829f9f86a6efc1",
+  "method": 11,
+  "cases": {
+    "chart_paraphrase": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 47,
+        "models": 303
+      },
+      "after": {
+        "benchmarks": 35,
+        "models": 241,
+        "panels": 67,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 161,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "image",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 35,
+          "papers": 35,
+          "models": 241,
+          "panels": 67
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 5.09
+    },
+    "code_ui": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 31,
+        "models": 145
+      },
+      "after": {
+        "benchmarks": 6,
+        "models": 73,
+        "panels": 26,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 98,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "image",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 2,
+          "papers": 2,
+          "models": 25,
+          "panels": 5
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 5,
+          "papers": 5,
+          "models": 67,
+          "panels": 21
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.6
+    },
+    "coding": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 34,
+        "models": 147
+      },
+      "after": {
+        "benchmarks": 33,
+        "models": 144,
+        "panels": 79,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 160,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 6,
+          "papers": 6,
+          "models": 36,
+          "panels": 11
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 30,
+          "papers": 30,
+          "models": 137,
+          "panels": 68
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 4.05
+    },
+    "coding_paraphrase": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 34,
+        "models": 147
+      },
+      "after": {
+        "benchmarks": 33,
+        "models": 144,
+        "panels": 79,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 160,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 6,
+          "papers": 6,
+          "models": 36,
+          "panels": 11
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 30,
+          "papers": 30,
+          "models": 137,
+          "panels": 68
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 3.28
+    },
+    "creative_writing": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 0,
+        "models": 0
+      },
+      "after": {
+        "benchmarks": 15,
+        "models": 125,
+        "panels": 36,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 35,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "zh",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 15,
+          "papers": 15,
+          "models": 125,
+          "panels": 36
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 1.85
+    },
+    "data": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 21,
+        "models": 186
+      },
+      "after": {
+        "benchmarks": 21,
+        "models": 186,
+        "panels": 41,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 217,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 13,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 20,
+          "papers": 20,
+          "models": 178,
+          "panels": 40
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.26
+    },
+    "entity_contract": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 4,
+        "models": 20
+      },
+      "after": {
+        "benchmarks": 4,
+        "models": 20,
+        "panels": 10,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 5,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 4,
+          "papers": 4,
+          "models": 20,
+          "panels": 10
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 1.87
+    },
+    "extraction": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 15,
+        "models": 142
+      },
+      "after": {
+        "benchmarks": 15,
+        "models": 142,
+        "panels": 27,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 90,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 15,
+          "papers": 15,
+          "models": 142,
+          "panels": 27
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 1.7
+    },
+    "finance_audit": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 14,
+        "models": 136
+      },
+      "after": {
+        "benchmarks": 14,
+        "models": 136,
+        "panels": 29,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 75,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 14,
+          "papers": 14,
+          "models": 136,
+          "panels": 29
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 1.92
+    },
+    "law": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 8,
+        "models": 91
+      },
+      "after": {
+        "benchmarks": 8,
+        "models": 91,
+        "panels": 15,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 53,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 8,
+          "papers": 8,
+          "models": 91,
+          "panels": 15
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.51
+    },
+    "long_context": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 0,
+        "models": 0
+      },
+      "after": {
+        "benchmarks": 9,
+        "models": 102,
+        "panels": 22,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 56,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": 200000
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 9,
+          "papers": 9,
+          "models": 102,
+          "panels": 22
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.09
+    },
+    "math": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 33,
+        "models": 236
+      },
+      "after": {
+        "benchmarks": 33,
+        "models": 236,
+        "panels": 75,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 284,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 11,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 33,
+          "papers": 33,
+          "models": 236,
+          "panels": 74
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.84
+    },
+    "math_teaching": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 24,
+        "models": 177
+      },
+      "after": {
+        "benchmarks": 24,
+        "models": 176,
+        "panels": 51,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 171,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 2,
+          "papers": 2,
+          "models": 39,
+          "panels": 2
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 23,
+          "papers": 23,
+          "models": 153,
+          "panels": 49
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.37
+    },
+    "medical": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 25,
+        "models": 251
+      },
+      "after": {
+        "benchmarks": 25,
+        "models": 251,
+        "panels": 47,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 411,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 25,
+          "papers": 23,
+          "models": 251,
+          "panels": 47
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.3
+    },
+    "medical_paraphrase": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 24,
+        "models": 216
+      },
+      "after": {
+        "benchmarks": 24,
+        "models": 216,
+        "panels": 43,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 370,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 24,
+          "papers": 22,
+          "models": 216,
+          "panels": 43
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 1.92
+    },
+    "meeting_audio": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 57,
+        "models": 355
+      },
+      "after": {
+        "benchmarks": 14,
+        "models": 93,
+        "panels": 25,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 55,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "audio",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 2,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 13,
+          "papers": 13,
+          "models": 91,
+          "panels": 24
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.42
+    },
+    "music_audio": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 14,
+        "models": 98
+      },
+      "after": {
+        "benchmarks": 13,
+        "models": 91,
+        "panels": 24,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 55,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "audio",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 13,
+          "papers": 13,
+          "models": 91,
+          "panels": 24
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.64
+    },
+    "retrieval_factcheck": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 0,
+        "models": 0
+      },
+      "after": {
+        "benchmarks": 39,
+        "models": 252,
+        "panels": 82,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 265,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "retrieval",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 39,
+          "papers": 38,
+          "models": 252,
+          "panels": 82
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 4.11
+    },
+    "scanned_doc": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 11,
+        "models": 84
+      },
+      "after": {
+        "benchmarks": 8,
+        "models": 60,
+        "panels": 22,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 20,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "image",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 8,
+          "papers": 8,
+          "models": 60,
+          "panels": 22
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.24
+    },
+    "science": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 31,
+        "models": 225
+      },
+      "after": {
+        "benchmarks": 31,
+        "models": 225,
+        "panels": 70,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 282,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 28,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 30,
+          "papers": 30,
+          "models": 204,
+          "panels": 69
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.98
+    },
+    "sports_video": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 37,
+        "models": 266
+      },
+      "after": {
+        "benchmarks": 17,
+        "models": 143,
+        "panels": 30,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 216,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "video",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 17,
+          "papers": 17,
+          "models": 143,
+          "panels": 30
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 3.24
+    },
+    "traffic_video": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 27,
+        "models": 184
+      },
+      "after": {
+        "benchmarks": 17,
+        "models": 140,
+        "panels": 36,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 210,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "video",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 17,
+          "papers": 17,
+          "models": 140,
+          "panels": 36
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.67
+    },
+    "translation": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 0,
+        "models": 0
+      },
+      "after": {
+        "benchmarks": 19,
+        "models": 153,
+        "panels": 31,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 151,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "zh",
+        "modality": "any",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 19,
+          "papers": 19,
+          "models": 153,
+          "panels": 31
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 2.92
+    },
+    "visual": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 56,
+        "models": 331
+      },
+      "after": {
+        "benchmarks": 38,
+        "models": 250,
+        "panels": 75,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 168,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "image",
+        "knowledge_access": "any",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 38,
+          "papers": 38,
+          "models": 250,
+          "panels": 75
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 4.32
+    },
+    "web_factcheck": {
+      "status": "PASS",
+      "before": {
+        "benchmarks": 43,
+        "models": 269
+      },
+      "after": {
+        "benchmarks": 43,
+        "models": 269,
+        "panels": 89,
+        "multi_benchmark_panels": 0,
+        "same_vendor_pairs_with_shared_sources": 285,
+        "strict_same_vendor_dominance_conflicts": []
+      },
+      "constraints": {
+        "language": "any",
+        "modality": "any",
+        "knowledge_access": "retrieval",
+        "min_context_tokens": null
+      },
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 43,
+          "papers": 42,
+          "models": 269,
+          "panels": 89
+        }
+      },
+      "wrong_modality_sources": [],
+      "seconds": 3.3
+    }
+  }
+}

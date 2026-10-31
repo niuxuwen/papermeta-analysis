@@ -18,9 +18,10 @@ from .scoring_preparation import digest
 from .relative_scoring import _benchmark
 from .measurement_semantics import POLICY as MEASUREMENT_POLICY
 from .task_measurement_policy import modality_matches,task_metric_role
+from .task_constraints import unverified_protocol_fields
 
 METHOD='catalog_task_pairwise_reference'
-VERSION=10
+VERSION=11
 
 def prepare_inputs(index, catalog, observations=None):
     fields=('group_id','paper_id','benchmark_id','benchmark_identity','table_id','row_key',
@@ -59,15 +60,14 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         if profile['domains'] and not set(profile['domains'])&set(labels['domains']):continue
         constraints=profile['constraints']
         if not modality_matches(constraints['modality'],labels['modalities']):
+            excluded.append({'reason':'input_modality_not_established','paper_id':b['paper_id'],'benchmark_id':b['benchmark_id']})
             continue
         # Catalogue tags do not establish language, retrieval or context budgets.
-        if (constraints['language']!='any' or constraints['knowledge_access']!='any'
-                or constraints['min_context_tokens'] is not None):
-            excluded.append({'reason':'protocol_constraint_not_verified','paper_id':b['paper_id'],'benchmark_id':b['benchmark_id']})
-            continue
+        pending=unverified_protocol_fields(constraints)
         matched[b['paper_id'],b['benchmark_id']]={**b,'matched_capabilities':caps,
             'relevance_weight':math.fsum(cap_weights[c] for c in caps),
-            'exact_task_match':bool(set(profile['tasks'])&set(labels['tasks']))}
+            'unverified_constraints':pending,
+            'exact_task_match':not pending and bool(set(profile['tasks'])&set(labels['tasks']))}
     from .source_comparison_context import resolved_role
     # Source facets keep exact-task and related evidence separate. Finding one
     # exact-task source must not remove other usable catalogue references.
@@ -99,9 +99,12 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         if len(scores)<2:
             excluded.append({'reason':'insufficient_source_valid_models','paper_id':g['paper_id'],'benchmark_id':g['benchmark_id'],'group_id':g['group_id']})
             continue
-        direct=basis=='SOURCE_SCOPED_TASK_OUTCOME' and bool(set(profile['tasks'])&set(measurement.get('tasks',[])))
-        selected.append({**g,'scores':scores,'metric_capabilities':caps,'metric_attribution_basis':basis,'measurement_facet':measurement['facet'],'task_percentage':measurement.get('percentage',False),
-                         'exact_task_match':direct,'evidence_kind':'DIRECT_TASK' if direct else 'RELATED_REFERENCE'})
+        pending=matched[key]['unverified_constraints']
+        direct=not pending and basis=='SOURCE_SCOPED_TASK_OUTCOME' and bool(set(profile['tasks'])&set(measurement.get('tasks',[])))
+        facet=('unverified_reference:' if pending else '')+measurement['facet']
+        selected.append({**g,'scores':scores,'metric_capabilities':caps,'metric_attribution_basis':basis,'task_percentage':measurement.get('percentage',False),
+                         'measurement_facet':facet,'unverified_constraints':pending,
+                         'exact_task_match':direct,'evidence_kind':'UNVERIFIED_REFERENCE' if pending else 'DIRECT_TASK' if direct else 'RELATED_REFERENCE'})
     exact={(g['paper_id'],g['benchmark_id'])for g in selected
            if (g['paper_id'],g['benchmark_id'])in usable and g['exact_task_match']}
     if profile['tasks']:
@@ -141,6 +144,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
                 'reference_models':[s['model_canonical'] for s in g['scores'] if not general_model_issue(s['model_canonical'])],
                 'label_basis':g['metric_attribution_basis'],'measurement_facet':g['measurement_facet'],'task_relevance_weight':b['relevance_weight'],
                 'exact_task_match':g['exact_task_match'],'evidence_kind':g['evidence_kind'],
+                'unverified_constraints':g['unverified_constraints'],
                 'evidence':b['label_evidence'][:2],'blocked_reasons':[]})
     for (name,setting,facet),records in sorted(model_groups.items()):
         m={'model_canonical':name,'model_setting':setting}
@@ -174,7 +178,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
             observed_value=fmean(fmean(v) for v in buckets.values()) if buckets else None
             value=fit['capabilities'].get(cap) if buckets else None
             abilities.append({'capability_id':cap,'weight':weight,'score':None,'observed_score':value,
-                'reference_score':value,'source_average':observed_value,'label_basis':('CATALOG_RELATED_REFERENCE' if facet.startswith('related_reference:') else 'SOURCE_SCOPED_TASK_OUTCOME'),'coverage':len(buckets)/denom if denom else 0,
+                'reference_score':value,'source_average':observed_value,'label_basis':('CATALOG_RELATED_REFERENCE' if facet.removeprefix('unverified_reference:').startswith('related_reference:') else 'SOURCE_SCOPED_TASK_OUTCOME'),'coverage':len(buckets)/denom if denom else 0,
                 'n_benchmarks':len(buckets),'n_independent_benchmarks':len(buckets),'n_groups':len(components),
                 'required_groups':sum(g['model_setting']==setting and g['measurement_facet']==facet and cap in g['metric_capabilities'] for g in ready),
                 'status':'REFERENCE_AVAILABLE' if buckets else 'NO_EVIDENCE'})
@@ -185,7 +189,9 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         score=contribution/covered_weight
         count=len({_benchmark(g) for g,_ in records})
         models.append({**{k:m[k] for k in ('model_canonical','model_setting')},
-            'evidence_kind':'DIRECT_TASK' if all(g['exact_task_match']for g,_ in records) else 'RELATED_REFERENCE',
+            'evidence_kind':records[0][0]['evidence_kind'],
+            'task_eligible':all(g['exact_task_match']for g,_ in records) and not any(g['unverified_constraints']for g,_ in records),
+            'unverified_constraints':sorted({k for g,_ in records for k in g['unverified_constraints']}),
             'source_papers':len({g['paper_id']for g,_ in records}),
             'evidence_level':('SINGLE_BENCHMARK_REFERENCE' if count==1 else 'MULTI_PAPER_COMPOSITE' if len({g['paper_id']for g,_ in records})>=2 else 'MULTI_BENCHMARK_REFERENCE'),
             'score_components':[{k:v for k,v in c.items() if k!='opponents'} for c in entries],
@@ -205,7 +211,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
             'n_benchmarks':count,'n_groups':len(entries),'ability_scores':abilities,
             'capability_weight_coverage':covered_weight,
             'publication_reasons':[],
-            'missing_reasons':[],'score_kind':'TASK_REFERENCE'})
+            'missing_reasons':[],'score_kind':'CONDITIONS_UNVERIFIED_REFERENCE' if any(g['unverified_constraints']for g,_ in records)else 'TASK_REFERENCE'})
     published=sum(m['publication_eligible'] for m in models)
     # Report every requested candidate, including a model with no matching row.
     # Keep this separate from fitted results; absence is never a zero score.
@@ -233,6 +239,8 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         rows=by_name[name];scored=[m for m in rows if m['publication_eligible']]
         count=len(task_sources[name]);state='SCORABLE' if scored else 'NO_TASK_EVIDENCE'
         candidate_audit.append({'model_canonical':name,'status':state,
+            'task_eligible':any(m['task_eligible']for m in scored),
+            'unverified_constraints':sorted({k for m in scored for k in m['unverified_constraints']}),
             'overall_benchmarks':len(overall[name]),'task_benchmarks':count,
             'task_groups':len(task_groups[name]),'matched_capabilities':sorted(task_caps[name]),
             'covered_capability_weight':math.fsum(cap_weights[c] for c in task_caps[name]),
@@ -258,7 +266,8 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
             'benchmark_identity':_benchmark(gs[0]),'matched_capabilities':sorted({c for g in gs for c in g['metric_capabilities']}),
             'domains':b['catalog_labels']['domains'],'tasks':b['catalog_labels']['tasks'],
             'exact_task_match':b['exact_task_match'],'relevance_weight':b['relevance_weight'],
-            'evidence_kind':'DIRECT_TASK' if any(g['exact_task_match']for g in gs)else 'RELATED_REFERENCE',
+            'evidence_kind':gs[0]['evidence_kind'],
+            'unverified_constraints':b['unverified_constraints'],
             'groups':len(gs),'group_ids':[g['group_id'] for g in gs],
             'model_names':sorted({s['model_canonical'] for g in gs for s in g['scores']
                 if not general_model_issue(s['model_canonical'])}),
@@ -272,6 +281,8 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
     if not published:
         note=(f'已匹配 {matched_count} 项相关 Benchmark；当前所选模型暂无相关成绩，可查看匹配来源或调整候选模型。'
               if matched_count else '当前没有满足任务能力、领域和已验证硬约束的相关 Benchmark；可按实际需要调整任务要求。')
+    if unverified_protocol_fields(profile['constraints']) and published:
+        note='当前来源尚未核实指定语言、知识访问或上下文条件；以下仅为条件待核的来源参考，不表示模型已满足任务要求。'
     return {'method':{'name':METHOD,'version':VERSION,'score_range':[0,100],
         'measurement_policy':MEASUREMENT_POLICY,'task_attribution_policy':ATTRIBUTION_POLICY,
         'capability_display_labels':{'code_correctness':'代码任务成果参考','domain_knowledge':'领域任务成果参考'},
@@ -289,7 +300,7 @@ def score_task(index, catalog, profile, *, min_benchmarks=3, candidate_models=No
         'evidence_summary':{kind:{'benchmarks':len({_benchmark(g)for g in ready if g['evidence_kind']==kind}),
             'papers':len({g['paper_id']for g in ready if g['evidence_kind']==kind}),
             'models':len({m['model_canonical']for m in models if m['evidence_kind']==kind}),
-            'panels':len({m['panel_id']for m in models if m['evidence_kind']==kind})}for kind in ('DIRECT_TASK','RELATED_REFERENCE')},
+            'panels':len({m['panel_id']for m in models if m['evidence_kind']==kind})}for kind in ('DIRECT_TASK','RELATED_REFERENCE','UNVERIFIED_REFERENCE')},
         'computed_at':datetime.now(timezone.utc).isoformat(),
         'available':bool(published),'status':'REFERENCE_READY' if published else 'INSUFFICIENT_MATCHED_EVIDENCE',
         'kind':'TASK_INDEX','models':models,'panel':panel,'comparisons':comparisons,'exclusions':excluded,

@@ -1,0 +1,466 @@
+{
+  "snapshot_id": "43f0249220829f9f86a6efc1",
+  "method": 11,
+  "cases": {
+    "code_ui": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "根据网页截图实现可交互页面，补充表单校验并通过功能测试。",
+        "domains": [
+          "software"
+        ],
+        "tasks": [
+          "code_development"
+        ],
+        "capabilities": [
+          {
+            "id": "visual_perception",
+            "weight": 0.35,
+            "rationale": "需从网页截图识别布局与交互元素"
+          },
+          {
+            "id": "code_correctness",
+            "weight": 0.45,
+            "rationale": "实现交互、校验并通过功能测试"
+          },
+          {
+            "id": "domain_knowledge",
+            "weight": 0.2,
+            "rationale": "需前端框架与表单校验专业知识"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 10.43
+    },
+    "clinical_image": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "查看胸部X光影像，描述异常区域及判断依据。",
+        "domains": [
+          "medicine"
+        ],
+        "tasks": [
+          "knowledge_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "visual_perception",
+            "weight": 0.4,
+            "rationale": "需识别X光影像中异常区域及空间关系"
+          },
+          {
+            "id": "domain_knowledge",
+            "weight": 0.35,
+            "rationale": "需医学影像专业知识判断异常类型"
+          },
+          {
+            "id": "reasoning",
+            "weight": 0.25,
+            "rationale": "需给出异常判断的推理依据"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 15.55
+    },
+    "clinical_paraphrase": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "阅读胸部X光图片，描述异常区域及判断依据。",
+        "domains": [
+          "medicine"
+        ],
+        "tasks": [
+          "knowledge_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "multimodal_understanding",
+            "weight": 0.4,
+            "rationale": "需理解X光影像中的解剖结构与异常表现"
+          },
+          {
+            "id": "domain_knowledge",
+            "weight": 0.4,
+            "rationale": "需医学影像专业知识识别并解释异常"
+          },
+          {
+            "id": "reasoning",
+            "weight": 0.2,
+            "rationale": "需给出判断依据的推理过程"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 15.71
+    },
+    "meeting_audio": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "转写会议录音，区分说话者，整理讨论决定和待办事项。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "structured_extraction",
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "audio_understanding",
+            "weight": 0.4,
+            "rationale": "需转写录音并区分说话者"
+          },
+          {
+            "id": "information_extraction",
+            "weight": 0.35,
+            "rationale": "需提取决定和待办事项"
+          },
+          {
+            "id": "summarization",
+            "weight": 0.25,
+            "rationale": "需整理压缩讨论内容"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "audio",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 13.57
+    },
+    "traffic_video": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "观看道路监控录像，按时间顺序描述车辆转弯与行人过街。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "video_understanding",
+            "weight": 0.5,
+            "rationale": "核心能力：理解视频中车辆与行人动态事件"
+          },
+          {
+            "id": "information_extraction",
+            "weight": 0.2,
+            "rationale": "从视频中抽取转弯、过街等特定事件"
+          },
+          {
+            "id": "writing",
+            "weight": 0.15,
+            "rationale": "按时间顺序组织描述输出"
+          },
+          {
+            "id": "common_sense",
+            "weight": 0.15,
+            "rationale": "理解交通场景中车辆与行人行为逻辑"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "video",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 13.01
+    },
+    "web_factcheck": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "联网检索，核查新闻中的事实说法，并给出能够支持结论的网页引用。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "information_retrieval",
+          "knowledge_qa",
+          "tool_workflow"
+        ],
+        "capabilities": [
+          {
+            "id": "factual_accuracy",
+            "weight": 0.35,
+            "rationale": "核查新闻事实说法的正确性是核心目标"
+          },
+          {
+            "id": "citation_reliability",
+            "weight": 0.25,
+            "rationale": "明确要求给出支持结论的网页引用"
+          },
+          {
+            "id": "information_retrieval",
+            "weight": 0.2,
+            "rationale": "需联网检索查找相关信息"
+          },
+          {
+            "id": "tool_use",
+            "weight": 0.1,
+            "rationale": "联网检索需要调用搜索工具"
+          },
+          {
+            "id": "grounded_faithfulness",
+            "weight": 0.1,
+            "rationale": "结论需与检索来源保持一致"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "retrieval",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 10.61
+    },
+    "web_permission": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "可以联网检索，核查新闻中的事实说法，并给出能够支持结论的网页引用。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "information_retrieval",
+          "knowledge_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "factual_accuracy",
+            "weight": 0.35,
+            "rationale": "核查新闻事实说法的正确性"
+          },
+          {
+            "id": "citation_reliability",
+            "weight": 0.25,
+            "rationale": "要求给出支持结论的网页引用"
+          },
+          {
+            "id": "grounded_faithfulness",
+            "weight": 0.15,
+            "rationale": "结论需与检索来源保持一致"
+          },
+          {
+            "id": "information_retrieval",
+            "weight": 0.15,
+            "rationale": "需联网检索相关网页信息"
+          },
+          {
+            "id": "cross_document_synthesis",
+            "weight": 0.1,
+            "rationale": "整合多来源证据支撑判断"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "retrieval",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 10.61
+    },
+    "text_transcript": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "根据会议录音的文字稿整理讨论决定与待办事项。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "structured_extraction",
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "information_extraction",
+            "weight": 0.4,
+            "rationale": "核心任务是从文字稿提取决定和待办"
+          },
+          {
+            "id": "summarization",
+            "weight": 0.3,
+            "rationale": "整理会议内容需要压缩归纳"
+          },
+          {
+            "id": "reading_comprehension",
+            "weight": 0.2,
+            "rationale": "需理解讨论上下文与指代关系"
+          },
+          {
+            "id": "long_context",
+            "weight": 0.1,
+            "rationale": "会议文字稿通常较长需全篇理解"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 9.59
+    },
+    "image_generation": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "生成一张图片，表现春天的校园景色。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "writing"
+        ],
+        "capabilities": [
+          {
+            "id": "instruction_following",
+            "weight": 0.4,
+            "rationale": "需准确遵循生成图片的主题与场景约束"
+          },
+          {
+            "id": "common_sense",
+            "weight": 0.35,
+            "rationale": "需理解春天校园的典型视觉元素"
+          },
+          {
+            "id": "tool_use",
+            "weight": 0.25,
+            "rationale": "生成图片通常需调用图像生成工具"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 16.07
+    },
+    "mixed_media": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "同时分析采访视频和单独提供的音频录音，核对说话内容及时间顺序。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "document_qa"
+        ],
+        "capabilities": [
+          {
+            "id": "video_understanding",
+            "weight": 0.3,
+            "rationale": "需理解采访视频中的说话内容与时序"
+          },
+          {
+            "id": "audio_understanding",
+            "weight": 0.25,
+            "rationale": "需理解单独音频录音的说话内容"
+          },
+          {
+            "id": "cross_document_synthesis",
+            "weight": 0.25,
+            "rationale": "核对两个来源的内容与时间顺序差异"
+          },
+          {
+            "id": "information_extraction",
+            "weight": 0.2,
+            "rationale": "从视频和音频中提取说话人及内容"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "audio+video",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 12.61
+    }
+  }
+}

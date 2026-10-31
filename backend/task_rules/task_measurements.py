@@ -6,7 +6,7 @@ Raw source records are retained; only the scoring projection is filtered.
 import re
 from collections import defaultdict
 
-POLICY='source-scoped-task-measurements-v5'
+POLICY='source-scoped-task-measurements-v6'
 FACETS={
  'software_delivery':'软件工作交付','web_functionality':'网页功能实现',
  'code_implementation':'规格实现与验收','code_repair':'已有代码修复',
@@ -193,13 +193,13 @@ def safe_scores(group,measurement):
         sizes=re.findall(r'(?i)\b\d+(?:\.\d+)?\s*[bt]\b',s['model_canonical'])
         if raw and sizes and not any(all(re.sub(r'\s+','',v).casefold()in re.sub(r'\s+','',r).casefold()for v in sizes)for r in raw):
             reason='model_size_not_established_by_source_label'
-        if re.fullmatch(r'(?i)(?:captioner|omni flash|single|ensemble|ours|baseline)',s['model_canonical']):reason='ambiguous_source_model_identity'
+        if re.fullmatch(r'(?i)(?:captioner|omni flash|flash|single|ensemble|ours|baseline)',s['model_canonical']) or re.match(r'^\d+\s+(?:grok|gpt|claude|gemini)\b',s['model_canonical'],re.I):reason='ambiguous_source_model_identity'
         if reason:excluded.append({'model_canonical':s['model_canonical'],'reason':reason,'observation_ids':s.get('observation_ids',[])})
         else:kept.append(s)
     return kept,excluded
 
 def facet_labels(facets):
-    facets=set(facets);labels=dict(FACETS);conditions=defaultdict(list)
+    facets=set(facets);pending={f:f.removeprefix('unverified_reference:')for f in facets if f.startswith('unverified_reference:')};facets.update(pending.values());labels=dict(FACETS);conditions=defaultdict(list)
     for f in facets:
         if f.startswith('related_reference:'):labels[f]='相关能力参考 · '+f.split(':')[1]
         if ':condition:'in f:conditions[f.split(':condition:')[0]].append(f)
@@ -212,6 +212,7 @@ def facet_labels(facets):
             base_label=labels.get(base,FACETS.get(base,base))
             if base.startswith('related_reference:'):base_label='相关能力参考 · '+base.split(':')[1]
             labels[f]=base_label+' · '+names.get(protocol,protocol)
+    labels.update({f:'条件待核参考 · '+labels.get(base,base)for f,base in pending.items()})
     return labels
 
 

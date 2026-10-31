@@ -16,7 +16,7 @@ const groups=snapshot.index.groups.map(g=>{
  if(!rules.groups[g.group_id]&&!g.blocked_reasons?.length&&!g.extraction_in_progress)fallbackSources.add(JSON.stringify([g.paper_id,g.benchmark_id]));
  return {...pick(g,['group_id','paper_id','benchmark_id','benchmark_identity','direction','blocked_reasons','extraction_in_progress','metric_role']),...extra,scores:(g.scores||[]).map(s=>pick(s,['model_canonical','value_numeric']))};
 });
-const taskVersion=rules.schema_version==='source-scoped-task-measurements-v5'?10:rules.schema_version==='source-scoped-task-measurements-v4'?9:8;
+const taskVersion=rules.schema_version==='source-scoped-task-measurements-v6'?11:rules.schema_version==='source-scoped-task-measurements-v5'?10:rules.schema_version==='source-scoped-task-measurements-v4'?9:8;
 const task={format:'radar-static-task-evidence-v1',snapshot_id:snapshot.snapshot_id,task_method_version:taskVersion,
   measurements:{schema_version:rules.schema_version,snapshot_id:rules.snapshot_id,groups:Object.fromEntries(groups.filter(g=>rules.groups[g.group_id]).map(g=>[g.group_id,pick(rules.groups[g.group_id],['models','aliases','capabilities','domains','tasks'])]))},
   snapshot:{snapshot_id:snapshot.snapshot_id,generated_at:snapshot.generated_at,window:snapshot.window,status:snapshot.status,

@@ -29,6 +29,7 @@ def main():
     parser.add_argument('--radar-root',type=Path,required=True)
     source=parser.add_mutually_exclusive_group(required=True)
     source.add_argument('--snapshot',type=Path)
+    source.add_argument('--prepared-inputs',type=Path,help='Fixed exported public task inputs for reproducible QA; no extraction.')
     source.add_argument('--publication-url')
     parser.add_argument('--port',type=int,default=1894)
     parser.add_argument('--allow-origin',action='append',default=['https://niuxuwen.github.io','https://cowhors.com','https://www.cowhors.com'])
@@ -83,6 +84,14 @@ def main():
             while not stopped.wait(45):store.refresh()
         threading.Thread(target=update,daemon=True).start()
         def context(sid=None):return store.get(sid)
+    elif args.prepared_inputs:
+        raw=args.prepared_inputs.read_bytes();data=json.loads(gzip.decompress(raw)if raw[:2]==b'\x1f\x8b'else raw)
+        if data.get('format')!='radar-task-inputs-v1' or not re.fullmatch('[a-f0-9]{24}',data.get('snapshot_id','')):
+            raise ValueError('Identified public prepared inputs required')
+        fixed=Context(data)
+        def context(sid=None):
+            if sid and sid!=fixed.snapshot['snapshot_id']:raise SnapshotUnavailable('task_snapshot_not_loaded')
+            return fixed
     else:
         raw=args.snapshot.read_bytes();snapshot=json.loads(gzip.decompress(raw)if raw[:2]==b'\x1f\x8b'else raw)
         if not snapshot.get('snapshot_id')or not snapshot.get('observations'):raise ValueError('A real identified snapshot is required')

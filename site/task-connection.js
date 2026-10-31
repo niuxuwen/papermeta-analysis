@@ -38,7 +38,7 @@
           if(window.RadarLoadTaskEvidence){
             const data=await window.RadarLoadTaskEvidence();
             if(data.task_method_version===service.task_score_method_version)measurements=data.measurements;
-            else if(!([8,9].includes(data.task_method_version)&&[9,10].includes(service.task_score_method_version)&&data.task_method_version<service.task_score_method_version))throw Error('TASK_SNAPSHOT_MISMATCH');
+            else if(!([8,9,10].includes(data.task_method_version)&&[9,10,11].includes(service.task_score_method_version)&&data.task_method_version<service.task_score_method_version))throw Error('TASK_SNAPSHOT_MISMATCH');
           }
           if(!measurements){
             const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
@@ -48,7 +48,7 @@
               measurements=await response.json();
             }finally{clearTimeout(timeout);}
           }
-          const schema=service.task_score_method_version>=10?'source-scoped-task-measurements-v5':service.task_score_method_version>=9?'source-scoped-task-measurements-v4':service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2';
+          const schema=service.task_score_method_version>=11?'source-scoped-task-measurements-v6':service.task_score_method_version>=10?'source-scoped-task-measurements-v5':service.task_score_method_version>=9?'source-scoped-task-measurements-v4':service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2';
           if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==schema)throw Error('TASK_SNAPSHOT_MISMATCH');
           window.RadarTaskMeasurements=measurements;
       })().catch(error=>{measurementConnection=null;connection=null;throw error;});

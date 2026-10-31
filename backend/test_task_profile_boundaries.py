@@ -32,14 +32,16 @@ class ProfileBoundaryTests(unittest.TestCase):
         self.assertEqual(p['constraints']['modality'],'text')
     def test_audio_input_cannot_be_silently_replaced_by_text_only(self):
         raw=output();raw['constraints']['modality']='text'
-        with self.assertRaises(ValueError):build_task_profile(CompactProfileClient(Generated(raw)),'听会议录音，整理讨论要点。')
+        p=build_task_profile(CompactProfileClient(Generated(raw)),'听会议录音，整理讨论要点。')
+        self.assertEqual(p['constraints']['modality'],'audio')
     def test_supported_recording_constraint_passes_without_a_second_model_call(self):
         raw=output();raw['constraints']['modality']='multimodal';raw['constraint_evidence']={'modality':'听会议录音'}
         p=build_task_profile(CompactProfileClient(Generated(raw)),'听会议录音，整理讨论要点。')
-        self.assertEqual(p['constraints']['modality'],'multimodal')
+        self.assertEqual(p['constraints']['modality'],'audio')
     def test_tool_retrieval_and_invalid_capability_guards_are_preserved(self):
         raw=output();raw['constraints']['knowledge_access']='retrieval';raw['constraint_evidence']={'knowledge_access':'不允许联网'}
-        with self.assertRaises(ValueError):build_task_profile(CompactProfileClient(Generated(raw)),'不允许联网，整理医学文献。')
+        p=build_task_profile(CompactProfileClient(Generated(raw)),'不允许联网，整理医学文献。')
+        self.assertEqual(p['constraints']['knowledge_access'],'closed_book')
         raw=output();raw['capabilities'][0]['id']='imaginary'
         with self.assertRaises(ValueError):build_task_profile(CompactProfileClient(Generated(raw)),'整理医学文献。')
 

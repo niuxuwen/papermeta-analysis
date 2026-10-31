@@ -12,7 +12,7 @@ import time
 from .task_labels import PROFILE_VERSION, build_task_profile, _constraint_is_literal
 from .taxonomy import TAXONOMY_VERSION
 
-PROMPT_VERSION = 'task-profile-compact-v2'
+PROMPT_VERSION = 'task-profile-compact-v3-literal-inputs'
 LOG = logging.getLogger(__name__)
 _INIT_LOCK = threading.Lock()
 
@@ -110,16 +110,10 @@ class CompactProfileClient:
             expected = {'domains', 'tasks', 'capabilities', 'constraints', 'constraint_evidence'}
             if set(result) != expected:
                 raise ValueError('仅返回 domains/tasks/capabilities/constraints/constraint_evidence')
-            profile = {key: result[key] for key in ('domains', 'tasks', 'capabilities', 'constraints')}
+            profile = deepcopy({key: result[key] for key in ('domains', 'tasks', 'capabilities', 'constraints')})
             evidence = deepcopy(result['constraint_evidence'])
-            # Translation/writing describes a task, not a text-only input ban.
-            # Remove only an unsupported model-added text restriction when the
-            # user supplied no literal modality requirement of either kind.
-            if (isinstance(profile['constraints'],dict) and profile['constraints'].get('modality')=='text'
-                    and not _constraint_is_literal('modality','text',description)
-                    and not _constraint_is_literal('modality','multimodal',description)):
-                profile['constraints']={**profile['constraints'],'modality':'any'}
-                if isinstance(evidence,dict):evidence.pop('modality',None)
+            from .task_constraints import normalize_generated_constraints
+            profile['constraints'],evidence=normalize_generated_constraints(description,profile['constraints'],evidence)
             profile.update(schema_version=PROFILE_VERSION, taxonomy_version=TAXONOMY_VERSION,
                            description=description, weight_basis='llm_proposed',
                            assumptions=['能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。'])
@@ -133,10 +127,11 @@ class CompactProfileClient:
             '硬约束仅提取用户明确要求，无明确要求用any或null。'
             '不要从描述语言推断输出语言，不从页数/字数推断token数，不从阅读论文推断需要联网。'
             '翻译、写作任务不等于只接受文本：modality=text仅用于用户明确说纯文本、仅文本或text-only。'
-            '录音、录像、录屏等明确媒体输入可标为multimodal，并引用用户原话。'
+            '精确保留输入模态：截图、X光影像为image，录音为audio，录像/录屏为video；混合输入用audio+video等组合。生成图片不代表图像输入，音频文字稿是文本。'
+            '“联网检索”明确要求retrieval；未提联网不等于closed_book。'
             '每个非any且非null约束必须附constraint_evidence中的连续用户原话；不要添加隐含限制。'
             '返回 {"domains":[],"tasks":[],"capabilities":[{"id":"能力ID","weight":0.5,"rationale":"简短理由"}],'
-            '"constraints":{"language":"any或语言代码","modality":"any|text|multimodal",'
+            '"constraints":{"language":"any或语言代码","modality":"any|text|image|audio|video|audio+video|multimodal",'
             '"knowledge_access":"any|closed_book|retrieval|tools","min_context_tokens":null},'
             '"constraint_evidence":{"显式约束字段":"用户原话"}}。'
         ))

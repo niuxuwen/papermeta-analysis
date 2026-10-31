@@ -101,7 +101,7 @@ def main():
         else:
             snapshot = wire
         source = public_source(snapshot)
-        policy_files=['global_scoring.py','common_source_calibration.py','task_reference_fit_v6.py','catalog_task_scoring.py','task_measurements.py','task_measurement_policy.py']
+        policy_files=['global_scoring.py','common_source_calibration.py','task_reference_fit_v6.py','catalog_task_scoring.py','task_measurements.py','task_measurement_policy.py','task_constraints.py']
         policy_hash=hashlib.sha256(b''.join((Path(__file__).parent/'task_rules'/name).read_bytes()for name in policy_files)).hexdigest()
         # Ignore HTTP read time; only evidence, labels, scores and window dates trigger publication.
         fingerprint = hashlib.sha256(encode({'scoring_policy':policy_hash,**{k: source.get(k) for k in
@@ -112,7 +112,7 @@ def main():
         if previous.get('fingerprint') == fingerprint and previous.get('task_inputs_sha256') and previous.get('task_method_version')==TASK_VERSION:
             print('No new verified evidence; website unchanged', flush=True)
             return
-        if source['index']['method']['version']==15:
+        if source['index']['method']['version'] in (15,16):
             from copy import deepcopy
             from recent_benchmarks.global_scoring import apply_global_scores
             original_sid=source['snapshot_id']
