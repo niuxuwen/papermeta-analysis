@@ -6,8 +6,9 @@ Raw source records are retained; only the scoring projection is filtered.
 import re
 from collections import defaultdict
 
-POLICY='source-scoped-task-measurements-v6'
+POLICY='source-scoped-task-measurements-v7'
 FACETS={
+ 'privacy_protection':'隐私泄露防护','safety_alignment':'安全行为表现',
  'software_delivery':'软件工作交付','web_functionality':'网页功能实现',
  'code_implementation':'规格实现与验收','code_repair':'已有代码修复',
  'rtl_generation':'RTL 硬件代码生成','verifier_generation':'验证器生成',
@@ -110,6 +111,10 @@ def inspect(group,benchmark,profile):
     role=task_metric_role(group)
     if role!='PERFORMANCE':
         return reject('task_measurement_role:'+role)
+    if re.search(r'privacy safe rate|targeted pii types|inferential leakage',text):
+        return result(['privacy','safety'],'privacy_protection',tasks=[])
+    if re.search(r'safety alignment ranking|static.vs.dynamic ranking comparison',text):
+        return result(['safety'],'safety_alignment',tasks=[])
     if re.search(r'summarizer backbone|continuation agent|recurring.detail retention|task preservation damage',text):
         return reject('summarizer_or_compaction_not_coding_agent')
     if metric=='ldpr':return reject('metric_meaning_not_established_by_source_caption')
@@ -182,6 +187,14 @@ def inspect(group,benchmark,profile):
         return result(['grounded_faithfulness','citation_reliability'],'source_grounding',tasks=measured_tasks)
     return related()
 
+def source_model_identity_issue(name):
+    if re.fullmatch(r'(?i)\d+(?:\.\d+)?\s*[bt]',name):return 'model_identity_size_only'
+    if re.fullmatch(r'(?i)f\d+\s+(?:on|off)',name):return 'model_identity_condition_only'
+    if re.match(r'^["¤•]|(?i:^[x×]\d+\s+)|^\d+\s+(?:grok|gpt|claude|gemini)\b',name,re.I):return 'model_identity_unresolved_prefix'
+    if re.search(r'\d+\.\d+[-.]\d+\.\d+$',name):return 'model_identity_score_like_suffix'
+    if re.fullmatch(r'(?i)(?:captioner|omni flash|flash|single|ensemble|ours|baseline)',name):return 'ambiguous_source_model_identity'
+    return None
+
 def safe_scores(group,measurement):
     kept=[];excluded=[]
     for s in group['scores']:
@@ -193,7 +206,7 @@ def safe_scores(group,measurement):
         sizes=re.findall(r'(?i)\b\d+(?:\.\d+)?\s*[bt]\b',s['model_canonical'])
         if raw and sizes and not any(all(re.sub(r'\s+','',v).casefold()in re.sub(r'\s+','',r).casefold()for v in sizes)for r in raw):
             reason='model_size_not_established_by_source_label'
-        if re.fullmatch(r'(?i)(?:captioner|omni flash|flash|single|ensemble|ours|baseline)',s['model_canonical']) or re.match(r'^\d+\s+(?:grok|gpt|claude|gemini)\b',s['model_canonical'],re.I):reason='ambiguous_source_model_identity'
+        reason=source_model_identity_issue(s['model_canonical']) or reason
         if reason:excluded.append({'model_canonical':s['model_canonical'],'reason':reason,'observation_ids':s.get('observation_ids',[])})
         else:kept.append(s)
     return kept,excluded

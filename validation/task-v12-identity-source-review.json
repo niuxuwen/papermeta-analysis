@@ -1,0 +1,317 @@
+{
+  "snapshot_id": "4a2af4af26aa2fc5d4dde3b6",
+  "names": {
+    "F2 on": [
+      {
+        "paper_id": "recent-f377dff395a4c0ec",
+        "benchmark_id": "bench-af0f85db244e35a1",
+        "table_id": "7c7ffac3b0a196dfb17c0b00138f",
+        "metric": "Easy",
+        "metric_role_context": "On EP-Bench, EP-SimpleMem uses 0.70/0.30. Table S2 reports evidence-session Recall@10 (%) under w/o chain and w/ chain.",
+        "raw_label": "F2 on",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "x1 Grok 4": [
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "x1 Grok 4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "x1 Grok 4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "x1 Grok 4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "x1 Grok 4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "0.6B": [
+      {
+        "paper_id": "recent-1702b32b36d3660f",
+        "benchmark_id": "bench-45e3aed31afa1b9b",
+        "table_id": "a7795fc4b336fddface703afe241",
+        "metric": "step 6000, hit@1",
+        "metric_role_context": "Table 15: Model size at fixed data. Navigational hit@1 / hit@10 (%) on TRAFFIC-SEP along 6,000 steps of training on the same samples over U201M, and hit@1 at step 6,000 on seen pairs and new queries.",
+        "raw_label": "0.6B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "DeepSeek-V4.1-Flash-51.3-38.4": [
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "12 Avg",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "5",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "6",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "7",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "2",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "3",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "4 5",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-e66702b3df2d7a59",
+        "benchmark_id": "bench-e6a448833f5bf987",
+        "table_id": "6f7395aace845a769860ccf01e2f",
+        "metric": "11",
+        "metric_role_context": "Table 2: pass@1 (%) on P2NPCBENCH by family; columns 1–12 follow the numbering of Table 1, and Avg is the macro-average over families. The last row averages each column over all twelve models. Models are grouped by access and ordered by NPC average within each group. Within each column, bold marks the best and underline the second-best model (ties share a mark); shading marks each model’s strongest family within each class.",
+        "raw_label": "DeepSeek-V4.1-Flash-51.3-38.4",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "F2 off": [
+      {
+        "paper_id": "recent-f377dff395a4c0ec",
+        "benchmark_id": "bench-af0f85db244e35a1",
+        "table_id": "7c7ffac3b0a196dfb17c0b00138f",
+        "metric": "Easy",
+        "metric_role_context": "On EP-Bench, EP-SimpleMem uses 0.70/0.30. Table S2 reports evidence-session Recall@10 (%) under w/o chain and w/ chain.",
+        "raw_label": "F2 off",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "1.7B": [
+      {
+        "paper_id": "recent-1702b32b36d3660f",
+        "benchmark_id": "bench-45e3aed31afa1b9b",
+        "table_id": "a7795fc4b336fddface703afe241",
+        "metric": "step 6000, hit@1",
+        "metric_role_context": "Table 15: Model size at fixed data. Navigational hit@1 / hit@10 (%) on TRAFFIC-SEP along 6,000 steps of training on the same samples over U201M, and hit@1 at step 6,000 on seen pairs and new queries.",
+        "raw_label": "1.7B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "¤ Gemini 3": [
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "cd504aa6ba97b6a7021ea8d6a811",
+        "metric": "Verbatim (%)",
+        "metric_role_context": "Table 19: Per-model privacy safe rate under the verbatim rule (paper) vs an LLM-as-judge (gpt-oss-120b) that scores paraphrased and inferential leakage in addition to verbatim matches. Rankings agree closely (Kendall τ=0.862, Spearman ρ=0.960, Pearson r=0.976). Absolute rates diverge in two service-relevant ways. The LLM judge catches paraphrased leaks that verbatim misses on strong safety-tuned models (e.g., Claude-4.5 loses accuracy under the LLM judge). Conversely, for models that produce short refusals or fragmentary paraphrase-style responses, the verbatim rules´ partial label counts responses as unsafe whenever any subset of the targeted PII types appears verbatim, while the LLM judge is binary; this is the source of the negative ∆ for the Qwen 3.5 family.",
+        "raw_label": "¤ Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "cd504aa6ba97b6a7021ea8d6a811",
+        "metric": "LLM judge (%)",
+        "metric_role_context": "Table 19: Per-model privacy safe rate under the verbatim rule (paper) vs an LLM-as-judge (gpt-oss-120b) that scores paraphrased and inferential leakage in addition to verbatim matches. Rankings agree closely (Kendall τ=0.862, Spearman ρ=0.960, Pearson r=0.976). Absolute rates diverge in two service-relevant ways. The LLM judge catches paraphrased leaks that verbatim misses on strong safety-tuned models (e.g., Claude-4.5 loses accuracy under the LLM judge). Conversely, for models that produce short refusals or fragmentary paraphrase-style responses, the verbatim rules´ partial label counts responses as unsafe whenever any subset of the targeted PII types appears verbatim, while the LLM judge is binary; this is the source of the negative ∆ for the Qwen 3.5 family.",
+        "raw_label": "¤ Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "x1 Grok 4.1": [
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "97898a31b4396726ba1a2a3042e5",
+        "metric": "Sdyn",
+        "metric_role_context": "Table 11: Static-vs-dynamic ranking comparison on the extended panel. For each service we report the static score Sstat and rank Rstat from the aiXamine leaderboard alongside the SSP-Bench dynamic score Sdyn and rank Rdyn. Rows are sorted by static-leaderboard overall score (descending). Rdyn cells are shaded green when the model gains ≥5 ranks under dynamic evaluation and red when it loses ≥5 ranks.",
+        "raw_label": "x1 Grok 4.1",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "97898a31b4396726ba1a2a3042e5",
+        "metric": "Rdyn",
+        "metric_role_context": "Table 11: Static-vs-dynamic ranking comparison on the extended panel. For each service we report the static score Sstat and rank Rstat from the aiXamine leaderboard alongside the SSP-Bench dynamic score Sdyn and rank Rdyn. Rows are sorted by static-leaderboard overall score (descending). Rdyn cells are shaded green when the model gains ≥5 ranks under dynamic evaluation and red when it loses ≥5 ranks.",
+        "raw_label": "x1 Grok 4.1",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "¤ Gemma4 31B": [
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "¤ Gemma4 31B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "¤ Gemma4 31B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "¤ Gemma4 31B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "¤ Gemma4 31B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "\" Gemini 3": [
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "\" Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rstat",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "\" Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Sdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "\" Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-a775d53d9096f733",
+        "benchmark_id": "bench-a401943b3f6aeebf",
+        "table_id": "0b22cedb8c2508a9d0333c6b3f0e",
+        "metric": "Rdyn",
+        "metric_role_context": "Table 2: Safety alignment ranking. Sstat, Sdyn: static and dynamic safety rates; Rstat, Rdyn: corresponding ranks; ∆R = Rstat − Rdyn.",
+        "raw_label": "\" Gemini 3",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "8B": [
+      {
+        "paper_id": "recent-1702b32b36d3660f",
+        "benchmark_id": "bench-45e3aed31afa1b9b",
+        "table_id": "a7795fc4b336fddface703afe241",
+        "metric": "step 6000, hit@1",
+        "metric_role_context": "Table 15: Model size at fixed data. Navigational hit@1 / hit@10 (%) on TRAFFIC-SEP along 6,000 steps of training on the same samples over U201M, and hit@1 at step 6,000 on seen pairs and new queries.",
+        "raw_label": "8B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ],
+    "4B": [
+      {
+        "paper_id": "recent-1702b32b36d3660f",
+        "benchmark_id": "bench-45e3aed31afa1b9b",
+        "table_id": "a7795fc4b336fddface703afe241",
+        "metric": "step 6000, hit@1",
+        "metric_role_context": "Table 15: Model size at fixed data. Navigational hit@1 / hit@10 (%) on TRAFFIC-SEP along 6,000 steps of training on the same samples over U201M, and hit@1 at step 6,000 on seen pairs and new queries.",
+        "raw_label": "4B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-17596a3890e51a35",
+        "benchmark_id": "bench-92e039326b205f71",
+        "table_id": "871e615c412ca1e6c71d06bf537f",
+        "metric": "Global",
+        "metric_role_context": "Table 10: Scaling does not consistently narrow the Global–Step-by-Step gap. We report performance under the Global and Step-by-Step (react) settings. ∆ denotes Step-by-Step minus Global in percentage points (pp).",
+        "raw_label": "4B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      },
+      {
+        "paper_id": "recent-17596a3890e51a35",
+        "benchmark_id": "bench-92e039326b205f71",
+        "table_id": "871e615c412ca1e6c71d06bf537f",
+        "metric": "Step-by-Step",
+        "metric_role_context": "Table 10: Scaling does not consistently narrow the Global–Step-by-Step gap. We report performance under the Global and Step-by-Step (react) settings. ∆ denotes Step-by-Step minus Global in percentage points (pp).",
+        "raw_label": "4B",
+        "action": "Retain raw source; exclude from definite-model recommendation until source identity is established"
+      }
+    ]
+  }
+}

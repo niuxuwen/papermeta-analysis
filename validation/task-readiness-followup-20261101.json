@@ -1,0 +1,791 @@
+{
+  "snapshot_id": "4a2af4af26aa2fc5d4dde3b6",
+  "generated_at": "2026-11-01T03:43:08.467905Z",
+  "source_sha256": "a6038e6c9c7b8a824a5a26c02ae0fce072c5afa829185c8caf6dd8773272ba0c",
+  "task_method": 11,
+  "model_calls": 0,
+  "tuning_performed": false,
+  "cases": {
+    "coding": {
+      "benchmarks": 38,
+      "models": 164,
+      "papers": 38,
+      "panels": 87,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 180,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 6,
+          "papers": 6,
+          "models": 36,
+          "panels": 11
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 35,
+          "papers": 35,
+          "models": 159,
+          "panels": 76
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "candidate_subset_score_differences": [],
+      "paper_holdout": {
+        "fixed_task_method": 11,
+        "folds": [
+          {
+            "fold": 0,
+            "heldout_papers": 6,
+            "predictable_papers": 0,
+            "eligible_pairs": 1080,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 1,
+            "heldout_papers": 14,
+            "predictable_papers": 0,
+            "eligible_pairs": 4521,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 2,
+            "heldout_papers": 11,
+            "predictable_papers": 0,
+            "eligible_pairs": 2134,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 3,
+            "heldout_papers": 7,
+            "predictable_papers": 0,
+            "eligible_pairs": 700,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          }
+        ],
+        "matched_papers": 38,
+        "predictable_papers": 0,
+        "eligible_heldout_pairs": 8435,
+        "predicted_pairs": 0,
+        "pair_coverage": 0.0,
+        "paper_macro_direction_agreement": null,
+        "within_vendor_eligible_pairs": 1282,
+        "within_vendor_predicted_pairs": 0,
+        "within_vendor_predictable_papers": 0,
+        "within_vendor_paper_macro_direction_agreement": null,
+        "wrong_prediction_examples": [],
+        "tuning_performed": false,
+        "limitations": [
+          "This is internal paper-separated validation within an evolving observational snapshot, not independent task success.",
+          "All heldout paper IDs are absent from training; duplicate underlying papers across distinct IDs are not yet independently reverified.",
+          "Coverage is conditional on same task facet and comparable training component; unavailable predictions remain abstentions.",
+          "Directions are checked without changing scores to match vendor or release-order expectations."
+        ]
+      }
+    },
+    "medical": {
+      "benchmarks": 27,
+      "models": 264,
+      "papers": 25,
+      "panels": 51,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 460,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 27,
+          "papers": 25,
+          "models": 264,
+          "panels": 51
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "candidate_subset_score_differences": []
+    },
+    "law": {
+      "benchmarks": 8,
+      "models": 91,
+      "papers": 8,
+      "panels": 15,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 53,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 8,
+          "papers": 8,
+          "models": 91,
+          "panels": 15
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      }
+    },
+    "math": {
+      "benchmarks": 36,
+      "models": 282,
+      "papers": 36,
+      "panels": 81,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 629,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 11,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 36,
+          "papers": 36,
+          "models": 282,
+          "panels": 80
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "paper_holdout": {
+        "fixed_task_method": 11,
+        "folds": [
+          {
+            "fold": 0,
+            "heldout_papers": 7,
+            "predictable_papers": 0,
+            "eligible_pairs": 979,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 1,
+            "heldout_papers": 9,
+            "predictable_papers": 0,
+            "eligible_pairs": 1869,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 2,
+            "heldout_papers": 11,
+            "predictable_papers": 0,
+            "eligible_pairs": 5556,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          },
+          {
+            "fold": 3,
+            "heldout_papers": 9,
+            "predictable_papers": 0,
+            "eligible_pairs": 2424,
+            "predicted_pairs": 0,
+            "within_vendor_pairs": 0
+          }
+        ],
+        "matched_papers": 36,
+        "predictable_papers": 0,
+        "eligible_heldout_pairs": 10828,
+        "predicted_pairs": 0,
+        "pair_coverage": 0.0,
+        "paper_macro_direction_agreement": null,
+        "within_vendor_eligible_pairs": 1498,
+        "within_vendor_predicted_pairs": 0,
+        "within_vendor_predictable_papers": 0,
+        "within_vendor_paper_macro_direction_agreement": null,
+        "wrong_prediction_examples": [],
+        "tuning_performed": false,
+        "limitations": [
+          "This is internal paper-separated validation within an evolving observational snapshot, not independent task success.",
+          "All heldout paper IDs are absent from training; duplicate underlying papers across distinct IDs are not yet independently reverified.",
+          "Coverage is conditional on same task facet and comparable training component; unavailable predictions remain abstentions.",
+          "Directions are checked without changing scores to match vendor or release-order expectations."
+        ]
+      }
+    },
+    "science": {
+      "benchmarks": 34,
+      "models": 271,
+      "papers": 34,
+      "panels": 76,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 627,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 28,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 33,
+          "papers": 33,
+          "models": 252,
+          "panels": 75
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      }
+    },
+    "data": {
+      "benchmarks": 22,
+      "models": 210,
+      "papers": 22,
+      "panels": 43,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 539,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 13,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 21,
+          "papers": 21,
+          "models": 204,
+          "panels": 42
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      }
+    },
+    "meeting_audio": {
+      "benchmarks": 16,
+      "models": 102,
+      "papers": 16,
+      "panels": 31,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 58,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 1,
+          "papers": 1,
+          "models": 2,
+          "panels": 1
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 15,
+          "papers": 15,
+          "models": 100,
+          "panels": 30
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        }
+      },
+      "candidate_subset_score_differences": []
+    },
+    "web_factcheck": {
+      "benchmarks": 49,
+      "models": 293,
+      "papers": 48,
+      "panels": 104,
+      "multi_benchmark_panels": 0,
+      "same_vendor_pairs_with_shared_sources": 297,
+      "strict_same_vendor_dominance_conflicts": [],
+      "wrong_modality_sources": [],
+      "raw_value_mismatches": 0,
+      "evidence_summary": {
+        "DIRECT_TASK": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "RELATED_REFERENCE": {
+          "benchmarks": 0,
+          "papers": 0,
+          "models": 0,
+          "panels": 0
+        },
+        "UNVERIFIED_REFERENCE": {
+          "benchmarks": 49,
+          "papers": 48,
+          "models": 293,
+          "panels": 104
+        }
+      }
+    }
+  },
+  "identity_review": {
+    "DeepSeek-V4.1-Flash-51.3-38.4": {
+      "tasks": [
+        "math",
+        "science"
+      ],
+      "groups": [
+        "0c1a849f00b13cbca7363b54",
+        "1598fe778e5557cbf3cb700b",
+        "4370cbedb00a000a19a3d0e6",
+        "453a0d78bd4f21fd01958202",
+        "46d4a47c78022e467d9556eb",
+        "57f8805c0bbd1c05b76ca4cf",
+        "7814ddada52e9c09466ed6d0",
+        "7bcbbf18446a5c3cfb514f1c",
+        "c9d57fc066766a285bf09546"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-e66702b3df2d7a59",
+          "benchmark_id": "bench-e6a448833f5bf987",
+          "group_id": "1598fe778e5557cbf3cb700b",
+          "raw_value": 39.3
+        },
+        {
+          "paper_id": "recent-e66702b3df2d7a59",
+          "benchmark_id": "bench-e6a448833f5bf987",
+          "group_id": "453a0d78bd4f21fd01958202",
+          "raw_value": 82.8
+        }
+      ],
+      "flags": [
+        "score_like_suffix"
+      ]
+    },
+    "\" Gemini 3": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "07a291d04b943788c80e3057",
+        "557e20d492b643354daf297a",
+        "6947e64218c620ac28a558d8",
+        "d736323146032c558d79ece0"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "557e20d492b643354daf297a",
+          "raw_value": 93.1
+        },
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "6947e64218c620ac28a558d8",
+          "raw_value": 12.0
+        }
+      ],
+      "flags": [
+        "leading_marker"
+      ]
+    },
+    "0.6B": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "9ec86c9179a0ced2d6ad6072",
+        "e41d9c07d97fddb4801d5474"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "e41d9c07d97fddb4801d5474",
+          "raw_value": 60.0
+        },
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "9ec86c9179a0ced2d6ad6072",
+          "raw_value": 4.7
+        }
+      ],
+      "flags": [
+        "size_only"
+      ]
+    },
+    "1.7B": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "9ec86c9179a0ced2d6ad6072",
+        "e41d9c07d97fddb4801d5474"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "e41d9c07d97fddb4801d5474",
+          "raw_value": 65.0
+        },
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "9ec86c9179a0ced2d6ad6072",
+          "raw_value": 5.4
+        }
+      ],
+      "flags": [
+        "size_only"
+      ]
+    },
+    "4B": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "9ec86c9179a0ced2d6ad6072",
+        "e41d9c07d97fddb4801d5474"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "e41d9c07d97fddb4801d5474",
+          "raw_value": 68.5
+        },
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "9ec86c9179a0ced2d6ad6072",
+          "raw_value": 6.5
+        }
+      ],
+      "flags": [
+        "size_only"
+      ]
+    },
+    "8B": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "9ec86c9179a0ced2d6ad6072",
+        "e41d9c07d97fddb4801d5474"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "e41d9c07d97fddb4801d5474",
+          "raw_value": 69.8
+        },
+        {
+          "paper_id": "recent-1702b32b36d3660f",
+          "benchmark_id": "bench-45e3aed31afa1b9b",
+          "group_id": "9ec86c9179a0ced2d6ad6072",
+          "raw_value": 6.6
+        }
+      ],
+      "flags": [
+        "size_only"
+      ]
+    },
+    "F2 off": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "1fad9749f79f1f28d8589f6d",
+        "b0c3152e7e115f1aaa77f999"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-f377dff395a4c0ec",
+          "benchmark_id": "bench-af0f85db244e35a1",
+          "group_id": "1fad9749f79f1f28d8589f6d",
+          "raw_value": 50.27
+        },
+        {
+          "paper_id": "recent-f377dff395a4c0ec",
+          "benchmark_id": "bench-af0f85db244e35a1",
+          "group_id": "b0c3152e7e115f1aaa77f999",
+          "raw_value": 52.92
+        }
+      ],
+      "flags": [
+        "switch_label"
+      ]
+    },
+    "F2 on": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "1fad9749f79f1f28d8589f6d",
+        "b0c3152e7e115f1aaa77f999"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-f377dff395a4c0ec",
+          "benchmark_id": "bench-af0f85db244e35a1",
+          "group_id": "1fad9749f79f1f28d8589f6d",
+          "raw_value": 50.27
+        },
+        {
+          "paper_id": "recent-f377dff395a4c0ec",
+          "benchmark_id": "bench-af0f85db244e35a1",
+          "group_id": "b0c3152e7e115f1aaa77f999",
+          "raw_value": 554.25
+        }
+      ],
+      "flags": [
+        "switch_label"
+      ]
+    },
+    "x1 Grok 4": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "07a291d04b943788c80e3057",
+        "557e20d492b643354daf297a",
+        "6947e64218c620ac28a558d8",
+        "d736323146032c558d79ece0"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "557e20d492b643354daf297a",
+          "raw_value": 97.0
+        },
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "6947e64218c620ac28a558d8",
+          "raw_value": 7.0
+        }
+      ],
+      "flags": [
+        "serial_prefix"
+      ]
+    },
+    "x1 Grok 4.1": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "0af365c37596f48e1c67c292",
+        "1c797c206ce10cb76ec8bc23",
+        "a14c3671d23fa9079be5d6a6",
+        "a47bdcc76c0e5e8fdc9636f3",
+        "ad1e41e49717da139006ba80",
+        "e54eefde98f156d60e3b8ba7"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "a47bdcc76c0e5e8fdc9636f3",
+          "raw_value": 99.4
+        },
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "a14c3671d23fa9079be5d6a6",
+          "raw_value": 6.0
+        }
+      ],
+      "flags": [
+        "serial_prefix"
+      ]
+    },
+    "¤ Gemini 3": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "54b2ec36853e5f972e5638a7",
+        "9cfdecfe505c79901513a269"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "9cfdecfe505c79901513a269",
+          "raw_value": 40.9
+        },
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "54b2ec36853e5f972e5638a7",
+          "raw_value": 40.52
+        }
+      ],
+      "flags": [
+        "leading_marker"
+      ]
+    },
+    "¤ Gemma4 31B": {
+      "tasks": [
+        "web_factcheck"
+      ],
+      "groups": [
+        "07a291d04b943788c80e3057",
+        "557e20d492b643354daf297a",
+        "6947e64218c620ac28a558d8",
+        "d736323146032c558d79ece0"
+      ],
+      "source_examples": [
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "557e20d492b643354daf297a",
+          "raw_value": 97.3
+        },
+        {
+          "paper_id": "recent-a775d53d9096f733",
+          "benchmark_id": "bench-a401943b3f6aeebf",
+          "group_id": "6947e64218c620ac28a558d8",
+          "raw_value": 4.0
+        }
+      ],
+      "flags": [
+        "leading_marker"
+      ]
+    }
+  },
+  "lexical_controls": [
+    {
+      "description": "分析输入图片，输出纯文本摘要。",
+      "kind": "media",
+      "expected": "image",
+      "actual": "text",
+      "status": "FAIL",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "阅读这张截图，结果仅文本输出。",
+      "kind": "media",
+      "expected": "image",
+      "actual": "text",
+      "status": "FAIL",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "根据会议录音的逐字稿整理纪要，不需要处理音频。",
+      "kind": "media",
+      "expected": null,
+      "actual": "audio",
+      "status": "FAIL",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "输入是视频的文字描述，不提供视频文件。",
+      "kind": "media",
+      "expected": null,
+      "actual": "video",
+      "status": "FAIL",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "同时分析图片和音频输入。",
+      "kind": "media",
+      "expected": "audio+image",
+      "actual": "audio+image",
+      "status": "PASS",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "把录音先转成文字，再总结。",
+      "kind": "media",
+      "expected": "audio",
+      "actual": "audio",
+      "status": "PASS",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "生成一张图片，表现校园景色。",
+      "kind": "media",
+      "expected": null,
+      "actual": null,
+      "status": "PASS",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "必须使用浏览器检索新闻并提供来源链接。",
+      "kind": "access",
+      "expected": "retrieval",
+      "actual": null,
+      "status": "FAIL",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "联网检索，核查新闻中的事实说法。",
+      "kind": "access",
+      "expected": "retrieval",
+      "actual": "retrieval",
+      "status": "PASS",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    },
+    {
+      "description": "请不要联网检索，核对给定材料。",
+      "kind": "access",
+      "expected": "closed_book",
+      "actual": "closed_book",
+      "status": "PASS",
+      "test_type": "deterministic_parser_control_not_provider_accuracy"
+    }
+  ],
+  "limitations": [
+    "Profiles are prior real provider outputs kept fixed for scoring; this run makes no model requests.",
+    "Identity flags identify candidates requiring source review, not confirmed errors or inferred aliases.",
+    "Paper-ID holdout does not independently resolve duplicate IDs for the same underlying paper.",
+    "Strict common-source ordering and functional checks are not an estimate of real task success."
+  ]
+}

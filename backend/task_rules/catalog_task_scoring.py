@@ -21,7 +21,7 @@ from .task_measurement_policy import modality_matches,task_metric_role
 from .task_constraints import unverified_protocol_fields
 
 METHOD='catalog_task_pairwise_reference'
-VERSION=11
+VERSION=12
 
 def prepare_inputs(index, catalog, observations=None):
     fields=('group_id','paper_id','benchmark_id','benchmark_identity','table_id','row_key',

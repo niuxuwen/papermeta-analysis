@@ -1,0 +1,424 @@
+{
+  "snapshot_id": "4a2af4af26aa2fc5d4dde3b6",
+  "as_of": "2026-11-01T03:43:08.467905Z",
+  "experimental_only": true,
+  "production_formula_changed": false,
+  "model_calls": 0,
+  "prior": 0.3,
+  "tuning_performed": false,
+  "predeclared_gates": {
+    "min_predictable_papers": 10,
+    "min_pair_coverage": 0.5,
+    "min_paper_macro_agreement": 0.6,
+    "agreement_ci_lower_above": 0.5,
+    "paired_gain_ci_lower_above": 0.0
+  },
+  "cases": {
+    "coding": {
+      "matched_papers": 38,
+      "heldout_families": 38,
+      "predictable_papers": 0,
+      "eligible_pairs": 8435,
+      "predicted_pairs": 0,
+      "pair_coverage": 0.0,
+      "network_paper_macro_direction_agreement": null,
+      "network_paper_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "same_pairs_peer_mean_agreement": null,
+      "paired_macro_gain": null,
+      "paired_gain_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 1781,
+          "predicted_pairs": 0,
+          "training_papers": 26,
+          "heldout_papers": 12
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 848,
+          "predicted_pairs": 0,
+          "training_papers": 28,
+          "heldout_papers": 10
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 1200,
+          "predicted_pairs": 0,
+          "training_papers": 29,
+          "heldout_papers": 9
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 4606,
+          "predicted_pairs": 0,
+          "training_papers": 31,
+          "heldout_papers": 7
+        }
+      ]
+    },
+    "medical": {
+      "matched_papers": 25,
+      "heldout_families": 25,
+      "predictable_papers": 0,
+      "eligible_pairs": 4420,
+      "predicted_pairs": 0,
+      "pair_coverage": 0.0,
+      "network_paper_macro_direction_agreement": null,
+      "network_paper_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "same_pairs_peer_mean_agreement": null,
+      "paired_macro_gain": null,
+      "paired_gain_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 839,
+          "predicted_pairs": 0,
+          "training_papers": 21,
+          "heldout_papers": 4
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 2095,
+          "predicted_pairs": 0,
+          "training_papers": 19,
+          "heldout_papers": 6
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 433,
+          "predicted_pairs": 0,
+          "training_papers": 18,
+          "heldout_papers": 7
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 1053,
+          "predicted_pairs": 0,
+          "training_papers": 17,
+          "heldout_papers": 8
+        }
+      ]
+    },
+    "law": {
+      "matched_papers": 8,
+      "heldout_families": 8,
+      "predictable_papers": 0,
+      "eligible_pairs": 1623,
+      "predicted_pairs": 0,
+      "pair_coverage": 0.0,
+      "network_paper_macro_direction_agreement": null,
+      "network_paper_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "same_pairs_peer_mean_agreement": null,
+      "paired_macro_gain": null,
+      "paired_gain_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 569,
+          "predicted_pairs": 0,
+          "training_papers": 6,
+          "heldout_papers": 2
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 315,
+          "predicted_pairs": 0,
+          "training_papers": 7,
+          "heldout_papers": 1
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 59,
+          "predicted_pairs": 0,
+          "training_papers": 7,
+          "heldout_papers": 1
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 680,
+          "predicted_pairs": 0,
+          "training_papers": 4,
+          "heldout_papers": 4
+        }
+      ]
+    },
+    "math": {
+      "matched_papers": 36,
+      "heldout_families": 36,
+      "predictable_papers": 3,
+      "eligible_pairs": 10770,
+      "predicted_pairs": 8,
+      "pair_coverage": 0.0007428040854224698,
+      "network_paper_macro_direction_agreement": 0.9333333333333332,
+      "network_paper_bootstrap_95pct": [
+        0.8000000000000002,
+        1.0
+      ],
+      "same_pairs_peer_mean_agreement": 0.9333333333333332,
+      "paired_macro_gain": 0.0,
+      "paired_gain_bootstrap_95pct": [
+        0.0,
+        0.0
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 3025,
+          "predicted_pairs": 2,
+          "training_papers": 30,
+          "heldout_papers": 6
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 1850,
+          "predicted_pairs": 1,
+          "training_papers": 27,
+          "heldout_papers": 9
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 3639,
+          "predicted_pairs": 5,
+          "training_papers": 28,
+          "heldout_papers": 8
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 2256,
+          "predicted_pairs": 0,
+          "training_papers": 23,
+          "heldout_papers": 13
+        }
+      ]
+    },
+    "science": {
+      "matched_papers": 34,
+      "heldout_families": 34,
+      "predictable_papers": 6,
+      "eligible_pairs": 10747,
+      "predicted_pairs": 46,
+      "pair_coverage": 0.0042802642597934305,
+      "network_paper_macro_direction_agreement": 0.8888888888888888,
+      "network_paper_bootstrap_95pct": [
+        0.7333333333333334,
+        1.0
+      ],
+      "same_pairs_peer_mean_agreement": 0.8722222222222222,
+      "paired_macro_gain": 0.016666666666666663,
+      "paired_gain_bootstrap_95pct": [
+        0.0,
+        0.04999999999999999
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 3025,
+          "predicted_pairs": 8,
+          "training_papers": 28,
+          "heldout_papers": 6
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 1835,
+          "predicted_pairs": 1,
+          "training_papers": 26,
+          "heldout_papers": 8
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 3639,
+          "predicted_pairs": 35,
+          "training_papers": 26,
+          "heldout_papers": 8
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 2248,
+          "predicted_pairs": 2,
+          "training_papers": 22,
+          "heldout_papers": 12
+        }
+      ]
+    },
+    "data": {
+      "matched_papers": 22,
+      "heldout_families": 22,
+      "predictable_papers": 7,
+      "eligible_pairs": 10162,
+      "predicted_pairs": 119,
+      "pair_coverage": 0.011710293249360362,
+      "network_paper_macro_direction_agreement": 0.8945238095238095,
+      "network_paper_bootstrap_95pct": [
+        0.7764285714285715,
+        1.0
+      ],
+      "same_pairs_peer_mean_agreement": 0.9123809523809524,
+      "paired_macro_gain": -0.017857142857142856,
+      "paired_gain_bootstrap_95pct": [
+        -0.05357142857142857,
+        0.0
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 2602,
+          "predicted_pairs": 18,
+          "training_papers": 18,
+          "heldout_papers": 4
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 1533,
+          "predicted_pairs": 1,
+          "training_papers": 17,
+          "heldout_papers": 5
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 4986,
+          "predicted_pairs": 80,
+          "training_papers": 16,
+          "heldout_papers": 6
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 1041,
+          "predicted_pairs": 20,
+          "training_papers": 15,
+          "heldout_papers": 7
+        }
+      ]
+    },
+    "meeting_audio": {
+      "matched_papers": 16,
+      "heldout_families": 16,
+      "predictable_papers": 0,
+      "eligible_pairs": 4269,
+      "predicted_pairs": 0,
+      "pair_coverage": 0.0,
+      "network_paper_macro_direction_agreement": null,
+      "network_paper_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "same_pairs_peer_mean_agreement": null,
+      "paired_macro_gain": null,
+      "paired_gain_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 1745,
+          "predicted_pairs": 0,
+          "training_papers": 13,
+          "heldout_papers": 3
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 572,
+          "predicted_pairs": 0,
+          "training_papers": 11,
+          "heldout_papers": 5
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 343,
+          "predicted_pairs": 0,
+          "training_papers": 13,
+          "heldout_papers": 3
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 1609,
+          "predicted_pairs": 0,
+          "training_papers": 11,
+          "heldout_papers": 5
+        }
+      ]
+    },
+    "web_factcheck": {
+      "matched_papers": 45,
+      "heldout_families": 45,
+      "predictable_papers": 0,
+      "eligible_pairs": 11816,
+      "predicted_pairs": 0,
+      "pair_coverage": 0.0,
+      "network_paper_macro_direction_agreement": null,
+      "network_paper_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "same_pairs_peer_mean_agreement": null,
+      "paired_macro_gain": null,
+      "paired_gain_bootstrap_95pct": [
+        null,
+        null
+      ],
+      "publication_gate_passed": false,
+      "folds": [
+        {
+          "fold": 0,
+          "eligible_pairs": 7483,
+          "predicted_pairs": 0,
+          "training_papers": 30,
+          "heldout_papers": 15
+        },
+        {
+          "fold": 1,
+          "eligible_pairs": 1929,
+          "predicted_pairs": 0,
+          "training_papers": 32,
+          "heldout_papers": 13
+        },
+        {
+          "fold": 2,
+          "eligible_pairs": 854,
+          "predicted_pairs": 0,
+          "training_papers": 38,
+          "heldout_papers": 7
+        },
+        {
+          "fold": 3,
+          "eligible_pairs": 1550,
+          "predicted_pairs": 0,
+          "training_papers": 35,
+          "heldout_papers": 10
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Related reference transfer, not independently measured real task success.",
+    "Exact paper and benchmark identities define leakage families; independently unrecognized aliases may remain.",
+    "Catalogue modality and relevance do not establish identical protocols. Unknown protocols remain reference-only.",
+    "Paper bootstrap is an internal uncertainty diagnostic, not external validation."
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "state": "COMPLETE",
+  "seconds": 8.62,
+  "retry_of": "actual_audio timeout; initial failure retained",
+  "profile": {
+    "schema_version": "task-profile-v1",
+    "taxonomy_version": "task-taxonomy-v2",
+    "description": "把录音先转成文字，再总结。",
+    "domains": [
+      "general"
+    ],
+    "tasks": [
+      "summarization"
+    ],
+    "capabilities": [
+      {
+        "id": "audio_understanding",
+        "weight": 0.4,
+        "rationale": "需将录音转写为文字"
+      },
+      {
+        "id": "summarization",
+        "weight": 0.4,
+        "rationale": "对转写文本进行总结压缩"
+      },
+      {
+        "id": "grounded_faithfulness",
+        "weight": 0.2,
+        "rationale": "摘要须忠实于原始录音内容"
+      }
+    ],
+    "constraints": {
+      "language": "any",
+      "modality": "audio",
+      "knowledge_access": "any",
+      "min_context_tokens": null
+    },
+    "weight_basis": "llm_proposed",
+    "assumptions": [
+      "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+    ]
+  },
+  "pass": true
+}

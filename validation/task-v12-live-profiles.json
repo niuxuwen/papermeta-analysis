@@ -1,0 +1,275 @@
+{
+  "snapshot_id": "4a2af4af26aa2fc5d4dde3b6",
+  "method": 12,
+  "cases": {
+    "image_text_output": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "分析输入图片，输出纯文本摘要。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "multimodal_understanding",
+            "weight": 0.4,
+            "rationale": "需理解图片内容作为摘要来源"
+          },
+          {
+            "id": "summarization",
+            "weight": 0.3,
+            "rationale": "核心任务是从图片生成文本摘要"
+          },
+          {
+            "id": "visual_perception",
+            "weight": 0.2,
+            "rationale": "需识别图像中对象与属性"
+          },
+          {
+            "id": "grounded_faithfulness",
+            "weight": 0.1,
+            "rationale": "摘要须忠实于图片原始信息"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 10.9
+    },
+    "screenshot_output": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "阅读这张截图，结果仅文本输出。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "visual_document_understanding"
+        ],
+        "capabilities": [
+          {
+            "id": "visual_perception",
+            "weight": 0.4,
+            "rationale": "需识别截图中的视觉元素与空间关系"
+          },
+          {
+            "id": "document_chart_understanding",
+            "weight": 0.35,
+            "rationale": "截图通常含文字版面需OCR与理解"
+          },
+          {
+            "id": "multimodal_understanding",
+            "weight": 0.25,
+            "rationale": "需将图像信息转化为文本输出"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 9.38
+    },
+    "transcript": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "根据会议录音的逐字稿整理纪要，不需要处理音频。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "summarization",
+            "weight": 0.35,
+            "rationale": "整理纪要是核心摘要压缩任务"
+          },
+          {
+            "id": "reading_comprehension",
+            "weight": 0.2,
+            "rationale": "需理解会议中指代与隐含关系"
+          },
+          {
+            "id": "information_extraction",
+            "weight": 0.2,
+            "rationale": "需提取决议、行动项等关键信息"
+          },
+          {
+            "id": "grounded_faithfulness",
+            "weight": 0.15,
+            "rationale": "纪要须忠实于逐字稿原文"
+          },
+          {
+            "id": "writing",
+            "weight": 0.1,
+            "rationale": "将提取内容组织为纪要格式"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 8.92
+    },
+    "video_description": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "输入是视频的文字描述，不提供视频文件。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "reading_comprehension"
+        ],
+        "capabilities": [
+          {
+            "id": "reading_comprehension",
+            "weight": 1.0,
+            "rationale": "任务核心是理解视频的文字描述"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 7.15
+    },
+    "browser": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "必须使用浏览器检索新闻并提供来源链接。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "information_retrieval",
+          "tool_workflow"
+        ],
+        "capabilities": [
+          {
+            "id": "tool_use",
+            "weight": 0.5,
+            "rationale": "明确要求使用浏览器检索"
+          },
+          {
+            "id": "information_retrieval",
+            "weight": 0.3,
+            "rationale": "检索新闻是核心任务"
+          },
+          {
+            "id": "citation_reliability",
+            "weight": 0.2,
+            "rationale": "要求提供来源链接"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "any",
+          "knowledge_access": "retrieval",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 7.65
+    },
+    "actual_audio": {
+      "status": "FAIL",
+      "error": "task_profile_timeout",
+      "seconds": 56.75
+    },
+    "mixed_input": {
+      "status": "PASS",
+      "profile": {
+        "schema_version": "task-profile-v1",
+        "taxonomy_version": "task-taxonomy-v2",
+        "description": "同时分析图片和音频输入，输出纯文本总结。",
+        "domains": [
+          "general"
+        ],
+        "tasks": [
+          "summarization"
+        ],
+        "capabilities": [
+          {
+            "id": "multimodal_understanding",
+            "weight": 0.4,
+            "rationale": "需同时整合图片与音频的跨模态理解"
+          },
+          {
+            "id": "summarization",
+            "weight": 0.3,
+            "rationale": "输出目标是纯文本总结"
+          },
+          {
+            "id": "audio_understanding",
+            "weight": 0.15,
+            "rationale": "需识别并理解音频内容"
+          },
+          {
+            "id": "visual_perception",
+            "weight": 0.15,
+            "rationale": "需识别并理解图片内容"
+          }
+        ],
+        "constraints": {
+          "language": "any",
+          "modality": "audio+image",
+          "knowledge_access": "any",
+          "min_context_tokens": null
+        },
+        "weight_basis": "llm_proposed",
+        "assumptions": [
+          "能力权重为模型建议，未经实际任务验证；请按实际需要确认和调整。"
+        ]
+      },
+      "seconds": 11.24
+    }
+  },
+  "actual_provider_requests": 7
+}

@@ -12,7 +12,7 @@ import time
 from .task_labels import PROFILE_VERSION, build_task_profile, _constraint_is_literal
 from .taxonomy import TAXONOMY_VERSION
 
-PROMPT_VERSION = 'task-profile-compact-v3-literal-inputs'
+PROMPT_VERSION = 'task-profile-compact-v4-input-output-scope'
 LOG = logging.getLogger(__name__)
 _INIT_LOCK = threading.Lock()
 
@@ -126,7 +126,7 @@ class CompactProfileClient:
             '每项rationale用一句简短中文说明（建议30字以内）。'
             '硬约束仅提取用户明确要求，无明确要求用any或null。'
             '不要从描述语言推断输出语言，不从页数/字数推断token数，不从阅读论文推断需要联网。'
-            '翻译、写作任务不等于只接受文本：modality=text仅用于用户明确说纯文本、仅文本或text-only。'
+            '必须区分输入与输出：输出纯文本不限制输入模态；modality=text仅用于明确的纯文本输入。逐字稿和文字描述不等于原始录音或视频文件。'
             '精确保留输入模态：截图、X光影像为image，录音为audio，录像/录屏为video；混合输入用audio+video等组合。生成图片不代表图像输入，音频文字稿是文本。'
             '“联网检索”明确要求retrieval；未提联网不等于closed_book。'
             '每个非any且非null约束必须附constraint_evidence中的连续用户原话；不要添加隐含限制。'

@@ -2,7 +2,7 @@
 import re
 import unicodedata
 
-POLICY = 'shared-source-roles-and-modalities-v3'
+POLICY = 'shared-source-roles-and-modalities-v4'
 
 def modality_matches(requested, modalities):
     tags = set(modalities or [])
@@ -22,6 +22,7 @@ def task_metric_role(group):
     plain = re.sub(r'[^a-z0-9]', '', label.casefold())
     if plain in {'rank','avgrank','averagerank','meanrank'} and re.search(r'ordered by (?:the )?mean|equal displayed scores share a rank|average (?:of )?.*ranks|average ranks',context):
         return 'DERIVED_RANK'
+    if plain in {'rstat','rdyn'} and re.search(r'corresponding ranks|static.vs.dynamic ranking comparison|rank rstat|rank rdyn',context):return 'DERIVED_RANK'
     if re.fullmatch(r'(?:ece|expectedcalibrationerror|brier(?:raw|score)?)(?:percent)?', plain):
         return 'CALIBRATION_DIAGNOSTIC'
     if (plain in {'increase', 'decrease', 'unchanged'}
