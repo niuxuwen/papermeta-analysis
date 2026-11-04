@@ -79,7 +79,13 @@ def parse_scope(row):
         name = name[:semver.start()].strip()
     annual = re.fullmatch(r'(?i)(AIME|AMC)[\s_-]*(\d{2}|20\d{2})', name)
     if annual:
-        name = annual[1].upper();scope['year'] = annual[2]
+        name = annual[1].upper();year = annual[2]
+        reference = re.match(r'^(\d{4})', str(row.get('paper_first_published') or row.get('release_date') or ''))
+        if len(year)==2 and reference:
+            published=int(reference[1]);expanded=published//100*100+int(year)
+            if expanded>published+1:expanded-=100
+            year=str(expanded)
+        scope['year'] = year
     tagged = re.search(r'(?i)\s*\((english|chinese|en|zh|test|train|dev|validation|[^()]+ subset)\)$', name)
     if tagged:
         label = tagged[1].casefold()

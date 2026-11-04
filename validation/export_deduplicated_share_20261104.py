@@ -90,10 +90,12 @@ SELECT b.* FROM benchmarks b JOIN benchmark_entity_sources m USING(paper_id,benc
     names=[p.name for p in OUT.iterdir()if p.is_file()and p.name!='SHA256SUMS.txt']
     (OUT/'SHA256SUMS.txt').write_text(''.join(digest(OUT/n)+'  '+n+'\n'for n in sorted(names)),encoding='ascii')
     package=OUT.parent/'benchmark-research-data-deduplicated-20261104.zip'
-    with ZipFile(package,'w',ZIP_DEFLATED,compresslevel=6)as archive:
+    temporary=package.with_suffix('.building.zip')
+    with ZipFile(temporary,'w',ZIP_DEFLATED,compresslevel=6)as archive:
         for p in OUT.iterdir():
             if p.is_file():archive.write(p,p.name,compress_type=ZIP_STORED if p.suffix=='.gz'else ZIP_DEFLATED)
-    with ZipFile(package)as archive:assert archive.testzip()is None
+    with ZipFile(temporary)as archive:assert archive.testzip()is None
+    temporary.replace(package)
     report.update(package=str(package),package_bytes=package.stat().st_size,package_sha256=digest(package))
     (REPO/'validation/benchmark-entities-share-validation-20261104.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
     print(json.dumps(report,ensure_ascii=True),flush=True)

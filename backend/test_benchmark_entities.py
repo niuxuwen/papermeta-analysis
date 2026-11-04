@@ -37,6 +37,8 @@ class IdentityTests(unittest.TestCase):
         mappings=self.mappings([row(n)for n in ['Terminal-Bench 2.0','Terminal-Bench 2.1','AMC23','AMC24']])
         self.assertEqual(len({m['entity_id']for m in mappings}),2)
         self.assertEqual(len({m['variant_id']for m in mappings}),4)
+        years=self.mappings([row('AIME24','a',paper_first_published='2026-10-01'),row('AIME 2024','b',paper_first_published='2026-10-02')])
+        self.assertEqual(years[0]['variant_id'],years[1]['variant_id'])
 
     def test_resource_aliases_require_both_shared_resource_and_alias(self):
         assets={'assets':{'items':[{'kind':'dataset','url':'https://github.com/org/data','evidence_quote':'The dataset is available at this repository.'}]}}
