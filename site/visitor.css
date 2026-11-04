@@ -86,3 +86,6 @@ a.visitor-benchmark-row{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){.task-scenario-condition>summary,.task-scenario-actions button,.task-scenario-actions a{transition:none}}
 
 .task-evidence-section{margin-top:28px}.task-evidence-section>h3{margin-bottom:8px}.task-evidence-section>.method-note{margin-bottom:18px}
+
+/* Source identities remain accessible after cross-paper directory grouping. */
+.benchmark-source-list{margin-top:8px;font-size:12px;line-height:1.6}.benchmark-source-list summary{cursor:pointer;color:#53718d}.benchmark-source-list a{display:block;padding:4px 0;color:#376994;text-decoration:none}.benchmark-source-list a:hover{text-decoration:underline}

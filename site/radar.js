@@ -646,6 +646,10 @@
       $('benchmarks').replaceChildren();empty($('benchmarks'),'正在读取评测目录','能力标签与成绩统计加载完成后显示。');$('result-count').textContent='目录加载中';$('more-benchmarks').hidden=true;return;
     }
     const list=visibleBenchmarks(), box=$('benchmarks'),shown=Math.min(state.benchmarkLimit,list.length),more=$('more-benchmarks');box.replaceChildren();more.hidden=shown>=list.length;$('result-count').textContent=state.snapshot?`显示 ${shown} / ${list.length} 项匹配 · 当前窗口共 ${state.snapshot.visitor_catalog_count??state.snapshot.status?.counts?.unique_benchmarks??state.snapshot.benchmarks.length} 项`:'尚未读取评测数据';
+    if(state.snapshot?.benchmark_entity_statistics){
+      const catalog=state.snapshot.benchmarks,entities=new Set(catalog.map(b=>b.benchmark_entity_id).filter(Boolean)),variants=new Set(catalog.map(b=>b.benchmark_variant_id).filter(Boolean)),pending=catalog.filter(b=>b.benchmark_entity_status!=='RESOLVED').length;
+      $('result-count').textContent=`显示 ${shown} / ${list.length} 项匹配 · 当前可查 ${entities.size} 个已归并 Benchmark、${variants.size} 个版本/子集${pending?' · '+pending+' 条身份待核来源':''}`;
+    }
     const previousKeys=box.radarBenchmarkKeys||new Set();box.radarBenchmarkKeys=new Set();let entering=0;
     if(!list.length){empty(box,state.snapshot?'当前条件没有 Benchmark':'等待评测数据',state.snapshot?'可调整搜索或资格筛选。':'连接后显示当前窗口内的评测条目。');return;}
     const table=el('table',null,'benchmark-directory-table'),caption=el('caption','当前窗口 Benchmark 目录，点击名称查看成绩与来源详情。','sr-only'),head=el('thead'),header=el('tr'),body=el('tbody');
@@ -665,6 +669,12 @@
       if(b.name_audit?.status==='REVIEW_REQUIRED')meta.append(el('span','原始片段见详情'));
       if(nTables>0)meta.append(el('span',`${nTables} 张来源表`));
       if(members.length>1)meta.append(el('span',`${members.length} 条来源记录`));nameCell.append(intro,paper,meta);
+      if(b.benchmark_entity_status&&b.benchmark_entity_status!=='RESOLVED')meta.append(el('span','身份待核，不计入实体总数'));
+      if(members.length>1){
+        const sources=el('details',null,'benchmark-source-list');sources.append(el('summary',`查看 ${new Set(members.map(r=>r.paper_id)).size} 篇论文的来源`));
+        for(const ref of members){const source=el('a',ref.paper_title||ref.paper_id);source.href=new URL('benchmark/?'+new URLSearchParams({paper_id:ref.paper_id,benchmark_id:ref.benchmark_id}),radarBase).href;sources.append(source);}
+        nameCell.append(sources);
+      }
       const abilityCell=el('td',null,'benchmark-directory-abilities'),domains=benchTags(b,'domains'),capabilities=benchTags(b,'capabilities');
       if(domains.length)abilityCell.append(el('span',domains.map(titleFor).join(' · '),'benchmark-directory-domain'));
       const tags=el('div',null,'benchmark-directory-tags');

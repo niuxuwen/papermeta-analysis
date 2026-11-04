@@ -26,8 +26,14 @@ def build(feed, site, rules_path):
     assert sid == report['snapshot_id'] == rules['snapshot_id']
     assert snapshot['index']['method']['version'] in (15,16)
     assert len(snapshot['observations']) == report['observations'] > 0
+    from benchmark_entities import build_registry
+    entities = {**build_registry(snapshot['benchmarks']), 'snapshot_id': sid, 'generated_at': snapshot['generated_at']}
     root = site / 'snapshot' / sid
     (root / 'details').mkdir(parents=True, exist_ok=True)
+    entity_raw = gzip.compress(encode(entities), mtime=0)
+    entity_hash = hashlib.sha256(entity_raw).hexdigest()
+    entity_path = root / ('entities-' + entity_hash[:16] + '.json.gz')
+    entity_path.write_bytes(entity_raw)
     # These archives are retained for audit. Normal browsing uses build-ranking.cjs projections.
     parts = []
     for i, offset in enumerate(range(0, len(raw), 4 * 1024 * 1024)):
@@ -62,6 +68,8 @@ def build(feed, site, rules_path):
         'source_sha256': report['source_sha256'], 'observations': report['observations'], 'method_version': snapshot['index']['method']['version'],
         'score_version': snapshot['index']['method'].get('score_version'), 'model_calls': 0,
         'automatic_publication': True}
+    manifest['benchmark_entities'] = {'path': entity_path.relative_to(site).as_posix(),
+        'sha256': entity_hash, 'bytes': len(entity_raw), 'snapshot_id': sid}
     if report.get('task_inputs_sha256'):
         task_raw = (feed / 'task-inputs.json.gz').read_bytes()
         assert len(task_raw) == report['task_inputs_bytes']

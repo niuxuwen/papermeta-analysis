@@ -8,7 +8,9 @@ assert.equal(m.snapshot_id,report.snapshot_id);assert.equal(m.observations,repor
 const packed=Buffer.concat(m.parts.map(p=>fs.readFileSync('site/'+p.path)));
 assert.equal(createHash('sha256').update(packed).digest('hex'),m.workspace_sha256);
 const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync('site/snapshot-codec.js','utf8'),ctx);
-const full=ctx.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed))),pub=V.visitorSnapshot(full);
+const original=ctx.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed)));
+const full=m.benchmark_entities?require('./benchmark-entity-projection.cjs')(original,JSON.parse(zlib.gunzipSync(fs.readFileSync('site/'+m.benchmark_entities.path)))):original,pub=V.visitorSnapshot(full);
+assert.deepEqual(full.observations,original.observations);assert.equal(full.index,original.index);
 assert.equal(full.observations.length,report.observations);assert([15,16].includes(full.index.method.version));
 const read=meta=>{const raw=fs.readFileSync('site/'+meta.path);assert.equal(raw.length,meta.bytes);assert.equal(createHash('sha256').update(raw).digest('hex'),meta.sha256);return JSON.parse(zlib.gunzipSync(raw));};
 const light=read(m.ranking);assert.equal(light.snapshot_id,m.snapshot_id);

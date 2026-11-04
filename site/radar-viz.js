@@ -19,6 +19,7 @@
   }
   function publicBenchmarkVisible(b, observations) {
     if(!publicBenchmarkIdentityVisible(b))return false;
+    if(observations instanceof Set)return [b,...directorySources(b)].filter(publicBenchmarkIdentityVisible).some(ref=>observations.has(key(ref)));
     if(Array.isArray(observations)) {
       const members=new Set([b,...directorySources(b)].filter(publicBenchmarkIdentityVisible).map(key));
       return observations.some(row=>members.has(key(row)));
@@ -30,11 +31,12 @@
     if(snapshot.visitor_catalog_filtered)return snapshot;
     const all=snapshot.benchmarks||[],blocked=new Set(all.filter(b=>!publicBenchmarkIdentityVisible(b)).map(key)),allowed=new Set();
     const rows=snapshot.sources_loaded===false||snapshot.detail_loaded===false?undefined:(snapshot.observations||[]);
+    const observedSources=rows?new Set(rows.map(key)):undefined;
     const benchmarks=all.filter(publicBenchmarkIdentityVisible).map(b=>{
       const visibleRef=ref=>!blocked.has(key(ref))&&publicBenchmarkIdentityVisible(ref);
       return {...b,...(b.directory_sources?{directory_sources:b.directory_sources.filter(visibleRef)}:{}),
         ...(b.catalog_sources?{catalog_sources:b.catalog_sources.filter(visibleRef)}:{})};
-    }).filter(b=>publicBenchmarkVisible(b,rows));
+    }).filter(b=>publicBenchmarkVisible(b,observedSources));
     benchmarks.forEach(b=>{allowed.add(key(b));directorySources(b).forEach(ref=>allowed.add(key(ref)));});
     const visible=row=>allowed.has(key(row));
     const projected={...snapshot,benchmarks,observations:(snapshot.observations||[]).filter(visible),

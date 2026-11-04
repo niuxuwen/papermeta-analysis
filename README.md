@@ -1,5 +1,15 @@
 # 论文 Meta 分析 · GitHub Pages 访问者版
 
+## Benchmark 跨论文归并
+
+发布时通过 `backend/benchmark_entities.py` 生成实体、版本/子集及来源映射。已登记的标准别名归一；其他具有区分度的名称可按精确规范化名称归并，完整名称/缩写还可由共享的来源资源与明确别名对应。不同来源声称新建的同名项目、泛化词、短缩写和损坏名称单列待核，不凑入实体总数。不使用模糊匹配或成绩相似性决定身份。
+
+`benchmark_entity_statistics` 的实体数、版本/子集数、待核来源数分开报告，表示按规则归并的目录身份，不表示全部逐项人工认证。原 `catalog_identity`、来源 `(paper_id, benchmark_id)` 和原始快照 `status.counts.unique_benchmarks` 仍是原系统的来源管理口径，不能再解释成独立 Benchmark 总数。新口径以带 SHA-256 的 `manifest.benchmark_entities` 文件及其 `statistics` 为准。
+
+目录按 `benchmark_variant_id` 折叠，跨论文来源均可展开；图表、任务和综合评分继续保留原实验组、指标与设置，不将不同论文的成绩直接平均。完整源归档与每条成绩不变。每次自动发布均重新派生身份映射，无需额外模型调用。
+
+规则及防误合并检查：`python backend/test_benchmark_entities.py`。真实快照的回放与修订数据包脚本为 `validation/export_deduplicated_share_20261104.py`；准备回放数据后运行 `node --test test-benchmark-entities.cjs`。
+
 公开网页发布 v120 评分快照（综合评分 v15、任务参考 v8）；后端源码独立保存在 backend/，不会包含在 Pages 发布目录中。网页不包含管理入口、队列或 API 密钥。
 数据截至北京时间 2026-10-27 19:42，30,594 条原始成绩、132 个默认设置下的模型综合分。
 

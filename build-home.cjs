@@ -10,7 +10,12 @@ const radar=read('radar.js');
 const decoder=radar.slice(radar.indexOf('  function decodeSnapshot('),radar.indexOf('  async function fetchSnapshotJSON('));
 const context={console,Intl,URL};context.window=context;vm.createContext(context);
 vm.runInContext(decoder+'\n'+read('radar-viz.js'),context);
-const snapshot=context.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed)));
+let snapshot=context.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed)));
+if(manifest.benchmark_entities){
+ const meta=manifest.benchmark_entities,raw=fs.readFileSync(path.join(site,meta.path));
+ if(raw.length!==meta.bytes||crypto.createHash('sha256').update(raw).digest('hex')!==meta.sha256)throw Error('BENCHMARK_ENTITY_INTEGRITY_FAILURE');
+ snapshot=require('./benchmark-entity-projection.cjs')(snapshot,JSON.parse(zlib.gunzipSync(raw)));
+}
 const V=context.RadarViz,publicData=V.visitorSnapshot(snapshot);V.setModelRegistry(publicData.model_registry);
 require('./build-ranking.cjs')(snapshot,publicData,V,manifest,site);
 const rows=V.modelData(publicData,'').rows.filter(r=>Number.isFinite(r.score)).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));

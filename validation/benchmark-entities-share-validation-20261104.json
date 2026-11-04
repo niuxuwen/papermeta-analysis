@@ -1,0 +1,46 @@
+{
+  "source_records": 23574,
+  "resolved_entities": 9581,
+  "resolved_variants": 9686,
+  "resolved_source_records": 16347,
+  "unresolved_source_records": 7227,
+  "unresolved_reasons": {
+    "AMBIGUOUS_HOMONYM": 6,
+    "DESCRIPTIVE_OR_UNSUPPORTED_NAME": 5438,
+    "GENERIC_OR_SHORT_NAME": 1181,
+    "UNRESOLVED_NAME": 602
+  },
+  "registered_entities": 5,
+  "count_scope": "RESOLVED_CATALOG_ENTITIES; unresolved names are excluded, not assumed unique",
+  "snapshot_id": "22b3874d06f367f5f17d4666",
+  "source_time": "2026-11-03T08:56:50.737321Z",
+  "examples": {
+    "MATH": {
+      "sources": 15,
+      "variants": 1
+    },
+    "MMLU": {
+      "sources": 25,
+      "variants": 1
+    },
+    "GSM8K": {
+      "sources": 37,
+      "variants": 1
+    },
+    "HumanEval": {
+      "sources": 22,
+      "variants": 1
+    },
+    "MMLU-Pro": {
+      "sources": 29,
+      "variants": 2
+    }
+  },
+  "original_tables_cell_equality": "PASS",
+  "source_archive_sha256": "PASS",
+  "sqlite_integrity": "PASS",
+  "model_calls": 0,
+  "package": "D:\\FDU\\wispaper\\data-shares\\benchmark-research-data-deduplicated-20261104.zip",
+  "package_bytes": 148061474,
+  "package_sha256": "65dbcc738da3f8f27bf36fa015da252a7298d87eced4f478ba2d14edfec38d58"
+}
