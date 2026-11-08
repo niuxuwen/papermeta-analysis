@@ -298,3 +298,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei UI
 #task-results>.section-head>.radar-select{flex:0 1 300px;min-width:min(300px,100%)}
 .candidate-empty-actions{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 20px}
 .candidate-empty-actions button{min-height:38px;font-size:12px;padding:8px 12px;border-radius:10px}
+
+.benchmark-category-filter { display:flex; flex-wrap:wrap; gap:.3rem; margin:.75rem 0 .3rem; }
+.benchmark-category-filter button { background:transparent; border:1px solid transparent; border-radius:1rem; color:#475b72; padding:.24rem .72rem; font:inherit; font-size:.87rem; }
+.benchmark-category-filter button:hover { background:#f0f4f9; }
+.benchmark-category-filter button[aria-pressed="true"] { color:#184d80; background:#e9f2fc; border-color:#cadbef; font-weight:600; }
+.benchmark-tag-family { display:grid; grid-template-columns:4rem minmax(0,1fr); align-items:baseline; gap:.4rem; }
+.benchmark-tag-family + .benchmark-tag-family { margin-top:.38rem; }
+.benchmark-tag-family > strong { color:#324a61; font-size:.8rem; font-weight:650; }
+.benchmark-family-more > summary { cursor:pointer; color:#486680; font-size:.78rem; }
+.benchmark-family-more[open] { flex-basis:100%; }
+.benchmark-family-more[open] > .benchmark-directory-tags { margin-top:.25rem; }

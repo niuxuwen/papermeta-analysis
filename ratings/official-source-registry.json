@@ -1,0 +1,34 @@
+{
+  "version": "official-source-release-v1-20261105",
+  "scope": "source-level modifier: confirmed manufacturer official report or official organization project release; company affiliation alone is insufficient; no rerun/citation distinction",
+  "confirmed_multiplier": 0.5,
+  "unconfirmed_multiplier": 1.0,
+  "entries": [
+    {
+      "paper_id": "recent-7c4d7242b81e423b",
+      "arxiv_id": "2609.31714",
+      "publisher": "Fysics AI",
+      "status": "CONFIRMED_OFFICIAL_MODEL_RELEASE",
+      "evidence": [{"url":"https://huggingface.co/Fysics-AI/OmniFysics-Captioner","field":"model_owner_links_matching_paper","observed":"Model owner Fysics-AI; model card arxiv tag 2609.31714 and paper link"}],
+      "verification_date": "2026-11-05"
+    },
+    {
+      "paper_id": "recent-9ad584d2169220d6",
+      "arxiv_id": "2610.38249",
+      "publisher": "Keepace.ai Team",
+      "status": "CONFIRMED_NAMED_MODEL_TEAM_TECHNICAL_REPORT",
+      "evidence": [{"url":"https://arxiv.org/abs/2610.38249","field":"named_model_team_authored_own_model_technical_report","observed":"Author list explicitly includes Keepace.ai Team; title is the Keepace.ai technical report; abstract describes its internal evaluations"}],
+      "verification_limit": "Official-team authorship is the paper's explicit declaration, not independent corporate certification. keepace.ai website was inaccessible at verification.",
+      "verification_date": "2026-11-05"
+    },
+    {
+      "paper_id": "recent-b3f88d6827466de2",
+      "arxiv_id": "2610.03226",
+      "publisher": "QwenLM / Alibaba",
+      "status": "CONFIRMED_OFFICIAL_ORGANIZATION_PROJECT_RELEASE",
+      "evidence": [{"url":"https://github.com/QwenLM/D2K-Bench","field":"official_organization_repository_links_matching_paper","observed":"QwenLM organization repository README names the paper and BibTeX eprint 2610.03226"}],
+      "verification_limit": "This is an official benchmark project release, not proof every evaluation row measures the publisher's own model. Modifier is intentionally source-level.",
+      "verification_date": "2026-11-05"
+    }
+  ]
+}

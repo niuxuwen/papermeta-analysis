@@ -1,0 +1,324 @@
+论文 Meta 分析|PaperMate Analysis
+主导航|Main navigation
+跳到内容|Skip to content
+首页|Home
+模型表现|Model performance
+评测目录|Benchmarks
+任务选模型|Task matching
+重新载入|Reload
+更新数据|Refresh
+模型与评测|Models and benchmarks
+公开模型评测|Model benchmarks
+汇总公开评测结果，提供模型比较与任务选模型参考。|Compare model performance across benchmarks reported in research papers.
+评测成绩附有对应论文及原始数据来源。|Each result links to its paper and supporting data.
+查看模型表现|Explore model rankings
+查看评测范围与原始来源。|Browse benchmark coverage and source papers.
+模型综合评分|Composite model scores
+完整榜单|Full rankings
+展示模型综合评分、评测覆盖情况及原始成绩来源。|Explore composite scores, benchmark coverage and the underlying results.
+模型详情提供各项评测成绩及其来源。|Select a model to inspect its scores and sources.
+近期评测|Recent benchmarks
+全部评测|All benchmarks
+展示评测内容、参测模型及论文报告成绩。|Explore the models and results reported in each paper.
+数据来源与使用说明|Sources and methodology
+成绩来自公开论文，可查看原始数值、实验设置和论文链接。本站未独立复现。|Scores are transcribed from published papers. Each record includes its reported value and experimental setting. Results have not been independently reproduced.
+查看评测来源|Browse source records
+评测数据更新|Snapshot information
+浏览模型综合评分、评测原始成绩和论文来源。本地使用固定数据版本；更换数据需手动重新部署。|This snapshot includes model rankings, reported benchmark results and source papers.
+数据截至|Data as of
+证据更新时间|Source data updated
+成绩来自公开论文，未独立复现。|Results are reported by the authors and have not been independently reproduced.
+成绩摘录自公开论文，可查阅原始数值与来源。|Scores are drawn from published papers. You can consult the original values and sources.
+查看共同测试结果|Compare shared benchmarks
+汇总模型评测结果，并提供原始成绩与来源查询。|Explore model rankings and trace each result to its source.
+榜单范围|Ranking view
+综合评分 · 0–100|Composite score · 0–100
+同一测试 · 原始成绩|Reported scores on a single test
+评分与数据说明|Scoring methodology
+模型综合评分 · 柱状对比|Composite scores by model
+模型综合榜|Model rankings
+综合榜|Rankings
+综合分|Composite score
+综合评分|Composite score
+综合榜单|Model rankings
+柱状对比|Bar chart
+数据与证据|Scores and sources
+模型区间|Reference interval
+中心|Estimate
+细线表示参考区间，柱长表示综合评分。|Bars show composite scores. Thin lines show reference intervals.
+按综合评分排列，请结合参考区间、评测覆盖与共同参测结果比较。|Models are ordered by composite score. Use the reference intervals and shared benchmarks when comparing models.
+放大图表|Expand chart
+导出|Export
+标识|Model
+厂商|Provider
+其他 / 厂商待确认|Provider unconfirmed
+其他|Other
+厂商待确认|Provider unconfirmed
+华为|Huawei
+腾讯|Tencent
+月之暗面|Moonshot AI
+字节跳动|ByteDance
+上海人工智能实验室|Shanghai AI Laboratory
+阿里巴巴|Alibaba
+深度求索|DeepSeek
+搜索模型或厂商|Search models or providers
+搜索 benchmark 或论文|Search benchmarks or papers
+搜索 benchmark / 论文...|Search benchmarks or papers…
+搜索|Search
+排序|Sort by
+按厂商 · 新到旧|Provider · newest first
+全部领域|All domains
+全部任务类型|All task types
+全部能力|All capabilities
+筛选候选模型|Filter candidate models
+能力分布|Capability distribution
+按领域、任务和能力查找，点击条目查看成绩与来源。|Filter by domain, task or capability. Select a benchmark to inspect its results and sources.
+已通过核验|Verified
+已核实纳入|Verified
+状态|Status
+能力|Capabilities
+模型|Models
+查看|View
+详情|Details
+暂无能力标签|No capability labels
+有成绩|Results available
+核验成绩|Verified results
+与论文来源|and source paper
+按领域筛选|Filter by domain
+按任务类型筛选|Filter by task type
+按能力筛选|Filter by capability
+资格筛选|Eligibility
+查看各模型的评测覆盖|Benchmark coverage by model
+查看模型评分与证据状态|Model scores and evidence
+共同测试结果 · 双模型比较|Compare two models on shared benchmarks
+数据说明|About the data
+清空|Clear
+关闭|Close
+全选|Select all
+取消|Cancel
+返回评测目录|Back to benchmarks
+动态评测 · 可溯源|Benchmark results and sources
+新 Benchmark|Benchmarks
+任务评分|Task scores
+来源成绩|Reported scores
+来源模型名称|Model names in sources
+可比指标组|Comparable metric groups
+任务匹配组|Matched task groups
+参测模型|Evaluated models
+论文与公开资源|Paper and resources
+能力与任务标签|Capabilities and tasks
+模型成绩对比|Model comparison
+选择可比指标|Comparable metric
+已通过证据核验且位于当前窗口|Verified and within the snapshot window
+首次发布|First published
+论文首次公开|Paper first published
+核验依据|Verification basis
+论文首版公开时间（代理依据）|First public paper date (proxy)
+任务选模型暂未开放|Task matching is unavailable
+任务选型服务暂不可用|Task matching is unavailable
+当前版本提供模型表现、评测目录和来源查询。任务需求分析与选型暂不可用，可先查阅相关评测和原始成绩。|This local snapshot supports model rankings, benchmarks and their source records. Task analysis requires a connected service.
+模型评分与评测来源仍可浏览，请稍后重新连接任务服务。|You can browse model rankings and benchmark sources in this snapshot.
+当前窗口|Current window
+默认设置|Default setting
+未另列实验设置|No separate setting reported
+实验设置|Experimental setting
+来源|Source
+直接对手|Direct opponents
+区间|Interval
+下界|Lower bound
+上界|Upper bound
+已选择|Selected
+原始成绩|Reported scores
+更多|More
+继续显示|Show more
+相关评测|Related benchmarks
+日期待核验|Date unverified
+来源表|Source tables
+事实正确性|Factual accuracy
+泛化能力|Generalization
+综合推理（未细分）|General reasoning
+多模态理解|Multimodal understanding
+通用|General
+自然科学与工程|Science and engineering
+指令与格式遵循|Instruction and format following
+交互执行|Interactive execution
+知识运用（通用/专业）|Knowledge application
+文本|Text
+语言|Language
+视觉感知|Visual perception
+鲁棒性|Robustness
+模型详情|Model details
+查看来源成绩|View source results
+共同评测|Shared benchmarks
+共同测试|Shared tests
+可比|Comparable
+论文近|Paper window
+天|days
+近|past
+个月|months
+个模型|models
+个|models
+项评测|benchmarks
+条来源成绩|reported results
+项|benchmarks
+已显示|shown
+其余|additional
+已填写|Entered
+点击查看评分概览|Open score summary
+成绩|Scores
+厂商颜色图例|Provider legend
+评分概览|Score summary
+论文首次公开窗口|Paper publication window
+首次发布窗口|release window
+张来源表|source tables
+任务服务暂不可用|Task service unavailable
+重新连接|Reconnect
+以下来自本 Benchmark 已提取的论文成绩，覆盖全部指标与设置；模型详情提供其参与的各项评测记录。|Results cover all reported metrics and settings. Select a model to explore its benchmark record.
+仅比较同一来源表、同一指标、同一任务行与实验设置。条形长度使用论文原值，从零起画，保留实际数值差距。不同指标单位不混合比较。|Each chart compares values from the same source table, metric, task and experimental setting. Bars show reported values in their original units.
+论文报告的全部来源成绩|All results reported in the paper
+处理进度|Processing status
+来源名称已核验|Source name verified
+可比来源|comparable records
+条来源|source records
+种设置|settings
+本条目暂无可用的能力标注。|Capability labels are unavailable for this benchmark.
+尚无已确认公开资源|No verified public resources
+首次发布日期证据|Evidence for the initial release date
+暂无选项|No options available
+模型档案|Model profile
+已排队|Queued
+项同场|shared tests
+项可比|comparable results
+固定量程|Fixed scale
+阶跃星辰|StepFun
+文档问答|Document question answering
+知识问答|Knowledge-based question answering
+固定量程分|Fixed-scale score
+不修改队列|Queue unchanged
+资格已核验|Eligibility verified
+项雷达图指标|radar chart metrics
+鲁棒性与泛化|Robustness and generalization
+查询公开评测|Browse public benchmarks
+缺少原始表格|Source table unavailable
+代码调试与修复|Code debugging and repair
+个覆盖合格模型|models with sufficient coverage
+翻译或表达质量|Translation and writing quality
+对模型已测的合格|eligible results reported for the model
+暂不能确认正式名称|Official name unconfirmed
+条件待核来源参考分|Reference score with unverified test conditions
+排序相关信息的质量|Quality of relevance ranking
+尚未通过实际任务验证|Not yet validated on real tasks
+未经实际用户任务验证|Not yet validated on real user tasks
+每个模型对在每篇论文|each model pair in each paper
+暂不能计算任务参考分|Task scores are currently unavailable
+当前窗口暂无可绘制的核验成绩|No verified results are available for this period
+候选模型尚未加载，请重新读取|Candidate models have not loaded. Try reloading.
+筛选，只改变显示，不修改队列|Filters apply only to this view.
+以覆盖合格参考模型为中心映射至|scaled relative to reference models with sufficient coverage
+当前输入模态没有匹配的已核验成绩|No verified results match the selected input modality
+暂时无法读取评测数据，请检查服务连接|Unable to load benchmark data. Check the connection and try again.
+查询公开评测、模型原始成绩、实验设置及论文来源|Explore benchmarks, reported model scores, experimental settings and source papers.
+数量，不表示模型能力；数量多意味着可供核对的证据更多|This count measures evidence coverage. Higher counts indicate more results available for review.
+另列辅助结果|Additional results
+候选模型加载中|Loading candidate models
+候选模型尚未加载|Candidate models have not loaded
+双模型对比|Model comparison
+共同参测项目 · 选择 3–8 项雷达图指标|Radar chart metrics (select 3–8)
+共同参测项目|Shared benchmarks
+计算方法与可比条件|How the models are compared
+查看配对原值与论文来源|Paired scores and source papers
+共同来源 · 最终任务表现|Task results from shared papers
+最终任务表现|Final task performance
+对比模型|Compare models
+模型 A|Model A
+模型 B|Model B
+共同 Benchmark|Shared benchmarks
+能力雷达|Capability profile
+同组较优|Better result
+原始分差 A − B|Score difference (A − B)
+指标 / 方向|Metric / better direction
+正向指标|Higher is better
+负向指标|Lower is better
+指标方向待核验|Scoring direction unverified
+点击编号查看原始成绩。各指标分别归一化，图形面积不表示总体性能。|Select a number to see the reported scores. Each axis has its own scale.
+点击编号查看能力分项与共同测试来源。仅代表已核验的共同测试子集，不是总榜分数。|Select a number to see scores and sources for that capability. The chart covers verified shared tests only.
+每个轴是一项共同 Benchmark，可切换双方均有成绩记录的来源指标。各轴用该来源全体模型的原值范围并包含零用于归一化，不把两个模型的胜负换成 100 / 0；负向指标反向显示。雷达面积不计总分，不同轴的长度不可当作跨领域能力排名。|Each axis shows a shared benchmark. Choose a metric reported for both models. The scale includes zero and the range of scores reported for all models in that source. Lower-is-better metrics are reversed so that stronger results appear farther out. Compare models along the same axis.
+仅匹配同一论文、表格、指标、任务行、实验设置和比较条件。差值 = 模型 A 原值 − 模型 B 原值；正向指标以较高数值表示更优表现，负向指标以较低数值表示更优表现。差值保留原单位，不合成跨指标总分。|Each pair comes from the same paper, table and task row, with matching metrics and experimental conditions. The difference is model A’s score minus model B’s, in the original units. The metric determines whether a higher or lower score is better.
+评测详情|Benchmark details
+来源与证据|Sources and evidence
+同组模型对比|Models tested under the same conditions
+选择模型|Select models
+等待评测数据|Waiting for benchmark data
+放大|Expand
+任务需求|Task requirements
+任务描述|Task description
+任务示例|Example tasks
+文献分析|Literature analysis
+配置任务需求|Set task requirements
+分析能力需求|Analyze task requirements
+仅在提交能力需求分析时调用模型接口。|Submitting a task for analysis sends its description to the model service.
+能力需求配置|Required capabilities
+调整需求与能力权重|Adjust requirements and weights
+任务需求配置|Task requirements
+保存与打开方案|Saved task profiles
+方案名称|Profile name
+打开已保存方案…|Open a saved profile…
+请输入方案名称|Enter a profile name
+文献综述|Literature review
+内容摘要|Summarization
+数学解题|Math problem solving
+图文文档理解|Document and image understanding
+工具任务执行|Tool use
+阅读理解|Reading comprehension
+任务规划|Task planning
+输入模态|Input modality
+纯文本|Text only
+闭卷 / 不检索|Closed book (no retrieval)
+多模态（未指定类型）|Multimodal (unspecified)
+最少上下文 tokens|Minimum context length (tokens)
+任务标签匹配 → 来源成绩比较 → 0–100 参考分|Match task labels → Compare reported scores → Calculate task scores (0–100)
+匹配评测并计算参考分|Find benchmarks and calculate scores
+仅使用真实成绩；能力与证据覆盖另列，不代表实际任务成功率。|Scores use reported results. Coverage is shown separately.
+比较候选模型|Compare candidate models
+候选模型比较|Compare candidate models
+评测能力分布|Benchmark coverage by capability
+从来源评测组的审核标签出发，查看专业领域和能力的证据分布。|Explore benchmark coverage by domain and capability using verified source labels.
+一个 Benchmark 可以包含多项能力；具体指标只按来源证明的能力计分。同一领域、任务与实验条件下的证据优先匹配，跨任务证据只作迁移参考。|A benchmark may cover several capabilities. Each metric counts toward the capabilities supported by its source. Matches prioritize the same domain, task and experimental conditions.
+可比评测组|Comparable test groups
+证据覆盖 · 可比 Benchmark 数|Coverage by benchmark
+全部厂商|All providers
+模型、别名或厂商|Model name, alias or provider
+查找模型|Find a model
+查找候选模型|Search candidate models
+搜索 Benchmark / 论文…|Search benchmarks or papers…
+输入模态必须匹配。其他条件尚未核实的成绩单列为参考，不作为满足任务要求的推荐。|The input modality must match. Results with other unverified conditions are listed separately.
+模型 / 实验设置|Model / experimental setting
+论文原值|Reported score
+实验设置及论文来源|Experimental settings and source papers
+读取评测目录|Loading benchmarks
+请选择模型|Select a model
+胜负均衡|Even results
+占优|ahead
+子任务|Subtask
+指标|Metric
+未另列子任务|No separate subtask reported
+论文来源|Source paper
+部分来源名称待核验|Some source names are unverified
+核验依据：论文首版公开时间（代理依据）|Date basis: first public version of the paper (proxy)
+当前窗口 Benchmark 目录，点击名称查看成绩与来源详情。|Select a benchmark to see its reported scores and sources.
+同条件指标先在 Benchmark 内汇总，再按论文来源汇总；论文版本合并，不同单位的原值不相加。结果为描述性比较，共享数据等相关性尚未扣除。|Matched results are summarized first by benchmark, then by paper. Versions of the same paper are grouped together. Scores retain their original units. Papers that share datasets may report correlated results.
+请结合共同参测项目比较|Compare the models on benchmarks they share
+仅使用最终任务表现|Uses final task results only
+仅汇总最终任务表现|Summarizes final task results only
+综合分仅采用最终任务表现|Only final task results contribute to the composite score
+仅将最终任务表现纳入综合分|Only final task results contribute to the composite score
+不计入最终任务表现及综合分|Excluded from final task results and the composite score
+依据任务内容配置所需能力及其权重。|Set capabilities and weights for the task.
+最少上下文|Minimum context length
+参考忠实性|Source fidelity
+来源忠实性|Source fidelity
+跨文档整合|Cross-document synthesis
+指标方向|Scoring direction
+调整能力画像|Edit capability profile
+已载入任务方案；可继续调整能力与权重。|Task profile loaded. You can now adjust its capabilities and weights.
+仅在提交任务分析时发送任务描述；任务评分使用本页对应的评测数据。|The task description is sent when you request an analysis. Scores use this snapshot’s benchmark data.

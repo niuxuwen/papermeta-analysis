@@ -9,19 +9,22 @@
   })();
   for(const a of document.querySelectorAll('a[href^="./"]'))a.href=new URL(a.getAttribute('href'),radarBase).href;
   const $ = id => document.getElementById(id);
-  const state = {snapshot:null, view:visitorEdition?'home':'benchmarks', query:'', eligibility:visitorEdition?'ELIGIBLE':'all', sort:'coverage', selected:null, group:'', benchmarkLimit:40, scoreLimit:80, modelLimit:100, loading:false, domain:'', taskType:'', capability:''};
+  const state = {snapshot:null, view:visitorEdition?'home':'benchmarks', query:'', eligibility:visitorEdition?'ELIGIBLE':'all', sort:'coverage', sortDescending:true, selected:null, group:'', benchmarkLimit:40, scoreLimit:80, modelLimit:100, loading:false, domain:'', taskType:'', capability:''};
   let requestedModel=new URL(location.href).searchParams.get('model');
   const Viz=window.RadarViz;
   let visualSetting=null, detailVisualSetting=null, detailVisualMetric='';
   const rankingPanels=new Map();
   function selectedRankingPanel(setting){const panels=(state.snapshot?.index?.score_panels||[]).filter(p=>p.model_setting===setting);return panels.find(p=>p.panel_id===rankingPanels.get(setting))||panels[0];}
   function rankingData(){return Viz.modelData(state.snapshot,visualSetting,selectedRankingPanel(visualSetting)?.panel_id);}
-  function scopedModels(){const rows=state.snapshot?.index?.models||[];if(state.snapshot?.index?.method?.score_unit!=='z_score')return rows;return rows.map(m=>{const panel=selectedRankingPanel(m.model_setting);return panel?.models?.find(x=>x.model_canonical===m.model_canonical)||{...m,score:null,publication_score:null,publication_eligible:false,score_panel_id:panel?.panel_id||null,score_components:[],missing_score_groups:[],provisional:true,status:'PARTIAL',blocked_group_ids:[],publication_status:panel?'INCOMPLETE_COMMON_PANEL':'NO_COMMON_RELATIVE_PANEL'};});}
+  function scopedModels(){const elo=Viz.localElo(state.snapshot);
+    if(elo)return elo.models.map(r=>({model_canonical:r.model,model_setting:r.setting,score:r.basket_score_0_100,
+      publication_score:r.basket_score_0_100,score_panel_id:'elo',publication_eligible:true,n_benchmarks:r.benchmarks,status:'COMPLETE'}));
+    const rows=state.snapshot?.index?.models||[];if(state.snapshot?.index?.method?.score_unit!=='z_score')return rows;return rows.map(m=>{const panel=selectedRankingPanel(m.model_setting);return panel?.models?.find(x=>x.model_canonical===m.model_canonical)||{...m,score:null,publication_score:null,publication_eligible:false,score_panel_id:panel?.panel_id||null,score_components:[],missing_score_groups:[],provisional:true,status:'PARTIAL',blocked_group_ids:[],publication_status:panel?'INCOMPLETE_COMMON_PANEL':'NO_COMMON_RELATIVE_PANEL'};});}
   const chartAxis=a=>{const b=state.snapshot?.benchmarks.find(b=>b.paper_id===a.paper_id&&b.benchmark_id===a.benchmark_id);if(b)selectBenchmark(b);};
-  const overviewRanking=Viz.create($('overview-ranking'),{compact:true,initial:'bar',onAxis:chartAxis,onModel:openModel});
+  const overviewRanking=Viz.create($('overview-ranking'),{allowExpand:false,compact:true,initial:'bar',onAxis:chartAxis,onModel:openModel});
   const overviewCoverage=Viz.create($('overview-coverage'),{compact:true,initial:'bar',title:'可比评测覆盖情况',onAxis:chartAxis,onModel:openModel});
   $('visual-highlights').addEventListener('toggle',()=>{if($('visual-highlights').open){overviewRanking.redraw();overviewCoverage.redraw();}});
-  const modelVisuals=Viz.create($('model-visuals'),{initial:'bar',onAxis:chartAxis,onModel:openModel});
+  const modelVisuals=Viz.create($('model-visuals'),{allowExpand:false,initial:'bar',onAxis:chartAxis,onModel:openModel});
   const modelCoverage=Viz.create($('model-coverage'),{initial:'bar',title:'证据覆盖 · 可比 Benchmark 数',onAxis:chartAxis,onModel:openModel});
   const taskVisuals=Viz.create($('task-visuals'),{initial:'bar',title:'任务相关模型对比',onAxis:chartAxis,onModel:openModel});
   const detailVisuals=Viz.create($('detail-visuals'),{initial:'bar',onAxis:chartAxis,onModel:openModel});
@@ -53,6 +56,12 @@
   }
   async function openModel(name,initialSetting,{section}={}) {
     let detailSnapshot=state.snapshot;
+    const requestedName=name;
+    const requestedElo=Viz.eloModel(detailSnapshot,name,initialSetting);
+    if(requestedElo&&requestedElo.model===name&&requestedElo.setting===initialSetting&&requestedElo.source_names.length){
+      const source=requestedElo.source_names.find(([n,s])=>n===name&&s===initialSetting)||requestedElo.source_names[0];
+      [name,initialSetting]=source;
+    }
     if(window.RadarLoadModel&&(state.snapshot?.sources_loaded===false||state.snapshot?.detail_loaded===false)){
       const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000),connection=$('connection');
       connection.textContent='正在读取 '+name+' 的来源成绩…';
@@ -62,7 +71,7 @@
     }
     if(!detailSnapshot||detailSnapshot.detail_loaded===false)return;
     modelDialog?.close();
-    const dialog=el('dialog',null,'model-dialog'),head=el('div',null,'model-dialog-head'),identityBlock=el('div',null,'model-dialog-identity'),title=el('h2',name),close=el('button','×','model-dialog-close');
+    const dialog=el('dialog',null,'model-dialog'),head=el('div',null,'model-dialog-head'),identityBlock=el('div',null,'model-dialog-identity'),title=el('h2',requestedName),close=el('button','×','model-dialog-close');
     const producer=Viz.modelInfo(name),vendor=el('p',producer.vendor+' / 模型档案','model-dialog-vendor');
     title.id='model-detail-title';dialog.setAttribute('aria-labelledby',title.id);close.type='button';close.setAttribute('aria-label','关闭模型详情');close.title='关闭模型详情';close.onclick=()=>dialog.close();identityBlock.append(vendor,title);head.append(identityBlock,close);
     const body=el('div',null,'model-dialog-body'),intro=el('p','汇总该模型的参测项目、原始成绩与评分依据。','model-dialog-intro'),stats=el('div',null,'model-dialog-stats');stats.setAttribute('aria-label','当前实验设置的模型概览');
@@ -88,8 +97,24 @@
     const scoreContext=el('p',null,'model-score-context');body.append(intro,controls,stats,scoreContext,tabs,catalogSection,sourcePanel,scorePanel);dialog.append(head,body);
     let setting=initialSetting,limit=12,openGroups=new Set();
     let catalogLimit=6;
+    const modelCatalog = Viz.modelBenchmarkCatalog(detailSnapshot, name);
+    const verifiedBenchmarks = new Set(modelCatalog.filter(item => item.verifiedRecords > 0)
+      .map(item => identity(item.benchmark)));
+    const covered = Object.fromEntries(groupedCapabilities.map(({name}) => [name, new Set()]));
+    const catalogByKey = new Map((state.snapshot?.benchmarks || []).map(b => [identity(b), b]));
+    for (const {benchmark} of modelCatalog) {
+      const key = identity(benchmark);
+      if (!verifiedBenchmarks.has(key)) continue;
+      const groups = benchmarkCapabilities(catalogByKey.get(key) || benchmark);
+      for (const [name, ids] of Object.entries(groups)) for (const id of ids) covered[name].add(id);
+    }
+    if (Object.values(covered).some(ids => ids.size)) {
+      const coverage = el('details', null, 'model-capability-categories');
+      coverage.append(el('summary', '参测项目的能力标签'), capabilityList(covered));
+      catalogNote.after(coverage);
+    }
     function drawCatalog(){
-      const all=Viz.modelBenchmarkCatalog(detailSnapshot,name),verified=all.filter(item=>item.verifiedRecords>0).length,query=catalogSearch.value.trim().toLocaleLowerCase(),items=all.filter(item=>[item.benchmark.benchmark_name,item.benchmark.paper_title].some(value=>String(value||'').toLocaleLowerCase().includes(query))).sort((a,b)=>Number(a.benchmark.name_audit?.status==='REVIEW_REQUIRED')-Number(b.benchmark.name_audit?.status==='REVIEW_REQUIRED'));
+      const all=modelCatalog,verified=all.filter(item=>item.verifiedRecords>0).length,query=catalogSearch.value.trim().toLocaleLowerCase(),items=all.filter(item=>[item.benchmark.benchmark_name,item.benchmark.paper_title].some(value=>String(value||'').toLocaleLowerCase().includes(query))).sort((a,b)=>Number(a.benchmark.name_audit?.status==='REVIEW_REQUIRED')-Number(b.benchmark.name_audit?.status==='REVIEW_REQUIRED'));
       catalogNote.textContent=`全部实验设置合计 ${all.length} 项评测 · ${verified} 项已有核验来源${all.length>verified?' · '+(all.length-verified)+' 项待核验':''}`;
       catalogList.replaceChildren();for(const item of items.slice(0,catalogLimit)){
         const card=el('article',null,'model-catalog-item'),copy=el('div',null,'model-catalog-copy'),a=el('a',item.benchmark.benchmark_name),action=el('a','查看评测','model-catalog-action');a.href=action.href=new URL('benchmark/?'+new URLSearchParams({paper_id:item.benchmark.paper_id,benchmark_id:item.benchmark.benchmark_id,...(detailSnapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;action.setAttribute('aria-label','查看 '+item.benchmark.benchmark_name+' 的评测详情');
@@ -109,11 +134,32 @@
       const benchmarks=new Set(groups.map(g=>g.benchmark_identity||JSON.stringify([g.paper_id,g.benchmark_id])));
       summary.textContent=`${benchmarks.size} 个有可比成绩的 Benchmark · ${rows.length} 条来源记录 · 数据更新 ${date(detailSnapshot.generated_at)}`;
       content.replaceChildren();scoreContent.replaceChildren();stats.replaceChildren();
-      const scored=(detailSnapshot.index?.models||[]).find(m=>m.model_canonical===name&&m.model_setting===setting),published=Viz.publicationScore(scored||{},detailSnapshot.index.method?.min_benchmarks||3);
-      for(const [value,text] of [[published,scored?.score_unit==='z_score'?'相对参考分':'综合分 · 0–100'],[scored?.scored_benchmarks??scored?.n_benchmarks??null,'计分评测'],[benchmarks.size,'可比评测'],[rows.length,'来源记录']]){const item=el('div',null,'model-stat'),number=el('strong',fmt(value));item.append(el('span',text),number);stats.append(item);}
+      const localBoard=Viz.localElo(detailSnapshot),rating=setting===initialSetting&&requestedElo?requestedElo:Viz.eloModel(detailSnapshot,name,setting);
+      const scored=(detailSnapshot.index?.models||[]).find(m=>m.model_canonical===name&&m.model_setting===setting),published=localBoard?(rating?.basket_score_0_100??null):Viz.publicationScore(scored||{},detailSnapshot.index.method?.min_benchmarks||3);
+      for(const [value,text] of [[published,scored?.score_unit==='z_score'?'相对参考分':'综合分 · 0–100'],[localBoard?(rating?.benchmarks??null):(scored?.scored_benchmarks??scored?.n_benchmarks??null),'计分评测'],[benchmarks.size,'可比评测'],[rows.length,'来源记录']]){const item=el('div',null,'model-stat'),number=el('strong',fmt(value));item.append(el('span',text),number);stats.append(item);}
       scoreContext.textContent=published===null?Viz.publicationLabel(scored||{}):'数据更新 '+date(detailSnapshot.generated_at);
 
-      if(scored&&visitorEdition){
+      if(localBoard){
+        const english=document.documentElement.lang==='en';
+        scoreContext.textContent='Elo · Bradley–Terry';
+        const overview=el('section',null,'visitor-score-overview');
+        overview.append(el('h3',english?'Composite score':'综合评分'));
+        overview.append(el('p',rating?(english?
+          `Elo ${rating.elo_scale.toFixed(1)} · Reference score ${published.toFixed(2)} / 100 · ${rating.papers} papers`:
+          `Elo ${rating.elo_scale.toFixed(1)} · 篮子参考分 ${published.toFixed(2)} / 100 · ${rating.papers} 篇论文`):
+          (english?'No published Elo rating for this configuration.':'该配置暂无已发布的 Elo 分数。')));
+        if(rating){
+          overview.append(el('p',(english?'Reference models: ':'参考模型：')+localBoard.references.join('、')));
+          for(const pair of localBoard.reviews.filter(pair=>[pair.upper,pair.lower].some(([n,s])=>n===rating.model&&s===rating.setting))){
+            const above=pair.upper[0]===rating.model&&pair.upper[1]===rating.setting;
+            const peer=(above?pair.lower:pair.upper).filter(Boolean).join(' · ');
+            overview.append(el('p',english?
+              `Against ${peer}: ${above?pair.ahead:pair.behind} wins, ${pair.tied} ties, ${above?pair.behind:pair.ahead} losses by paper. The direct majority and overall ranking differ.`:
+              `对 ${peer}：共同论文中 ${above?pair.ahead:pair.behind} 胜、${pair.tied} 平、${above?pair.behind:pair.ahead} 负，与总榜方向有分歧。`));
+          }
+        }
+        scoreContent.append(overview);
+      }else if(scored&&visitorEdition){
         const overview=el('section',null,'visitor-score-overview');
         overview.append(el('h3','综合评分概览'),el('p',published===null?'当前实验设置尚无综合评分，可查看已有的单项评测成绩。':'综合评分汇总当前版本中的已测表现，范围为 0–100。','visitor-score-intro'));
         const facts=el('dl',null,'visitor-score-facts');
@@ -202,16 +248,47 @@
   const TASK_DEFAULTS = {"taxonomy":{"version":"task-taxonomy-v2","domains":[{"id":"general","label":"通用","description":"不依赖特定专业领域的任务。"},{"id":"medicine","label":"医学与健康","description":"医学文献、临床信息、健康知识。"},{"id":"law","label":"法律","description":"法律知识、合同和司法材料。"},{"id":"finance","label":"金融与商业","description":"金融、会计、经营分析。"},{"id":"software","label":"软件开发","description":"程序、软件工程和计算系统。"},{"id":"science","label":"自然科学与工程","description":"科学研究和工程专业问题。"},{"id":"education","label":"教育","description":"教学、学习与教育评估。"},{"id":"humanities","label":"人文与社会","description":"历史、文化、社会与人文专业问题。"}],"tasks":[{"id":"knowledge_qa","label":"知识问答","description":"回答有事实或专业知识依据的问题。"},{"id":"literature_review","label":"文献综述","description":"整合多篇研究、比较结论并归纳证据。"},{"id":"document_qa","label":"文档问答","description":"基于给定文档回答问题。"},{"id":"structured_extraction","label":"结构化信息提取","description":"从来源材料提取字段、实体、关系或结构化记录。"},{"id":"summarization","label":"内容摘要","description":"保持事实一致地压缩来源内容。"},{"id":"contract_review","label":"合同审查","description":"检查合同条款、识别风险和不一致。"},{"id":"code_development","label":"代码开发","description":"编写、修改、调试或测试代码。"},{"id":"data_analysis","label":"数据分析","description":"分析数据、选择统计方法并解释结果。"},{"id":"mathematical_problem_solving","label":"数学解题","description":"完成数学推导与计算。"},{"id":"visual_document_understanding","label":"图文文档理解","description":"读取图像、图表、版面或混合文档。"},{"id":"translation","label":"翻译","description":"在不同自然语言之间转换内容。"},{"id":"tool_workflow","label":"工具任务执行","description":"通过检索、软件工具或多步操作完成任务。"},{"id":"reading_comprehension","label":"阅读理解","description":"理解篇章内容、关系、指代与隐含信息。"},{"id":"writing","label":"写作","description":"生成、改写或编辑有目的的文本。"},{"id":"dialogue","label":"对话","description":"通过单轮或多轮交流回答、协作或完成任务。"},{"id":"information_retrieval","label":"信息检索","description":"从文档库或搜索环境中寻找、排序相关信息。"},{"id":"planning","label":"任务规划","description":"制定符合目标与约束的多步计划。"},{"id":"interactive_execution","label":"交互执行","description":"依据环境反馈执行、调整并完成多步任务。"}],"capabilities":[{"id":"domain_knowledge","label":"知识运用（通用/专业）","description":"测量事实或专业知识的正确性。","group":"knowledge"},{"id":"long_context","label":"长文本理解","description":"直接测量长输入中信息定位、理解或利用；长度本身不足以证明。","group":"information_context"},{"id":"cross_document_synthesis","label":"跨文档整合","description":"测量多个文档的比较、整合或冲突识别。","group":"information_context"},{"id":"citation_reliability","label":"引用可靠性","description":"直接测量引用存在性、准确性、完整性或证据支持。","group":"grounding"},{"id":"information_extraction","label":"信息抽取","description":"测量字段、实体或关系抽取的正确性。","group":"information_context"},{"id":"instruction_following","label":"指令与格式遵循","description":"直接测量指令约束或输出格式符合程度。","group":"language"},{"id":"reasoning","label":"综合推理（未细分）","description":"测量推导、多步推理或问题求解正确性。","group":"reasoning_math"},{"id":"code_correctness","label":"代码正确性","description":"通过测试、执行或明确规格测量代码功能正确性。","group":"code_data"},{"id":"statistical_reasoning","label":"统计推理","description":"测量统计方法选择、数据分析和统计结论解释。","group":"code_data"},{"id":"grounded_faithfulness","label":"来源忠实性","description":"直接测量回答或摘要与给定来源的一致性。","group":"grounding"},{"id":"multimodal_understanding","label":"多模态理解","description":"测量对图像、图表、视听或混合模态内容的理解。","group":"perception"},{"id":"multilingual_communication","label":"跨语言理解与表达","description":"直接测量跨语言理解、翻译或表达质量。","group":"cross_language"},{"id":"tool_use","label":"工具使用","description":"测量工具选择、调用和任务执行成功率。","group":"agency"},{"id":"reading_comprehension","label":"阅读理解","description":"测量篇章理解、指代、关系或隐含信息理解的正确性。","group":"language"},{"id":"summarization","label":"摘要能力","description":"测量内容压缩、要点覆盖和摘要质量；忠实性需单独证据。","group":"language"},{"id":"writing","label":"写作与生成","description":"测量文本组织、表达、改写或创作质量。","group":"language"},{"id":"dialogue","label":"对话能力","description":"测量对话响应质量、上下文衔接或交流目标完成。","group":"language"},{"id":"common_sense","label":"常识理解","description":"直接测量日常情境、物理或社会常识的运用。","group":"knowledge"},{"id":"logical_reasoning","label":"逻辑推理","description":"直接测量演绎、归纳、因果或约束推理。","group":"reasoning_math"},{"id":"mathematical_reasoning","label":"数学推理","description":"直接测量数学建模、推导、证明或问题求解。","group":"reasoning_math"},{"id":"information_retrieval","label":"信息检索","description":"测量查找、排序相关信息的质量；不等同于工具调用。","group":"information_context"},{"id":"factual_accuracy","label":"事实正确性","description":"直接测量事实陈述正确性或幻觉，而非仅与给定来源一致。","group":"grounding"},{"id":"code_debugging","label":"代码调试与修复","description":"测量定位、修复软件缺陷和通过验证的能力。","group":"code_data"},{"id":"visual_perception","label":"视觉感知","description":"直接测量对图像对象、属性及空间关系的识别。","group":"perception"},{"id":"document_chart_understanding","label":"文档与图表理解","description":"测量OCR、版面、图表或文档图像内容理解。","group":"perception"},{"id":"audio_understanding","label":"音频理解","description":"测量语音或其他音频的识别与理解。","group":"perception"},{"id":"video_understanding","label":"视频理解","description":"测量视频事件、时序及动态关系理解。","group":"perception"},{"id":"planning","label":"规划能力","description":"测量目标分解、步骤安排与约束满足；不要求调用工具。","group":"agency"},{"id":"interactive_execution","label":"多步交互执行","description":"测量依据反馈调整行动并完成任务；不能由计划文本推断。","group":"agency"},{"id":"safety","label":"安全性","description":"直接测量有害输出、危险行为或攻击防护。","group":"safety_privacy"},{"id":"privacy","label":"隐私保护","description":"直接测量敏感信息泄漏、记忆泄露或隐私侵犯。","group":"safety_privacy"},{"id":"bias","label":"偏见","description":"直接测量刻板印象、偏向或歧视性输出。","group":"fairness"},{"id":"fairness","label":"公平性","description":"直接比较群体间待遇、错误率或机会差异。","group":"fairness"},{"id":"robustness","label":"鲁棒性","description":"测量噪声、扰动、攻击或环境变化下的稳定性。","group":"robustness"},{"id":"generalization","label":"泛化能力","description":"直接测量新分布、新领域或新任务上的表现；多领域本身不足以证明。","group":"robustness"}],"modalities":[{"id":"text","label":"文本","description":"任务直接处理或生成文本。"},{"id":"image","label":"图像","description":"任务直接处理或生成静态图像，包括图表和文档图像。"},{"id":"audio","label":"音频","description":"任务直接处理或生成语音、音乐等音频。"},{"id":"video","label":"视频","description":"任务直接处理或生成视频序列。"},{"id":"structured_data","label":"结构化数据","description":"任务直接处理表格、图结构等结构化输入或输出。"}],"capability_groups":[{"id":"language","label":"语言理解与生成","description":"阅读、摘要、写作、对话及指令遵循。","kind":"ability"},{"id":"knowledge","label":"知识与常识","description":"事实知识、专业知识与日常常识。","kind":"ability"},{"id":"reasoning_math","label":"推理与数学","description":"逻辑推导和数学求解；保留未细分的旧推理标签。","kind":"ability"},{"id":"information_context","label":"检索与信息整合","description":"检索、抽取、长上下文和跨文档整合。","kind":"ability"},{"id":"grounding","label":"事实与证据可靠性","description":"事实正确、来源忠实和引用可靠性。","kind":"dimension"},{"id":"code_data","label":"代码与数据分析","description":"代码实现、修复与统计推理。","kind":"ability"},{"id":"perception","label":"感知与多模态","description":"视觉、图表、音频、视频与跨模态理解。","kind":"ability"},{"id":"cross_language","label":"多语言与跨语言","description":"跨语言理解、翻译与表达。","kind":"ability"},{"id":"agency","label":"规划与交互执行","description":"规划、工具调用和依据反馈持续执行。","kind":"ability"},{"id":"safety_privacy","label":"安全与隐私","description":"有害行为防护与隐私保护。","kind":"dimension"},{"id":"fairness","label":"偏见与公平","description":"刻板偏见及不同群体的差异与公平性。","kind":"dimension"},{"id":"robustness","label":"鲁棒性与泛化","description":"扰动、分布变化及新任务上的稳定性。","kind":"dimension"}]},"templates":{"medical-literature-review":{"schema_version":"task-profile-v1","taxonomy_version":"task-taxonomy-v2","description":"整理医学文献，比较不同研究结论，并提供可核实的引用。","domains":["medicine"],"tasks":["literature_review"],"capabilities":[{"id":"domain_knowledge","weight":0.3,"rationale":"初始模板建议，需按实际任务调整"},{"id":"long_context","weight":0.3,"rationale":"初始模板建议，需按实际任务调整"},{"id":"cross_document_synthesis","weight":0.25,"rationale":"初始模板建议，需按实际任务调整"},{"id":"citation_reliability","weight":0.15,"rationale":"初始模板建议，需按实际任务调整"}],"constraints":{"language":"any","modality":"any","knowledge_access":"any","min_context_tokens":null},"weight_basis":"user_specified","assumptions":["这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"]},"code-development":{"schema_version":"task-profile-v1","taxonomy_version":"task-taxonomy-v2","description":"编写和修改代码，通过测试验证功能，并遵循给定规格。","domains":["software"],"tasks":["code_development"],"capabilities":[{"id":"code_correctness","weight":0.6,"rationale":"初始模板建议，需按实际任务调整"},{"id":"reasoning","weight":0.25,"rationale":"初始模板建议，需按实际任务调整"},{"id":"instruction_following","weight":0.15,"rationale":"初始模板建议，需按实际任务调整"}],"constraints":{"language":"any","modality":"any","knowledge_access":"any","min_context_tokens":null},"weight_basis":"user_specified","assumptions":["这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"]},"structured-extraction":{"schema_version":"task-profile-v1","taxonomy_version":"task-taxonomy-v2","description":"从来源文档中提取信息，按指定结构输出，保留来源含义。","domains":["general"],"tasks":["structured_extraction"],"capabilities":[{"id":"information_extraction","weight":0.6,"rationale":"初始模板建议，需按实际任务调整"},{"id":"instruction_following","weight":0.2,"rationale":"初始模板建议，需按实际任务调整"},{"id":"grounded_faithfulness","weight":0.2,"rationale":"初始模板建议，需按实际任务调整"}],"constraints":{"language":"any","modality":"any","knowledge_access":"any","min_context_tokens":null},"weight_basis":"user_specified","assumptions":["这是可编辑的模板权重，未经实际用户任务验证；未假定语言、工具或上下文要求。"]}}};
   const taskState = {profile:null,revision:0,result:null,panel:'all',refs:new Set(),refsInitialized:false,autoCandidates:true,confirmed:null,request:null,busy:false,profileRequest:null,showAll:false};
   let taskTaxonomy = TASK_DEFAULTS.taxonomy;
-  const titleFor = id => Object.values(taskTaxonomy).flatMap(x=>Array.isArray(x)?x:[]).find(x=>x.id===id)?.label||id;
+  const catalogSkills = [...taskTaxonomy.capabilities, ...Viz.catalogCodingSkills];
+  const capabilityCategories = Viz.capabilityCategories;
+  const groupedCapabilities = Object.entries(capabilityCategories).map(([name, labels]) => ({
+    name, items: Object.keys(labels).map(id => catalogSkills.find(cap => cap.id === id))
+  }));
+  function benchmarkCapabilities(b) {
+    return Viz.classifyCapabilities({
+      capabilities: benchTags(b,'capabilities')
+    });
+  }
+  function matchesCapability(b, filter) {
+    const [category, id] = filter.split('/');
+    if (!Object.hasOwn(capabilityCategories, category)) return benchTags(b,'capabilities').includes(filter);
+    const matched = benchmarkCapabilities(b)[category];
+    return id ? matched.includes(id) : matched.length > 0;
+  }
+  function capabilityList(grouped) {
+    const list = el('dl', null, 'capability-category-list');
+    for (const {name, items} of groupedCapabilities) {
+      const ids = new Set(grouped[name]);
+      const matches = items.filter(item => ids.has(item.id));
+      if (!matches.length) continue;
+      const labels = el('dd');
+      for (const item of matches) labels.append(el('span', item.label, 'tag'));
+      list.append(el('dt', name), labels);
+    }
+    return list;
+  }
+  const titleFor = id => Viz.catalogCodingSkills.find(cap => cap.id === id)?.label || Object.values(taskTaxonomy).flatMap(x=>Array.isArray(x)?x:[]).find(x=>x.id===id)?.label||id;
   const selectedValues = id => [...$(id).selectedOptions].map(o=>o.value);
   const annotationItems = () => state.snapshot?.capability_annotations?.items||[];
   function benchTags(b,layer) {
-    if(Array.isArray(b.catalog_display_tags?.[layer]))return b.catalog_display_tags[layer];
+    if (Array.isArray(b.catalog_display_tags?.[layer])) {
+      const tags = b.catalog_display_tags[layer];
+      return layer === 'capabilities' ? Viz.catalogCapabilities(b, tags) : tags;
+    }
     const labels=b.enrichment?.labels,values=labels?.supported?.[layer]||(labels?.status==='SUPPORTED'?labels[layer]:[]);
     const ids=new Set((Array.isArray(values)?values:[]).map(x=>typeof x==='string'?x:x.id).filter(Boolean));
     for(const id of b.catalog_labels?.[layer]||[])ids.add(id);
     for(const a of annotationItems().filter(x=>identity(x)===identity(b)&&x.status==='SUPPORTED'))for(const id of a[layer]||[])ids.add(id);
-    return [...ids];
+    return layer === 'capabilities' ? Viz.catalogCapabilities(b, [...ids]) : [...ids];
   }
   function taskMessage(id,message,kind='') {const n=$(id);n.textContent=/signal is aborted|operation was aborted|aborterror|failed to fetch|load failed/i.test(String(message))?'网络连接中断，当前输入已保留。请重试；已提交的任务会继续查询。':message;if(id==='task-score-message')n.className='connection '+kind;}
   function dirtyTask() {
@@ -231,10 +308,13 @@
       weight_basis:'user_specified',assumptions:taskState.profile?.assumptions||['权重由用户确认，尚未通过实际任务验证。']};
   }
   function updateWeights() {
-    const rows=[...$('capability-weights').children],sum=rows.filter(n=>n.querySelector('[type=checkbox]').checked).reduce((v,n)=>v+Number(n.querySelector('[type=range]').value),0);
+    const rows=[...$('capability-weights').querySelectorAll('.weight-row')],sum=rows.filter(n=>n.querySelector('[type=checkbox]').checked).reduce((v,n)=>v+Number(n.querySelector('[type=range]').value),0);
     let active=0;for(const row of rows){const checked=row.querySelector('[type=checkbox]').checked,range=row.querySelector('[type=range]');active+=checked?1:0;row.hidden=!checked&&!taskState.showAll;row.classList.toggle('active',checked);range.disabled=!checked;range.style.setProperty('--weight-fill',((Number(range.value)-1)/99*100)+'%');const percent=checked&&sum?fmt(Number(range.value)/sum*100)+'%':'—';row.querySelector('output').textContent=percent;range.setAttribute('aria-valuetext',checked?'归一化权重 '+percent:'未选择');}
     $('toggle-capabilities').textContent=taskState.showAll?'收起未选能力 −':`添加其他能力 + · ${rows.length-active} 项`;$('toggle-capabilities').setAttribute('aria-expanded',String(taskState.showAll));
     $('capability-weights').classList.toggle('show-all',taskState.showAll);
+    for (const section of $('capability-weights').children) {
+      section.hidden = !section.querySelector('.weight-row:not([hidden])');
+    }
     $('weight-count').textContent=`${active} 项已选`;
     $('weight-summary').textContent=active?'权重合计 100%':'请选择至少一项能力';
   }
@@ -258,6 +338,13 @@
     for(const key of ['language','modality']){const select=$('constraint-'+key);if(![...select.options].some(o=>o.value===p.constraints[key])){const o=el('option',p.constraints[key]);o.value=p.constraints[key];select.append(o);}select.value=p.constraints[key];}
     $('constraint-access').value=p.constraints.knowledge_access;$('constraint-context').value=p.constraints.min_context_tokens??'';
     const box=$('capability-weights');box.replaceChildren();
+    const sectionsByLeaf = new Map();
+    for(const category of groupedCapabilities){
+      const section=el('section',null,'capability-weight-section');
+      section.dataset.category=category.name;
+      section.append(el('h4',category.name));box.append(section);
+      for (const item of category.items) sectionsByLeaf.set(item.id, section);
+    }
     for(const cap of taskTaxonomy.capabilities){
       const matched=p.capabilities.find(c=>c.id===cap.id),row=el('div',null,'weight-row');row.dataset.capability=cap.id;
       const heading=el('div',null,'weight-heading'),check=el('input'),label=el('label',cap.label),output=el('output');
@@ -265,7 +352,7 @@
       const info=el('details',null,'weight-info'),infoToggle=el('summary','i');infoToggle.setAttribute('aria-label',cap.label+'说明');info.append(infoToggle,el('small',matched?.rationale||cap.description));heading.append(check,label,info);
       const range=el('input');range.type='range';range.min='1';range.max='100';range.value=String(Math.max(1,Math.round((matched?.weight||.1)*100)));range.setAttribute('aria-label',cap.label+'权重');
       const adjust=el('div',null,'weight-adjust');output.htmlFor=range.id='weight-'+cap.id;adjust.append(range,output);row.append(heading,adjust);
-      for(const n of [check,range])n.addEventListener('input',()=>{dirtyTask();updateWeights();});box.append(row);
+      for(const n of [check,range])n.addEventListener('input',()=>{dirtyTask();updateWeights();});sectionsByLeaf.get(cap.id).append(row);
     }
     $('profile-assumptions').textContent=(p.assumptions||[]).join(' ');updateWeights();
     taskMessage('profile-message',p.weight_basis==='llm_proposed'?'模型已建议能力标签与权重，请确认并调整后计算。':['user_specified','user_confirmed'].includes(p.weight_basis)?'已载入任务方案；能力与权重可继续调整。':'已载入可编辑任务模板；按实际工作调整能力与权重。');
@@ -586,23 +673,95 @@
     if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&state.snapshot.catalog_loaded!==true)){
       $('capability-map').replaceChildren();empty($('capability-map'),'正在读取能力标签','加载完成后显示评测覆盖。');$('annotation-coverage').textContent='能力标签加载中';return;
     }
-    const ann=state.snapshot?.capability_annotations,items=annotationItems(),atlas=state.snapshot?.capability_atlas,box=$('capability-map');box.replaceChildren();
-    const counts=new Map((atlas?.capabilities||[]).map(c=>[c.id,c]));
-    $('annotation-coverage').textContent=atlas?`${atlas.coverage.catalog_labelled_records} 个 Benchmark 已有目录能力标签 · ${atlas.coverage.supported_groups} 组指标已核验`:ann?`${items.filter(a=>a.status==='SUPPORTED').length}/${ann.total_groups} 组指标已核验`:'来源能力标注尚未接入';
-    for(const cap of taskTaxonomy.capabilities){
-      const rows=items.filter(a=>a.status==='SUPPORTED'&&(a.capabilities||[]).includes(cap.id)),stat=counts.get(cap.id),count=stat?.benchmark_records??new Set(rows.map(identity)).size,groupCount=stat?.supported_groups??rows.length,domains=stat?.domains||[...new Set(rows.flatMap(a=>a.domains||[]))],card=el('article',null,'capability-card'+(count?'':' zero'));
-      card.append(el('h3',cap.label),el('p',cap.description),el('strong',count|| (state.snapshot?.detail_loaded===false?'加载中':'待补证'),'cap-count'),el('small',`个 Benchmark · ${groupCount} 个已核验指标组`));
-      const tags=el('div',null,'tags');for(const domain of domains)tags.append(el('span',titleFor(domain),'tag'));
-      if(count&&!groupCount)tags.append(el('small','已标注评测能力；能力评分需要额外的可比指标证据'));
-      else if(!count)tags.append(el('small','尚无足够来源证据，不代表模型不具备该能力'));
-      card.append(tags);const btn=el('button','浏览这项能力的 Benchmark');btn.addEventListener('click',()=>{state.capability=cap.id;state.benchmarkLimit=40;$('cap-filter').value=cap.id;setView('benchmarks');});card.append(btn);box.append(card);
+    const box = $('capability-map');
+    box.replaceChildren();
+    const entries = visibleBenchmarks({...state, capability:''}, false);
+    const stats = new Map();
+    const annotations = new Map();
+    for (const item of annotationItems()) {
+      if (item.status !== 'SUPPORTED') continue;
+      const key = identity(item);
+      if (!annotations.has(key)) annotations.set(key, []);
+      annotations.get(key).push(item);
     }
+    for (const benchmark of entries) {
+      for (const [category, ids] of Object.entries(benchmarkCapabilities(benchmark))) {
+        for (const id of ids) {
+          const key = category + '/' + id;
+          if (!stats.has(key)) stats.set(key,{benchmarks:new Set(), groups:new Set()});
+          const stat = stats.get(key);
+          stat.benchmarks.add(Viz.directoryKey(benchmark));
+          for (const item of annotations.get(identity(benchmark)) || []) {
+            if (item.capabilities?.includes(id)) stat.groups.add(item.group_id);
+          }
+        }
+      }
+    }
+    const english = document.documentElement.lang === 'en';
+    $('annotation-coverage').textContent = english
+      ? 'Each capability belongs to one category. A benchmark with capabilities in different categories appears in each.'
+      : '每个能力标签只属于一个大类。一项评测可凭不同标签列入多个大类。';
+    const tabs = el('div',null,'capability-category-shortcuts');
+    box.append(tabs);
+    function showCategory(name) {
+      state.atlasCategory = name;
+      for (const tab of tabs.children) tab.setAttribute('aria-pressed',String(tab.textContent === name));
+      while (tabs.nextSibling) tabs.nextSibling.remove();
+      const category = groupedCapabilities.find(group => group.name === name);
+      for (const family of taskTaxonomy.capability_groups) {
+        const items = category.items.filter(cap => cap.group === family.id && stats.has(name + '/' + cap.id));
+        if (!items.length) continue;
+        box.append(el('h3',family.label,'capability-category-heading'));
+        for (const cap of items) {
+          const key = name + '/' + cap.id;
+          const card = el('article',null,'capability-card');
+          const stat = stats.get(key);
+          const catalogOnly = Viz.catalogCodingSkills.some(skill => skill.id === cap.id);
+          const coverage = catalogOnly
+            ? (english ? 'benchmarks · based on the reported task' : '项评测 · 按论文所述任务标注')
+            : (english ? 'benchmarks · '+stat.groups.size+' verified metric groups'
+              : '项评测 · '+stat.groups.size+' 个已核验指标组');
+          card.append(el('h4',cap.label),el('p',cap.description),el('strong',String(stat.benchmarks.size),'cap-count'),el('small',coverage));
+          const browse = el('button',english ? 'View benchmarks' : '查看评测');
+          browse.type='button';
+          browse.onclick=()=>{state.capability=key;state.benchmarkLimit=40;$('cap-filter').value=key;setView('benchmarks');};
+          card.append(browse);box.append(card);
+        }
+      }
+      if (!tabs.nextSibling) box.append(el('p',english ? 'No matching benchmarks.' : '当前筛选条件下暂无匹配评测。'));
+    }
+    for (const {name} of groupedCapabilities) {
+      const tab = el('button',name);tab.type='button';tab.onclick=()=>showCategory(name);tabs.append(tab);
+    }
+    const initialCategory = new URLSearchParams(location.search).get('category');
+    showCategory(state.atlasCategory || (Object.hasOwn(capabilityCategories, initialCategory) ? initialCategory : 'Science'));
   }
   function renderTaskWorkspace() {renderReferences();if(!state.snapshot){taskState.result=null;$('task-results').hidden=true;taskMessage('task-score-message','等待评测数据源。','warning');}else if(taskState.result)renderTaskResults();else if($('task-score-message').textContent.startsWith('等待'))taskMessage('task-score-message','确认任务需求后计算；按任务类型查看参考分与来源成绩。');}
   function loadSavedProfiles() {let profiles={};try{profiles=JSON.parse(localStorage.getItem('radar-task-plans-v1')||'{}');if(!profiles||Array.isArray(profiles)||typeof profiles!=='object')profiles={};}catch{}return Object.assign(Object.create(null),profiles);}
   function refreshSavedSelect() {const select=$('saved-profiles');select.replaceChildren(el('option','打开已保存方案…'));select.firstChild.value='';for(const name of Object.keys(loadSavedProfiles()).slice(0,12)){const opt=el('option',name);opt.value=name;select.append(opt);}}
   function initTaskWorkspace() {
-    for(const [id,layer] of [['task-domains','domains'],['task-types','tasks'],['domain-filter','domains'],['task-filter','tasks'],['cap-filter','capabilities']])for(const item of taskTaxonomy[layer]){const opt=el('option',item.label);opt.value=item.id;$(id).append(opt);}
+    for(const [id,layer] of [['task-domains','domains'],['task-types','tasks'],['domain-filter','domains'],['task-filter','tasks']])for(const item of taskTaxonomy[layer]){const opt=el('option',item.label);opt.value=item.id;$(id).append(opt);}
+    const parents = el('optgroup');
+    parents.label = document.documentElement.lang === 'en' ? 'Categories' : '能力大类';
+    for (const {name} of groupedCapabilities) parents.append(new Option(name, name));
+    const categoryBar = $('benchmark-category-filter');
+    for (const category of ['', ...Object.keys(capabilityCategories)]) {
+      const button = el('button', category || (document.documentElement.lang === 'en' ? 'All categories' : '全部分类'));
+      button.type = 'button';
+      button.dataset.category = category;
+      button.addEventListener('click', () => {
+        $('cap-filter').value = category;
+        $('cap-filter').dispatchEvent(new Event('change', {bubbles: true}));
+      });
+      categoryBar.append(button);
+    }
+    $('cap-filter').append(parents);
+    for (const {name, items} of groupedCapabilities) {
+      const group = el('optgroup');
+      group.label = name;
+      for (const item of items) group.append(new Option(item.label, name + '/' + item.id));
+      $('cap-filter').append(group);
+    }
     for(const id of ['task-description','task-domains','task-types','constraint-language','constraint-modality','constraint-access','constraint-context'])$(id).addEventListener(id==='task-description'?'input':'change',dirtyTask);
     for(const id of ['task-domains','task-types'])$(id).addEventListener('change',syncProfilePickers);
     document.addEventListener('click',event=>{for(const picker of document.querySelectorAll('.profile-picker[open]'))if(!picker.contains(event.target))picker.open=false;});
@@ -618,21 +777,20 @@
     refreshSavedSelect();applyProfile(TASK_DEFAULTS.templates['medical-literature-review']);$('task-description').value='';
   }
 
-  function visibleBenchmarks() {const seen=new Set();return (state.snapshot?.benchmarks||[]).filter(b=>
-    (!state.domain||benchTags(b,'domains').includes(state.domain)) &&
-    (!state.taskType||benchTags(b,'tasks').includes(state.taskType)) &&
-    (!state.capability||benchTags(b,'capabilities').includes(state.capability)) &&
-    (state.eligibility==='all'||state.eligibility===b.eligibility||(state.eligibility==='review'&&b.eligibility?.includes('REVIEW'))) &&
-    (!state.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(state.query.toLocaleLowerCase())))
-  ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
+  function visibleBenchmarks(filters=state,deduplicate=true) {const seen=new Set();return (state.snapshot?.benchmarks||[]).filter(b=>
+    (!filters.domain||benchTags(b,'domains').includes(filters.domain)) &&
+    (!filters.taskType||benchTags(b,'tasks').includes(filters.taskType)) &&
+    (!filters.capability||matchesCapability(b,filters.capability)) &&
+    (filters.eligibility==='all'||filters.eligibility===b.eligibility||(filters.eligibility==='review'&&b.eligibility?.includes('REVIEW'))) &&
+    (!filters.query||[b.benchmark_name,b.source_benchmark_name,b.paper_title,b.arxiv_id,...(b.benchmark_aliases||[]),...(b.catalog_aliases||[]),...(b.directory_aliases||[]),...(b.directory_sources||[]).map(r=>r.paper_title)].some(v=>String(v||'').toLocaleLowerCase().includes(filters.query.toLocaleLowerCase())))
+  ).sort((a,b)=>(Date.parse(b.release_date)||0)-(Date.parse(a.release_date)||0)).filter(b=>{if(!deduplicate)return true;const key=Viz.directoryKey(b);if(seen.has(key))return false;seen.add(key);return true;});}
   let uiReady=false;
-  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&view!=='home'&&view!=='tasks'&&(state.snapshot?.detail_loaded===false||(view!=='models'&&state.snapshot?.sources_loaded===false&&state.snapshot?.catalog_loaded!==true)))refresh();if(view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
+  function setView(view) {if(!['benchmarks','tasks','capabilities','models',...(visitorEdition?['home','compare']:[])].includes(view))throw Error('视图无效');const changed=state.view!==view;state.view=view;history.replaceState(null,'','#'+view+'-view');for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===view));for(const v of ['benchmarks','tasks','capabilities','models',...(visitorEdition?['home','compare']:[])])$(`view-${v}`).hidden=v!==view;$('detail').hidden=view!=='benchmarks'||!state.selected;$('visual-highlights').hidden=view!=='benchmarks';if(uiReady&&changed){render();if(window.RadarHomeSnapshot&&view!=='home'&&view!=='tasks'&&(state.snapshot?.detail_loaded===false||(!['models','compare'].includes(view)&&state.snapshot?.sources_loaded===false&&state.snapshot?.catalog_loaded!==true)))refresh();if(view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));if(visitorEdition)window.scrollTo({top:0,behavior:'instant'});}}
   function sourceLabel(paper,table) {return Viz.publicLabel(table,'论文来源');}
   function renderCounts() {
     const d=state.snapshot;
     $('window-days').textContent=d?`论文近${text(d.window.paper?.days??d.window.days)}天 · Benchmark近${text(d.window.benchmark?.months??d.window.benchmark_months??5)}个月`:'论文近14天 · Benchmark近5个月';
     $('last-updated').textContent=`证据更新时间 ${d?date(d.status.evidence_generated_at||d.generated_at):'—'}`;
-    $('window-range').textContent=d?`论文首次公开窗口 [${d.window.paper?.start??d.window.start}, ${d.window.paper?.end??d.window.end}) · Benchmark首次发布窗口 [${d.window.benchmark?.start??d.window.benchmark_start??'待核'}, ${d.window.benchmark?.end??d.window.end})`:'当前时间窗口尚未读取';
   }
   function progressText(p,hasCapabilities=false) {const label=hasCapabilities||p?.catalog_capability_state==='SUPPORTED'?'能力已标注':'暂未识别能力';return `${label} · ${p?.paper_extraction_complete===true?'论文提取已完成':p?.observations?'已有成绩':labels[p?.paper_status]||'等待处理'}`;}
   function renderBenchmarkProgress(root,p,hasCapabilities=false) {
@@ -642,6 +800,11 @@
     if(p.paper_gaps?.length)box.append(el('p','论文级证据缺口：'+p.paper_gaps.map(g=>g.code+' / '+g.stage).join('；')));root.append(box);
   }
   function renderBenchmarks() {
+    const selectedCategory = (state.capability || '').split('/')[0];
+    for (const button of $('benchmark-category-filter').children) {
+      button.setAttribute('aria-pressed', String(button.dataset.category === selectedCategory));
+    }
+
     if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&state.snapshot.catalog_loaded!==true)){
       $('benchmarks').replaceChildren();empty($('benchmarks'),'正在读取评测目录','能力标签与成绩统计加载完成后显示。');$('result-count').textContent='目录加载中';$('more-benchmarks').hidden=true;return;
     }
@@ -653,7 +816,7 @@
     const previousKeys=box.radarBenchmarkKeys||new Set();box.radarBenchmarkKeys=new Set();let entering=0;
     if(!list.length){empty(box,state.snapshot?'当前条件没有 Benchmark':'等待评测数据',state.snapshot?'可调整搜索或资格筛选。':'连接后显示当前窗口内的评测条目。');return;}
     const table=el('table',null,'benchmark-directory-table'),caption=el('caption','当前窗口 Benchmark 目录，点击名称查看成绩与来源详情。','sr-only'),head=el('thead'),header=el('tr'),body=el('tbody');
-    for(const title of ['Benchmark 与论文来源','状态','能力','模型','核验成绩','详情']){const th=el('th',title);th.scope='col';header.append(th);}head.append(header);table.append(caption,head,body);
+    for(const title of ['Benchmark 与论文来源','状态','评测分类与能力','模型','核验成绩','详情']){const th=el('th',title);th.scope='col';header.append(th);}head.append(header);table.append(caption,head,body);
     for(const b of list.slice(0,shown)){
       const members=Viz.directorySources(b),progress=b.progress||{},stats=Viz.directoryStats(state.snapshot,b),nScores=stats.observations,nModels=stats.models,nTables=stats.tables;
       const href=new URL('benchmark/?'+new URLSearchParams({paper_id:b.paper_id,benchmark_id:b.benchmark_id,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;
@@ -675,17 +838,31 @@
         for(const ref of members){const source=el('a',ref.paper_title||ref.paper_id);source.href=new URL('benchmark/?'+new URLSearchParams({paper_id:ref.paper_id,benchmark_id:ref.benchmark_id}),radarBase).href;sources.append(source);}
         nameCell.append(sources);
       }
-      const abilityCell=el('td',null,'benchmark-directory-abilities'),domains=benchTags(b,'domains'),capabilities=benchTags(b,'capabilities');
-      if(domains.length)abilityCell.append(el('span',domains.map(titleFor).join(' · '),'benchmark-directory-domain'));
-      const tags=el('div',null,'benchmark-directory-tags');
-      for(const cap of capabilities.slice(0,3))tags.append(el('span',titleFor(cap),'benchmark-directory-tag'));
-      if(capabilities.length>3){
-        const count=capabilities.length-3,rest=el('span',null,'benchmark-directory-extra-tags'),toggle=el('button',`更多 ${count} 项`,'benchmark-directory-more');
-        rest.id='benchmark-tags-'+encodeURIComponent(JSON.stringify([b.paper_id,b.benchmark_id]));rest.hidden=true;toggle.type='button';toggle.setAttribute('aria-controls',rest.id);toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label',`展开其余 ${count} 项能力标签`);
-        for(const cap of capabilities.slice(3))rest.append(el('span',titleFor(cap),'benchmark-directory-tag'));
-        toggle.addEventListener('click',()=>{rest.hidden=!rest.hidden;toggle.textContent=rest.hidden?`更多 ${count} 项`:'收起';toggle.setAttribute('aria-expanded',String(!rest.hidden));toggle.setAttribute('aria-label',rest.hidden?`展开其余 ${count} 项能力标签`:'收起其余能力标签');});tags.append(rest,toggle);
+      const abilityCell = el('td', null, 'benchmark-directory-abilities');
+      const groups = Object.entries(benchmarkCapabilities(b)).filter(([, ids]) => ids.length);
+      const selectedLeaf = (state.capability || '').split('/')[1];
+      for (const [category, ids] of groups) {
+        const line = el('div', null, 'benchmark-tag-family');
+        const label = el('strong', category);
+        const children = el('div', null, 'benchmark-directory-tags');
+        const ordered = ids.includes(selectedLeaf) ? [selectedLeaf, ...ids.filter(id => id !== selectedLeaf)] : ids;
+        const tag = id => el('span', titleFor(id), 'benchmark-directory-tag');
+        for (const id of ordered.slice(0, 2)) children.append(tag(id));
+        if (ordered.length > 2) {
+          const more = el('details', null, 'benchmark-family-more');
+          const toggle = el('summary', '+' + (ordered.length - 2));
+          toggle.setAttribute('aria-label', (document.documentElement.lang === 'en' ? 'More tags in ' : '展开更多标签 · ') + category);
+          const extras = el('div', null, 'benchmark-directory-tags');
+          for (const id of ordered.slice(2)) extras.append(tag(id));
+          more.append(toggle, extras);
+          children.append(more);
+        }
+        line.append(label, children);
+        abilityCell.append(line);
       }
-      if(!capabilities.length)tags.append(el('span','暂无能力标签','benchmark-directory-no-tags'));abilityCell.append(tags);
+      if (!groups.length) abilityCell.append(el('span', '暂无能力标签', 'benchmark-directory-no-tags'));
+      const domains = benchTags(b, 'domains');
+      if (domains.length) meta.append(el('span', domains.map(titleFor).join(' · ')));
       const modelCell=el('td',null,'benchmark-directory-count'),scoreCell=el('td',null,'benchmark-directory-count benchmark-directory-scores');modelCell.setAttribute('data-label','模型');scoreCell.setAttribute('data-label','核验成绩');
       modelCell.append(el('span',nModels===null?'读取中':nModels>0?fmt(nModels):'—'));scoreCell.append(el('span',nScores===null?'读取中':nScores>0?fmt(nScores):'暂无'));
       const actionCell=el('td',null,'benchmark-directory-action'),detail=el('a',null,'benchmark-directory-open'),arrow=el('span','查看','benchmark-directory-action-label');detail.href=href;detail.setAttribute('aria-label','查看 '+b.benchmark_name+' 的成绩与来源详情');detail.title='查看详情';arrow.setAttribute('aria-hidden','true');detail.append(arrow);actionCell.append(detail);
@@ -696,7 +873,28 @@
     box.append(table);
   }
   function renderModels() {
-    const rows=scopedModels().filter(m=>state.snapshot?.index?.method?.score_unit!=='z_score'||m.model_setting===visualSetting);rows.sort((a,b)=>state.sort==='vendor'?Viz.compareModelVendor(a,b):state.sort==='name'?a.model_canonical.localeCompare(b.model_canonical):state.sort==='coverage'?(b.n_benchmarks||0)-(a.n_benchmarks||0):(Viz.publicationScore(b,state.snapshot?.index?.method?.min_benchmarks||3)??-Infinity)-(Viz.publicationScore(a,state.snapshot?.index?.method?.min_benchmarks||3)??-Infinity));const box=$('models');box.replaceChildren();
+    const rows=scopedModels().filter(m=>state.snapshot?.index?.method?.score_unit!=='z_score'||m.model_setting===visualSetting);
+    const minBenchmarks = state.snapshot?.index?.method?.min_benchmarks || 3;
+    const sortValue = {
+      score: model => Viz.publicationScore(model, minBenchmarks),
+      coverage: model => model.n_benchmarks,
+      groups: model => model.n_groups,
+      percent: model => model.coverage_pct
+    };
+    const direction = state.sortDescending ? -1 : 1;
+    rows.sort((a, b) => {
+      const byName = a.model_canonical.localeCompare(b.model_canonical);
+      if (state.sort === 'name') return direction * byName;
+      const left = sortValue[state.sort](a), right = sortValue[state.sort](b);
+      if (left == null || right == null) return Number(left == null) - Number(right == null) || byName;
+      return direction * (left - right) || byName;
+    });
+    for (const button of document.querySelectorAll('[data-record-sort]')) {
+      const th = button.closest('th');
+      if (button.dataset.recordSort === state.sort) th.setAttribute('aria-sort', state.sortDescending ? 'descending' : 'ascending');
+      else th.removeAttribute('aria-sort');
+    }
+    const box=$('models');box.replaceChildren();
     for(const m of rows.slice(0,state.modelLimit)){const tr=el('tr'),name=el('td');name.append(modelLink(m.model_canonical,m.model_setting),el('span',m.model_setting||'未另列实验设置','subtext'));tr.append(name,el('td',(m.score_unit==='z_score'?statFmt:fmt)(Viz.publicationScore(m,state.snapshot?.index?.method?.min_benchmarks||3)),'numeric emphasis'),el('td',fmt(m.n_benchmarks),'numeric'),el('td',fmt(m.n_groups),'numeric'),el('td',number(m.coverage_pct)===null?'—':`${fmt(m.coverage_pct)}%`,'numeric'));const status=el('td');status.append(badge(Viz.publicationLabel(m,state.snapshot?.index?.method?.min_benchmarks||3),false));tr.append(status);box.append(tr);}
     $('more-models').hidden=rows.length<=state.modelLimit;
     if(!rows.length){const tr=el('tr'),td=el('td','当前没有可发布的模型指数；有原始成绩的 benchmark 仍可在雷达页查看。');td.colSpan=6;tr.append(td);box.append(tr);}
@@ -713,7 +911,13 @@
     }
     if(b.date_basis)evidence.append(el('p',b.date_basis==='PAPER_V1_PROXY'?'日期依据：论文 v1 首次公开时间代理，保留来源日期证据。':`日期依据：${b.date_basis}`));if(b.evidence_quote)evidence.append(el('blockquote',b.evidence_quote));evidence.append(link(b.source_url,'打开来源论文'));
     const annotations=annotationItems().filter(a=>identity(a)===identity(b));
-    const capabilities=benchTags(b,'capabilities');evidence.append(el('h3','评测能力'),el('p',capabilities.length?capabilities.map(titleFor).join('、'):'暂未识别能力'));
+    const capabilities=benchTags(b,'capabilities');evidence.append(el('h3','评测能力'),capabilities.length?capabilityList(benchmarkCapabilities(b)):el('p','暂未识别能力'));
+    const codingEvidence = Viz.catalogCodingEvidence(b);
+    if (codingEvidence) {
+      const source = el('details');
+      source.append(el('summary','编程能力标注依据'), el('blockquote',codingEvidence[1]));
+      evidence.append(source);
+    }
     const proofs=(b.enrichment?.labels?.evidence||[]).filter(p=>p.layer==='capabilities'&&capabilities.includes(p.id)&&p.bound_to_benchmark===true);
     if(proofs.length){const details=el('details');details.append(el('summary','查看能力标签的原文依据'));for(const p of proofs)details.append(el('blockquote',p.quote));evidence.append(details);}
     const scoring=annotations.filter(a=>a.status==='SUPPORTED');if(scoring.length){const details=el('details');details.append(el('summary','指标与评分依据'));for(const a of scoring){details.append(el('p',`${a.metric||''} · ${(a.capabilities||[]).map(titleFor).join('、')}`));for(const p of a.evidence||[])if(p.quote)details.append(el('blockquote',p.quote));}evidence.append(details);}
@@ -727,12 +931,12 @@
     const values=(g.scores||[]).map(s=>s.value_numeric).filter(x=>typeof x==='number'&&Number.isFinite(x)),[lo,hi]=Viz.valueDomain(values,true),zero=100*(0-lo)/(hi-lo);for(const s of [...(g.scores||[])].sort((a,b)=>(g.direction==='lower'?1:-1)*(a.value_numeric-b.value_numeric))){const row=el('div',null,'bar-row'),track=el('div',null,'bar-track'),fill=el('div',null,'bar-fill');const x=100*((number(s.value_numeric)??0)-lo)/(hi-lo);track.style.position='relative';fill.style.position='absolute';fill.style.left=`${Math.min(x,zero)}%`;fill.style.width=`${Math.abs(x-zero)}%`;fill.style.background=Viz.modelColor(s.model_canonical);track.append(fill);const label=el('span',null,'bar-label');label.append(modelLink(s.model_canonical,g.model_setting));row.append(label,track,el('span',new Intl.NumberFormat('zh-CN',{maximumFractionDigits:6}).format(s.value_numeric),'bar-value'));box.append(row);}}
   function renderVisuals() {
     if(!state.snapshot||state.snapshot.detail_loaded===false){for(const v of state.view==='models'?[modelVisuals,modelCoverage]:[overviewRanking,overviewCoverage])v.clear();return;}
-    const choices=Viz.settings(state.snapshot),select=$('visual-setting');
+    const choices=Viz.settings(state.snapshot);
     if(!choices.includes(visualSetting))visualSetting=[...choices].sort((a,b)=>state.snapshot.index.models.filter(m=>m.model_setting===b).length-state.snapshot.index.models.filter(m=>m.model_setting===a).length)[0]??'';
-    select.replaceChildren();for(const x of choices)select.append(new Option(x||'未另列实验设置',x));select.value=visualSetting;select.disabled=!choices.length;
-    const d=rankingData(),coverage=Viz.coverageData(d);
+    const d=rankingData(),coverage=Viz.coverageData(d.elo?Viz.sourceModelData(state.snapshot,visualSetting):d);
     if(state.view==='benchmarks'){overviewRanking.update(d);overviewCoverage.update(coverage);}
-    else {renderRanking(d);modelCoverage.update(coverage);renderPairedSources(d);}
+    else if (state.view === 'compare') renderPairedSources(d);
+    else {renderRanking(d);modelCoverage.update(coverage);if(!visitorEdition)renderPairedSources(d);}
   }
   let rankingMode=null,rankingModeChosen=false,rankingBenchmark='',rankingGroup='';
   function renderRanking(data) {
@@ -746,6 +950,12 @@
       const published=data.rows.filter(r=>r.score!==null).length;
       $('scoring-readiness').textContent=`统一综合评分（估计顺序）· ${published} 个模型已发布 · ${benchmarks.size} 项${visitorEdition?'可展示':'可计分'} Benchmark。模型筛选仅改变展示，不改变分数；${visitorEdition?'可展开下方评测覆盖查看各模型的测试量。':'每个模型的测试覆盖量见右图。'}`;
       $('scoring-scope').hidden=false;const body=$('scoring-scope-body');body.replaceChildren();
+      if(data.elo){
+        const english=document.documentElement.lang==='en';
+        $('scoring-readiness').textContent=english?`Elo · ${published} rated models and configurations`:`Elo · ${published} 个模型及配置已发布评分`;
+        body.append(el('p',english?'Weighted Bradley–Terry fit on within-paper comparisons. Repeated comparisons of a pair in one paper receive a square-root discount. Ratings require five source papers.':data.note+' 同篇重复比较按平方根折扣，每个入榜配置至少有 5 篇论文。'));
+        modelVisuals.update(data);return;
+      }
       if(visitorEdition){
         $('scoring-readiness').textContent=`${published} 个模型已有综合评分 · ${benchmarks.size} 项评测。可查看各模型的评测覆盖和原始成绩。`;
         $('scoring-scope').querySelector('summary').textContent='评分与数据说明';
@@ -836,7 +1046,7 @@
   let pairView='benchmark';
   async function openCommonTests(name,setting) {
     if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded)){await refresh({details:true});if(!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded))return;}
-    setView('models');
+    setView(visitorEdition ? 'compare' : 'models');
     if(typeof setting==='string'&&setting!==visualSetting){visualSetting=setting;renderVisuals();}
     const left=$('pair-left'),right=$('pair-right');
     if(name&&state.snapshot?.index?.models.some(m=>m.model_canonical===name&&m.model_setting===visualSetting)){
@@ -856,10 +1066,10 @@
   }
   function renderCommonSourceEvidence(root,report) {
     root.replaceChildren();
-    const header=el('div',null,'common-evidence-heading');header.append(el('h4','共同来源 · 最终任务表现'),
+    const header=el('div',null,'common-evidence-heading');header.append(
       el('p',`${report.paperFamilies} 篇来源论文 · ${report.benchmarks} 项 Benchmark · ${report.sourceGroups} 组同条件指标`,'method-note'));
     root.append(header);
-    if(!report.paperFamilies){root.append(el('p','当前实验设置下，暂无同时纳入综合评分的共同最终表现成绩。下方仍可查看已有的共同原始记录。','common-evidence-empty'));return;}
+    if(!report.paperFamilies){root.append(el('p','当前实验设置下，暂无同时纳入综合评分的共同最终表现成绩。可在配对原值中查看已有记录。','common-evidence-empty'));return;}
     const summary=el('div',null,'common-evidence-overview');
     for(const [label,count]of [[report.left+' 占优',report.paperWins.left],['胜负均衡',report.paperWins.tie],[report.right+' 占优',report.paperWins.right]]){
       const stat=el('div');stat.append(el('span',label),el('strong',count+' 篇'));summary.append(stat);
@@ -889,8 +1099,16 @@
       more.onclick=()=>{limit=paper.rows.length;draw();};detail.append(wrapper,more);detail.addEventListener('toggle',()=>{if(detail.open&&!body.childElementCount)draw();});root.append(detail);
     }
   }
+  let requestedPairSnapshot;
   function renderPairedSources(data) {
-    if(state.snapshot?.sources_loaded===false&&!state.snapshot.comparison_loaded)return;
+    if (state.snapshot?.sources_loaded === false && !state.snapshot.comparison_loaded) {
+      if (visitorEdition && window.RadarLoadComparison && requestedPairSnapshot !== state.snapshot) {
+        requestedPairSnapshot = state.snapshot;
+        $('pair-summary').textContent = '正在读取共同测试来源…';
+        queueMicrotask(() => refresh({details:true}));
+      }
+      return;
+    }
     const left=$('pair-left'),right=$('pair-right'),body=$('pair-rows');
     const leftPicker=pairModelPicker(left,'模型 A'),rightPicker=pairModelPicker(right,'模型 B');
     const names=[...data.rows].sort((a,b)=>b.nBenchmarks-a.nBenchmarks||a.name.localeCompare(b.name)).map(r=>r.name);
@@ -912,11 +1130,19 @@
     left.value=names.includes(oldLeft)?oldLeft:(defaults[0]||names[0]||'');right.value=names.includes(oldRight)&&oldRight!==left.value?oldRight:(defaults[1]||names.find(n=>n!==left.value)||'');
     let chosen=new Set(),sourceChoices=new Map(),previousPair='';
     function draw(){
-      let common=$('pair-common-evidence');if(!common){common=el('section',null,'common-evidence');common.id='pair-common-evidence';common.setAttribute('aria-label','共同测试的论文来源与原始成绩');$('pair-benchmark-view').before(common);}
-      renderCommonSourceEvidence(common,Viz.commonSourceEvidence(state.snapshot,visualSetting,left.value,right.value));
+      const common = $('pair-common-evidence');
+      const disclosure = common.parentElement;
+      function showSharedEvidence() {
+        if (disclosure.open) {
+          renderCommonSourceEvidence(common, Viz.commonSourceEvidence(state.snapshot, visualSetting, left.value, right.value));
+        }
+      }
+      disclosure.ontoggle = showSharedEvidence;
+      showSharedEvidence();
       $('pair-benchmark-view').hidden=pairView!=='benchmark';$('pair-capability-view').hidden=pairView!=='capability';
       $('pair-view-benchmark').setAttribute('aria-pressed',String(pairView==='benchmark'));$('pair-view-capability').setAttribute('aria-pressed',String(pairView==='capability'));
-      if(pairView==='capability')Viz.drawCapabilityRadar($('pair-capability-view'),Viz.capabilityRadarData(state.snapshot,visualSetting,left.value,right.value,taskTaxonomy.capabilities),left.value,right.value,name=>openModel(name,visualSetting),r=>new URL('benchmark/?'+new URLSearchParams({paper_id:r.paper,benchmark_id:r.benchmark,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href);
+      const benchmarkUrl = r=>new URL('benchmark/?'+new URLSearchParams({paper_id:r.paper,benchmark_id:r.benchmark,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;
+      if(pairView==='capability')Viz.drawCapabilityRadar($('pair-capability-view'),Viz.capabilityRadarData(state.snapshot,visualSetting,left.value,right.value,taskTaxonomy.capabilities),left.value,right.value,name=>openModel(name,visualSetting),benchmarkUrl);
       const rows=Viz.pairedSources(state.snapshot,visualSetting,left.value,right.value),axes=Viz.pairedBenchmarkAxes(state.snapshot,visualSetting,left.value,right.value);body.replaceChildren();
       const pair=JSON.stringify([visualSetting,left.value,right.value]);if(pair!==previousPair){const pref=pairPreferences.get(pair);chosen=new Set(pref?pref.selected.filter(id=>axes.some(a=>a.id===id)):axes.slice(0,6).map(a=>a.id));sourceChoices=new Map(pref?.sources||[]);previousPair=pair;}
       $('pair-summary').textContent=rows.length?`${axes.length} 个共同 Benchmark · ${rows.length} 个同组来源；当前雷达选择 ${chosen.size} 个 Benchmark。`:'这两个模型没有同组可核验成绩；不使用间接推断补出分数。';
@@ -931,7 +1157,7 @@
         axis.source=axis.groups.find(r=>r.group===select.value)||axis.groups[0];
         item.append(choice,select);list.append(item);
       }
-      const selected=axes.filter(a=>chosen.has(a.id));Viz.drawPairedRadar($('pair-radar'),selected,left.value,right.value,name=>openModel(name,visualSetting));
+      const selected=axes.filter(a=>chosen.has(a.id));Viz.drawPairedRadar($('pair-radar'),selected,left.value,right.value,name=>openModel(name,visualSetting),{benchmarkUrl});
       for(const axis of selected){const r=axis.source,tr=el('tr'),source=el('td'),a=el('a',r.benchmarkName);a.href=new URL('benchmark/?'+new URLSearchParams({paper_id:r.paper,benchmark_id:r.benchmark,...(state.snapshot?.visitor_catalog_filtered?{}:{edition:'admin'})}),radarBase).href;source.append(a,el('span',sourceLabel(r.paper,r.table),'subtext'));tr.append(source,el('td',r.metric+' · '+Viz.directionLabel(r.direction)),el('td',raw(r.left),'numeric'),el('td',raw(r.right),'numeric'),el('td',(r.delta>0?'+':'')+raw(r.delta),'numeric'),el('td',r.winner==='TIE'?'同值':r.winner));body.append(tr);}
       $('pair-left-heading').textContent=left.value||'模型 A';$('pair-right-heading').textContent=right.value||'模型 B';
       $('pair-left-vendor').textContent=Viz.modelInfo(left.value).vendor;$('pair-right-vendor').textContent=Viz.modelInfo(right.value).vendor;
@@ -954,13 +1180,13 @@
     if(!metrics.includes(detailVisualMetric))detailVisualMetric=metrics[0]||'';metric.replaceChildren();for(const x of metrics)metric.append(new Option(x,x));metric.value=detailVisualMetric;
     detailVisuals.update(Viz.benchmarkData(state.snapshot,b,detailVisualSetting,detailVisualMetric));
   }
-  $('visual-setting').addEventListener('change',e=>{visualSetting=e.target.value;renderVisuals();renderModels();});
   $('detail-visual-setting').addEventListener('change',e=>{detailVisualSetting=e.target.value;renderDetailVisuals();});
   $('detail-visual-metric').addEventListener('change',e=>{detailVisualMetric=e.target.value;renderDetailVisuals();});
   function render() {
     renderCounts();
     if(state.view==='benchmarks'){renderVisuals();renderBenchmarks();renderDetail();}
     else if(state.view==='models'){renderVisuals();renderModels();}
+    else if(state.view==='compare' && state.snapshot && state.snapshot.detail_loaded!==false)renderVisuals();
     else if(state.view==='tasks')renderTaskWorkspace();
     else if(state.view==='capabilities')renderCapabilityMap();
     modelDialog?.refresh();
@@ -1022,25 +1248,6 @@
     for(const root of document.querySelectorAll('.viz-card,.paired-values'))root.setAttribute('aria-busy',String(loading&&(!state.snapshot||state.snapshot.detail_loaded===false)));
   }
   let refreshInFlight=null,refreshHasDetails=false;
-  let publicationUpdating=false;
-  async function checkPublishedUpdate(){
-    if(!window.RadarCheckPublication||publicationUpdating||refreshInFlight||state.loading||document.hidden||state.view==='tasks'||document.querySelector('dialog[open]'))return;
-    publicationUpdating=true;
-    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
-    try{
-      const next=await window.RadarCheckPublication({signal:ctrl.signal});
-      if(!next||refreshInFlight||state.loading||state.view==='tasks'||document.querySelector('dialog[open]'))return;
-      const snapshot=validate(next.snapshot);next.commit();state.snapshot=snapshot;
-      taskState.evidenceSnapshot=null;taskState.result=null;
-      if(state.selected&&!snapshot.benchmarks.some(b=>identity(b)===state.selected))state.selected=null;
-      Viz.setModelRegistry(snapshot.model_registry);render();resumeInteractive();
-      const asof=$('snapshot-asof');if(asof)asof.textContent='数据截至 '+date(snapshot.generated_at);
-      const node=$('connection');node.className='connection';node.textContent='自动更新 · 数据截至 '+date(snapshot.generated_at);
-    }catch(error){
-      // A failed or incomplete publication never replaces the last verified one.
-      const node=$('connection');if(state.snapshot){node.className='connection';node.textContent='数据截至 '+date(state.snapshot.generated_at)+' · 更新检查暂未完成，稍后自动重试';}
-    }finally{clearTimeout(timer);publicationUpdating=false;}
-  }
   function refresh(options={}) {
     if(refreshInFlight){
       if(options.details&&!refreshHasDetails)return refreshInFlight.then(()=>!state.snapshot||state.snapshot.detail_loaded===false||(state.snapshot.sources_loaded===false&&!state.snapshot.comparison_loaded)?refresh(options):undefined);
@@ -1069,7 +1276,7 @@
         node.textContent=previous?.detail_loaded!==false&&previous?'正在更新 · 保留当前图表':'目录已就绪 · 正在加载图表…';
       } catch {}
       let d;
-      if(!details&&!requestedModel&&['models','benchmarks','capabilities'].includes(state.view)&&window.RadarLoadRanking){
+      if(!details&&!requestedModel&&['models','benchmarks','capabilities','compare'].includes(state.view)&&window.RadarLoadRanking){
         node.textContent='正在读取榜单、能力标签与评测目录…';
         const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
         try{d=validate(await window.RadarLoadRanking({signal:ctrl.signal}));}finally{clearTimeout(timer);}
@@ -1082,7 +1289,7 @@
     } catch(err) {
       if(!overviewLoaded&&!previous){state.snapshot=null;taskState.result=null;state.selected=null;render();}
       node.className='connection '+(overviewLoaded||previous?'warning':'error');
-      const retry=window.RadarSnapshotMode?'请点击“重新载入”重试，当前快照内容会保留。':'页面按 10 分钟间隔自动刷新，也可点击“刷新数据”。';
+      const retry=window.RadarSnapshotMode?'请点击“重新载入”重试，当前快照内容会保留。':'请点击“重新载入”重试。';
       node.textContent=err.name==='AbortError'?(overviewLoaded?'来源比较数据读取超时，已加载页面仍可使用。':'评测数据读取超时。')+retry:
         err.message==='snapshot_initializing'?'后台正在生成首批快照。'+retry:
         err.message==='snapshot_refreshing'?'当前日期窗口的榜单正在更新。'+retry:
@@ -1093,7 +1300,16 @@
       if(previous)node.textContent='更新未完成，显示上次已加载内容。'+node.textContent;
     } finally {state.loading=false;$('refresh').disabled=false;setLoadingUI(false);renderReferences();}
   }
-  for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',()=>checkPublishedUpdate().then(()=>refresh()));$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('model-sort').addEventListener('change',e=>{state.sort=e.target.value;state.modelLimit=100;renderModels();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
+  for (const button of document.querySelectorAll('[data-record-sort]')) {
+    button.addEventListener('click', () => {
+      const key = button.dataset.recordSort;
+      state.sortDescending = key === state.sort ? !state.sortDescending : key !== 'name';
+      state.sort = key;
+      state.modelLimit = 100;
+      renderModels();
+    });
+  }
+  for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));$('refresh').addEventListener('click',()=>refresh());$('search').addEventListener('input',e=>{state.query=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('eligibility').addEventListener('change',e=>{state.eligibility=e.target.value;state.benchmarkLimit=40;renderBenchmarks();});$('more-benchmarks').addEventListener('click',()=>{state.benchmarkLimit+=40;renderBenchmarks();});$('more-models').addEventListener('click',()=>{state.modelLimit+=100;renderModels();});$('close-detail').addEventListener('click',()=>{state.selected=null;$('detail').hidden=true;});$('metric-group').addEventListener('change',e=>{state.group=e.target.value;const b=state.snapshot?.benchmarks.find(b=>identity(b)===state.selected);if(b)renderBars(b);});$('more-scores').addEventListener('click',()=>{state.scoreLimit+=80;renderDetail();});
   window.addEventListener('radar:task-connected',()=>{if(state.view==='tasks')loadTaskEvidenceForPreview().catch(error=>taskMessage('task-score-message',error.message,'warning'));});
   const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   if(document.modelContext?.registerTool){
@@ -1108,7 +1324,23 @@
     openBenchmark(paperId,benchmarkId){const benchmark=state.snapshot?.benchmarks.find(b=>b.paper_id===paperId&&b.benchmark_id===benchmarkId);if(benchmark&&state.snapshot.detail_loaded!==false){selectBenchmark(benchmark);return true;}return false;},
     useTemplate(id){const template=TASK_DEFAULTS.templates[id];if(!template)return;taskState.autoCandidates=true;applyProfile(template);taskState.refsInitialized=false;setView('tasks');renderReferences();window.scrollTo({top:0,behavior:'instant'});}
   });
-  const hashView=()=>{const requested=location.hash.slice(1).replace(/-view$/,'');const view=requested==='pipeline'?'benchmarks':requested;if(['benchmarks','tasks','capabilities','models',...(visitorEdition?['home']:[])].includes(view))setView(view);};
+  const hashView=()=>{const requested=location.hash.slice(1).replace(/-view$/,'');const view=requested==='pipeline'?'benchmarks':requested;if(['benchmarks','tasks','capabilities','models',...(visitorEdition?['home','compare']:[])].includes(view))setView(view);};
   hashView();window.addEventListener('hashchange',hashView);
-  initTaskWorkspace();if(visitorEdition)setView(state.view);uiReady=true;render();refresh();if(window.RadarSnapshotMode){setTimeout(checkPublishedUpdate,1500);setInterval(checkPublishedUpdate,60000);}else setInterval(()=>{if(!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();},REFRESH_INTERVAL_MS);document.addEventListener('visibilitychange',()=>{if(window.RadarSnapshotMode)checkPublishedUpdate();else if(!document.hidden&&Date.now()-lastRefreshAt>=REFRESH_INTERVAL_MS)refresh();});
+
+  let checkingPublication = false;
+  async function checkPublishedUpdate() {
+    if (checkingPublication || document.hidden || state.view === 'tasks' || document.querySelector('dialog[open]')) return;
+    checkingPublication = true;
+    try {
+      const response = await fetch('/snapshot/current.json', {cache:'no-store', signal:AbortSignal.timeout(10000)});
+      if (!response.ok) return;
+      const current = await response.json();
+      if (current.snapshot_id && current.snapshot_id !== window.snapshotElo?.snapshot_id &&
+          Date.parse(current.generated_at) >= Date.parse(window.RadarHomeSnapshot?.generated_at)) location.reload();
+    } catch { /* An open edition remains readable during network interruptions. */ }
+    finally { checkingPublication = false; }
+  }
+  setInterval(checkPublishedUpdate, 60000);
+  document.addEventListener('visibilitychange', checkPublishedUpdate);
+  initTaskWorkspace();if(visitorEdition)setView(state.view);uiReady=true;render();refresh();
 })();

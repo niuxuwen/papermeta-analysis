@@ -25,7 +25,8 @@
     let opened=false,items=[],buttons=[],highlighted=-1,limit=80;const patchedProperties=[];
     const focusOwner=()=>search.hidden?list:search;
     function sync(){
-      const selected=select.selectedOptions[0],label=controlLabel(select),text=selected?.textContent.trim()||'暂无选项';
+      const selected=select.selectedOptions[0],label=controlLabel(select),optionText=selected?.textContent.trim()||'暂无选项';
+      const text=select.id==='cap-filter' && selected?.value.includes('/') ? selected.parentElement.label+' · '+optionText : optionText;
       if(caption.textContent!==text)caption.textContent=text;
       button.title=select.title?text+' · '+select.title:text;button.disabled=select.disabled||!select.options.length;button.setAttribute('aria-label',label+'：'+text);button.setAttribute('aria-required',String(select.required));
       root.hidden=select.hidden||select.style.display==='none';root.style.width=select.style.width||'';root.style.maxWidth=select.style.maxWidth||'';

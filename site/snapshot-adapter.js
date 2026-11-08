@@ -177,7 +177,7 @@
   };
   window.fetch=async function(input,init={}){
     const url=new URL(typeof input==='string'||input instanceof URL?input:input.url,location.href);
-    const route=url.origin===base.origin&&url.pathname.startsWith(base.pathname)?'/'+url.pathname.slice(base.pathname.length):'';
+    const route=url.origin===base.origin&&url.pathname.startsWith(base.pathname)?('/'+url.pathname.slice(base.pathname.length)).replace(/^\/zh\/api\//,'/api/'):'';
     if(!route.startsWith('/api/'))return originalFetch(input,init);
     const method=(init.method||(input instanceof Request?input.method:'GET')).toUpperCase();
     if(window.RadarTaskConnection?.supports(route,method))return window.RadarTaskConnection.request(route,init);

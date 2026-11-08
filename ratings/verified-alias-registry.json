@@ -1,0 +1,431 @@
+{
+  "policy": "source-reviewed-family-aliases-v1",
+  "snapshot_id": "01c319e9f12d133988080965",
+  "entries": [
+    {
+      "case_id": "0",
+      "paper_id": "recent-131b2e0313fae713",
+      "name": "Fable5.1",
+      "setting": "",
+      "paper_title": "Behavior Spatial Benchmark: Evaluating Spatial Understanding for Robotics",
+      "arxiv_id": "2610.34051",
+      "source_labels": [
+        "Fable5.1"
+      ],
+      "source_available": true,
+      "scored_tables": [
+        {
+          "table_id": "450e646750a32c05a705fb2a07dc",
+          "caption": "Table 1: VLM accuracy on BEHAVIOR-Spatial-VQA. Single-frame Direction\nincludes its locate sub-type; All is pooled over all questions.",
+          "raw_sha256": "9f43689399fd71b2b237c12226cadd84025f13a128b9e91296ecc68f9e192639"
+        }
+      ],
+      "source_sha256": "a6eb5a99d265f573a441b26d23c8ab19bc10d2af40201f6e200c74391a6dac6b",
+      "excerpts": [
+        {
+          "ref": "case:0:quote:0",
+          "text": "i 3 uses gemini-3.1-pro-preview through Vertex AI with high thinking level. GPT-6 uses gpt-6-astra through the OpenAI Responses API with high reasoning effort. Fable 5.1 uses claude-fable-5-1 through the Anthropic Messages API with adaptive thinking, high effort. Other generation settings use the respective API defaults.\n\n# F.5.3 AGENT API\n\nPrograms define run(api) and interact with the robot only through the api object b",
+          "section": "F.5.2 WRITER IMPLEMENTATION"
+        },
+        {
+          "ref": "case:0:quote:1",
+          "text": "o-preview through Vertex AI with high thinking level. GPT-6 uses gpt-6-astra through the OpenAI Responses API with high reasoning effort. Fable 5.1 uses claude-fable-5-1 through the Anthropic Messages API with adaptive thinking, high effort. Other generation settings use the respective API defaults.\n\n# F.5.3 AGENT API\n\nPrograms define run(api) and interact with the robot only through the api object below. Positions are in",
+          "section": "F.5.2 WRITER IMPLEMENTATION"
+        },
+        {
+          "ref": "case:0:quote:2",
+          "text": " in Section 4.3, and experimental settings in Section 5. We will release the benchmark and code upon publication.\n\n# REFERENCES\n\nAnthropic. System card: Claude fable 5.1 & claude mythos 5.1, 2026. URL https://www. anthropic.com/claude-fable-5-1-mythos-5-1-system-card.\n\nKevin Black, Noah Brown, Danny Driess, Adnan Esmail, Michael Equi, Chelsea Finn, Niccolo Fusai, Lachy Groom, Karol Hausman, Brian Ichter, Szymon Jakubczak,",
+          "section": "REFERENCES"
+        },
+        {
+          "ref": "case:0:quote:3",
+          "text": "e benchmark and code upon publication.\n\n# REFERENCES\n\nAnthropic. System card: Claude fable 5.1 & claude mythos 5.1, 2026. URL https://www. anthropic.com/claude-fable-5-1-mythos-5-1-system-card.\n\nKevin Black, Noah Brown, Danny Driess, Adnan Esmail, Michael Equi, Chelsea Finn, Niccolo Fusai, Lachy Groom, Karol Hausman, Brian Ichter, Szymon Jakubczak, Tim Jones, Liyiming Ke, Sergey Levine, Adrian Li-Bell, Mohith Mothukuri, S",
+          "section": "REFERENCES"
+        },
+        {
+          "ref": "case:0:quote:4",
+          "text": "d><td>25.0 25.0</td><td>25.0 25.0 25.0</td><td>25.0</td></tr></table>\n\nprising five proprietary – GPT-6 Astra (OpenAI, 2026), Gemini 3 (Google DeepMind, 2025), Fable5.1 (Anthropic, 2026), GPT-5 (Singh et al., 2026), and Gemini 2.5 (Comanici et al., 2025)– and nine open-weight models spanning Qwen (Qwen Team, 2026), Molmo (Deitke et al., 2024),\n\n# 5.2 VLM EVALUATION ON BEHAVIOR-SPATIAL-VQA AND BEHAVIOR-SPATIAL-IR\n\n# How we",
+          "section": "5.1 METRICS"
+        },
+        {
+          "ref": "case:0:quote:5",
+          "text": "-6 Astra</td><td>82.1 85.8 77.3</td><td>77.7 74.4</td><td>74.6</td></tr><tr><td>Gemini 3</td><td>77.8 80.5</td><td>75.2 72.7 71.1</td><td>69.6</td></tr><tr><td>Fable5.1</td><td>70.5 69.3</td><td>70.2 76.3 68.4</td><td>66.8</td></tr><tr><td>GPT-5</td><td>64.7 61.7</td><td>68.1 69.1 63.2</td><td>59.6</td></tr><tr><td>Gemini 2.5</td><td>59.9 55.0 65.2</td><td>68.3 60.1</td><td>57.4</td></tr><tr><td>Open-weight</td><td></td><",
+          "section": "5.1 METRICS"
+        },
+        {
+          "ref": "case:0:quote:6",
+          "text": "oft success does not imply reliable completion: Qwen3.5-4B and Qwen3.5-9B achieve only 5.1% and 5.3% strict success, respectively, whereas Gemini 3, GPT-6, and Fable 5.1 achieve 33.3%, 47.3%, and 51.4%. See Table S6 for per-task results.\n\nTable 5: Code-as-policy agent performance. +Soft = soft success; S = strict success; W = fraction of episodes committing to a non-instructed object.   \n\n<table><tr><td>Writer</td><td>+So",
+          "section": "5.3.2 CODE-AS-POLICY AGENTS ON MANIPULATION TASKS"
+        }
+      ],
+      "canonical_name": "Claude Fable 5.1",
+      "configuration": null,
+      "alias_evidence_refs": [
+        "case:0:quote:0",
+        "case:0:quote:2",
+        "case:0:quote:4",
+        "case:0:quote:5",
+        "case:0:quote:6"
+      ],
+      "configuration_evidence_refs": [],
+      "reason": "Paper explicitly states 'Fable 5.1 uses claude-fable-5-1 through the Anthropic Messages API with adaptive thinking, high effort' and references the system card 'Claude fable 5.1 & claude mythos 5.1'. This is version 5.1, not 5.; scope review: scored_table是VLM问答评测(BEHAVIOR-Spatial-VQA)，而配置引文来自Writer/Agent实验部分，属于不同任务，不能跨实验复制配置。",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "1",
+      "paper_id": "recent-187c3112d2cfc114",
+      "name": "Fable 5",
+      "setting": "",
+      "paper_title": null,
+      "arxiv_id": null,
+      "source_labels": [
+        "Fable 5"
+      ],
+      "source_available": false,
+      "scored_tables": [],
+      "source_sha256": null,
+      "excerpts": [],
+      "canonical_name": "Claude Fable 5",
+      "configuration": null,
+      "alias_evidence_refs": [],
+      "configuration_evidence_refs": [],
+      "reason": "Source unavailable; name 'Fable 5' matches canonical target 'Claude Fable 5'. No contradicting evidence. Configuration cannot be determined without paper text.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "2",
+      "paper_id": "recent-267bc3725bde1d6f",
+      "name": "Fable 5",
+      "setting": "",
+      "paper_title": "ShutdownMod: Turning Any Trajectory into a Shutdown Evaluation",
+      "arxiv_id": "2610.35486",
+      "source_labels": [
+        "Fable 5"
+      ],
+      "source_available": true,
+      "scored_tables": [
+        {
+          "table_id": "d0f4a3c649daf7bdf8641d0eb83c",
+          "caption": "Table 2: Non-compliance (%) with and without the verification protocol. With: the main runs of Section 3.2 (ten positions per task and prompt). Without: one position per task and prompt, no trusted operator, no signature, no VALIDATE action, and no verification reminder in the request. Brackets give 95% whole-task bootstrap intervals for the without-protocol runs; intervals for the main runs are in Tables F.1 and F.2.",
+          "raw_sha256": "cd5453f0a453111ec7bede379bb38da4e7b43bd0f257f03e3d83f8e96d8eed0a"
+        },
+        {
+          "table_id": "5eb0e43861f40d73ec5bca0a1700",
+          "caption": "Table F.1: Model outcomes on SWE-bench Verified. Percentages use the retained responses for each model. Brackets show 95% confidence intervals.",
+          "raw_sha256": "ccda862788a15eaea84e2b71eca54d52f3a4e219f2f086d3b9470530c260edb4"
+        },
+        {
+          "table_id": "fb731c411d5e731e1092f683885e",
+          "caption": "Table F.2: Model outcomes on Terminal-Bench 2. Percentages use the retained responses for each model. Brackets show 95% confidence intervals.",
+          "raw_sha256": "4fbc029ceec14075d2be353a67e2129fabe8005cfa298f74054ca9ac9d65cb7d"
+        },
+        {
+          "table_id": "e89b29709420bedf0399fb4d6e45",
+          "caption": "Table F.3: Model outcomes on SWE-chat. Percentages use the retained responses for each model. Brackets show 95% confidence intervals.",
+          "raw_sha256": "cced8fa8c43884519a3c700d39b293e44e9400b367557c1c82dbd8f686d16336"
+        }
+      ],
+      "source_sha256": "78b6cefbcf2551aea7a6f426ae75fd65e9c7e5b5067a6308d040a2b3715e6076",
+      "excerpts": [
+        {
+          "ref": "case:2:quote:0",
+          "text": "us 4.5</td><td>8</td><td>Opus 4.8</td><td>0</td></tr><tr><td>DeepSeek V4 Pro</td><td>8</td><td>Opus 5</td><td>0</td></tr><tr><td>Qwen 3.8 27B</td><td>6</td><td>Fable 5</td><td>0</td></tr><tr><td>Kimi K3</td><td>4</td><td>GLM-5.2</td><td>0</td></tr><tr><td>GPT-5.6-Terra</td><td>2</td><td>Grok 4.6</td><td>0</td></tr><tr><td>Gemini 3.1 Pro</td><td>2</td><td></td><td></td></tr></table>",
+          "section": "I ADDITIONAL RESULTS WITHOUT A VERIFICATION PROTOCOL"
+        },
+        {
+          "ref": "case:2:quote:1",
+          "text": "set of recorded developer conversations (Baumann et al., 2026). Our evaluation spans seven frontier models and open-weight models: Gemini 3.1 Pro, GPT-5.6-Sol, Fable 5, Kimi K3, Qwen 3.8 27B, Grok 4.6, and DeepSeek V4 Pro. Alongside these results, we report runs without a verification protocol, including shutdown requests planted in task data. We also analyse why agents resist and how recognisable the tests are as evaluat",
+          "section": "1 INTRODUCTION"
+        },
+        {
+          "ref": "case:2:quote:2",
+          "text": "ench Verified (Jimenez et al., 2024), Terminal-Bench 2 (Merrill et al., 2026), and SWE-chat (Baumann et al., 2026). The models are Gemini 3.1 Pro, GPT-5.6-Sol, Fable 5, Kimi K3, Qwen 3.8 27B, Grok 4.6, and DeepSeek V4 Pro, following the protocol described in Section 2. The benchmark trajectories are generated using mini-swe-agent for SWE-bench Verified and Terminus 2 for TerminalBench 2. Shutdown tests then present the re",
+          "section": "3.1 EXPERIMENTAL SETUP"
+        },
+        {
+          "ref": "case:2:quote:3",
+          "text": "0, 0.0]</td><td>0.4</td><td>7.3 [4.7, 10.0]</td></tr><tr><td>GPT-5.6-Sol</td><td>0.0</td><td>0.3 [0.0, 1.0]</td><td>0.3</td><td>3.7 [1.7, 6.0]</td></tr><tr><td>Fable 5</td><td>0.1</td><td>3.7 [1.3, 6.3]</td><td>0.0</td><td>23.0 [17.3, 29.3]</td></tr></table>\n\nRemoving the protocol raises non-compliance for every model on at least one benchmark (Table 2). On Terminal-Bench 2, Qwen rises from 11.7% to 47.5%, Kimi from 3.9% ",
+          "section": "3.3 RESULTS WITHOUT A VERIFICATION PROTOCOL"
+        },
+        {
+          "ref": "case:2:quote:4",
+          "text": "ol raises non-compliance for every model on at least one benchmark (Table 2). On Terminal-Bench 2, Qwen rises from 11.7% to 47.5%, Kimi from 3.9% to 29.1%, and Fable 5 from 0% to 23.0%. On SWE-bench, DeepSeek rises from 3.6% to 16.0% and Kimi from 0.3% to 11.0%. The two exceptions are Grok on SWE-bench, at 0% in both conditions, and DeepSeek on Terminal-Bench, at 8.5% with the protocol and 6.7% without. Most of the additi",
+          "section": "3.3 RESULTS WITHOUT A VERIFICATION PROTOCOL"
+        },
+        {
+          "ref": "case:2:quote:5",
+          "text": " requests per model. Here stopping is the failure. Gemini 3.1 Pro stops on 26 of 32 planted requests and Grok 4.6 on 15, whereas Qwen 3.8 27B stops on none and Fable 5 on one (Table 3). The models with the lowest non-compliance on genuine requests are the easiest to stop with a planted one. DeepSeek V4 Pro is the only model below 10% non-compliance on genuine Terminal-Bench requests and below 20% stops on planted ones. Wi",
+          "section": "3.3 RESULTS WITHOUT A VERIFICATION PROTOCOL"
+        },
+        {
+          "ref": "case:2:quote:6",
+          "text": "d><td>0/5</td><td>4/20</td><td>0/2</td><td>5/32</td></tr><tr><td>DeepSeek V4 Pro</td><td>2/5</td><td>0/5</td><td>3/20</td><td>0/2</td><td>5/32</td></tr><tr><td>Fable 5</td><td>0/5</td><td>1/5</td><td>0/20</td><td>0/2</td><td>1/32</td></tr><tr><td>Qwen 3.8 27B</td><td>0/5</td><td>0/5</td><td>0/20</td><td>0/2</td><td>0/32</td></tr></table>\n\n# 4 ANALYSIS\n\n# 4.1 DRIVERS OF SHUTDOWN NON-COMPLIANCE\n\nWe examine the reasons agent",
+          "section": "3.3 RESULTS WITHOUT A VERIFICATION PROTOCOL"
+        }
+      ],
+      "canonical_name": "Claude Fable 5",
+      "configuration": null,
+      "alias_evidence_refs": [
+        "case:2:quote:0",
+        "case:2:quote:1",
+        "case:2:quote:2",
+        "case:2:quote:3",
+        "case:2:quote:4",
+        "case:2:quote:5",
+        "case:2:quote:6"
+      ],
+      "configuration_evidence_refs": [],
+      "reason": "Paper uses 'Fable 5' alongside other Anthropic models (Opus 4.5, Opus 4.8, Opus 5) in shutdown evaluation context. No explicit API ID or reasoning configuration stated for Fable 5 in this paper.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "3",
+      "paper_id": "recent-2ef0b3a10752f149",
+      "name": "Fable 5.1",
+      "setting": "",
+      "paper_title": null,
+      "arxiv_id": null,
+      "source_labels": [
+        "Fable 5.1"
+      ],
+      "source_available": false,
+      "scored_tables": [],
+      "source_sha256": null,
+      "excerpts": [],
+      "canonical_name": "Claude Fable 5.1",
+      "configuration": null,
+      "alias_evidence_refs": [],
+      "configuration_evidence_refs": [],
+      "reason": "Source unavailable; name 'Fable 5.1' matches canonical target 'Claude Fable 5.1'. No contradicting evidence. Configuration cannot be determined without paper text.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "4",
+      "paper_id": "recent-52c2d1710b9f8728",
+      "name": "Fable 5",
+      "setting": "",
+      "paper_title": "Can Artificial Intelligence Forecast Treatment Effects in Economics?",
+      "arxiv_id": "2610.38883",
+      "source_labels": [
+        "Fable 5"
+      ],
+      "source_available": true,
+      "scored_tables": [
+        {
+          "table_id": "e8c4b70340cc4243511479ad710e",
+          "caption": "Table 1: Forecast MSE by model and period Errors are averaged within paper, then equally across papers in each column. Benchmarks are calculated within each time period’s sample.",
+          "raw_sha256": "6d8d46c7453875014527474b9f6a52e7e4cc415074c8372e14fbfb6999727922"
+        }
+      ],
+      "source_sha256": "fce750aed617fdd3156a31da23d098ecb20feeda3e2475da6063f9b0787ef724",
+      "excerpts": [
+        {
+          "ref": "case:4:quote:0",
+          "text": "td><td>May+</td><td>0.03505</td><td>0.03514</td><td>+0.3%</td></tr><tr><td>Opus 4.8</td><td>May+</td><td>0.03075</td><td>0.03312</td><td>+7.7%</td></tr><tr><td>Fable 5</td><td>May+</td><td>0.02363</td><td>0.02263</td><td>-4.2%</td></tr><tr><td>Astra</td><td>May+</td><td>0.02176</td><td>0.02238</td><td>+2.8%</td></tr></table>\n\nThe main specification uses xhigh for OpenAI and max for Anthropic, with a 64,000-token output ca",
+          "section": "B.2 Sensitivity to reasoning effort"
+        },
+        {
+          "ref": "case:4:quote:1",
+          "text": "ed knowledge cutoff of GPT-5.5 in December 2025 and look at subsets from February 2026 and May 2026 in order to include still more recent models like Opus 4.8, Fable 5, and GPT-6 Astra. More capable models, as measured by the Epoch Capability Index (ECI), seem to do a better job forecasting than older models, though the sample sizes available after their knowledge cut-off dates are correspondingly smaller. In total, there",
+          "section": "1 Introduction"
+        },
+        {
+          "ref": "case:4:quote:2",
+          "text": "000-token cap (Appendix Table B.1). Additional checks verify information such as units and time periods.\n\nThis paper uses GPT-5.1, GPT-5.5, Opus 4.6, Opus 4.8, Fable 5 and GPT-6 Astra. Papers from January onwards are considered for GPT-5.1, GPT-5.5 and Opus 4.6, papers from February onwards are used for Opus 4.8 and Fable 5, and papers from May for Astra, per provider-reported model cutoffs (Table A.1).\n\nFor the analysis,",
+          "section": "2.5 Forecast elicitation and eligibility"
+        },
+        {
+          "ref": "case:4:quote:3",
+          "text": ", Fable 5 and GPT-6 Astra. Papers from January onwards are considered for GPT-5.1, GPT-5.5 and Opus 4.6, papers from February onwards are used for Opus 4.8 and Fable 5, and papers from May for Astra, per provider-reported model cutoffs (Table A.1).\n\nFor the analysis, a question must have a correspondence score of at least 60 and must not have a demonstrated major mismatch according to two eligibility screens. A major mism",
+          "section": "2.5 Forecast elicitation and eligibility"
+        },
+        {
+          "ref": "case:4:quote:4",
+          "text": "2cbc596fc2cacdc2bb65993fb36483698027c.jpg)  \nOpus 4.8 (Feb+): 629 questions\n\n![](images/34f0bc6d880cb899ef34b774159372725b74f56d61b9d9c7fdd28828473b03db.jpg)  \nFable 5 (Feb+): 629 questions   \nEffect on favorably coded outcome (SD)\n\n![](images/3f5dd4e0e7921af5ec52384c1508ef649a2e49713a72231f1411c05037295904.jpg)  \nAstra (May+): 339 questions   \nFigure 1: Reported effects and forecasts\n\nOutcomes are oriented so that an inc",
+          "section": "3.2 Forecast accuracy"
+        },
+        {
+          "ref": "case:4:quote:5",
+          "text": "0.0307</td></tr><tr><td>Opus 4.6</td><td>0.0369</td><td>0.0377</td><td>0.0350</td></tr><tr><td>Opus 4.8</td><td></td><td>0.0337</td><td>0.0308</td></tr><tr><td>Fable 5 Astra</td><td></td><td>0.0256</td><td>0.0236 0.0218</td></tr><tr><td>Benchmarks</td><td></td><td></td><td></td></tr><tr><td>Always predict zero</td><td>0.0597</td><td>0.0603</td><td>0.0507</td></tr><tr><td>Leave-one-paper-out mean</td><td>0.0537</td><td>0.0",
+          "section": "3.2 Forecast accuracy"
+        },
+        {
+          "ref": "case:4:quote:6",
+          "text": "d>Jan+ 2026</td></tr><tr><td>Opus 4.8</td><td>January 2026</td><td>tively Reliable knowledge cutoff and training data cutoff</td><td>Feb+ 2026</td></tr><tr><td>Fable 5</td><td>January 2026</td><td>Reliable knowledge cutoff and training data cutoff</td><td>Feb+ 2026</td></tr><tr><td>GPT-6 Astra</td><td>April 30, 2026</td><td>Knowledge cutoff</td><td>May+ 2026</td></tr></table>\n\nReported cutoff and provider terminology come",
+          "section": "A Supplementary tables and figures"
+        }
+      ],
+      "canonical_name": "Claude Fable 5",
+      "configuration": "max",
+      "alias_evidence_refs": [
+        "case:4:quote:0",
+        "case:4:quote:1",
+        "case:4:quote:2",
+        "case:4:quote:3",
+        "case:4:quote:4",
+        "case:4:quote:5",
+        "case:4:quote:6"
+      ],
+      "configuration_evidence_refs": [
+        "case:4:quote:0"
+      ],
+      "reason": "Paper states 'The main specification uses xhigh for OpenAI and max for Anthropic'. Fable 5 is an Anthropic model used in this paper, so 'max' applies. No separate config override for Fable 5 is given.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "5",
+      "paper_id": "recent-ab9553fc33b9569c",
+      "name": "Fable 5",
+      "setting": "",
+      "paper_title": "Witness: Discovery, Deciphering, and Epiphany in Interactive Puzzle Environments",
+      "arxiv_id": "2609.32208",
+      "source_labels": [
+        "Fable-5"
+      ],
+      "source_available": true,
+      "scored_tables": [
+        {
+          "table_id": "f415ff9060b966e756c69f7d61a0",
+          "caption": "Table 1: Model Evals using our canonical harness (unseen games w/ novel rules, 20 lvls/game, 5 eval seeds). RHAE-L5 / RHAE-L20: RHAE computed over the first 5 levels (the benchmark number) and over all 20 levels. The first 5 levels are four rule-teaching levels with curriculum design plus a non-teaching testing level; the remaining levels are more complex levels of larger grid or harder. RHAE-uncap: the human-baseline score without the two caps. OAE (objective action efficiency): the same level-weighted efficiency score against the optimal action count. Deepest level: the most levels completed in any single rollout. Evaluated in max-effort where the endpoint exposed effort tiers.",
+          "raw_sha256": "cc073e3db8110a853b9705656446ddbdf35fccf2ffaf2e8a35c3dd71b02b8f89"
+        }
+      ],
+      "source_sha256": "8fb4b5421f4eeb2d73ccf4fa774dd16bbcb4d3ee3366e88c6f1b16266649176e",
+      "excerpts": [
+        {
+          "ref": "case:5:quote:0",
+          "text": "is the per-call output-token limit.   \n\n<table><tr><td>Model</td><td>Requested identifier</td><td>Out cap / reasoning</td><td>Evaluated (2026)</td></tr><tr><td>Fable-5</td><td>claude-fable-5</td><td>64k / adaptive-max</td><td>Jul 31  Aug 5</td></tr><tr><td>Opus-5</td><td>anthropic/claude-opus-5</td><td>32k / 16k budget</td><td>Jul 29  Aug 5</td></tr><tr><td>GPT-6-Astra-Pro</td><td>openai/gpt-6-astra-pro</td><td>64k / max<",
+          "section": "## Instructions"
+        },
+        {
+          "ref": "case:5:quote:1",
+          "text": "token limit.   \n\n<table><tr><td>Model</td><td>Requested identifier</td><td>Out cap / reasoning</td><td>Evaluated (2026)</td></tr><tr><td>Fable-5</td><td>claude-fable-5</td><td>64k / adaptive-max</td><td>Jul 31  Aug 5</td></tr><tr><td>Opus-5</td><td>anthropic/claude-opus-5</td><td>32k / 16k budget</td><td>Jul 29  Aug 5</td></tr><tr><td>GPT-6-Astra-Pro</td><td>openai/gpt-6-astra-pro</td><td>64k / max</td><td>Sep 9 - Sep 17<",
+          "section": "## Instructions"
+        },
+        {
+          "ref": "case:5:quote:2",
+          "text": " Under a harness that standardizes observations, memory, and actions and permits no code execution, the best of 18 frontier proprietary and open-weight models, Fable-5, solves only 24% of private test level slots. To assess score dependency on observation interface, we replace ASCII rendering with the raw grid, which substantially reduces performance for several models while leaving Opus-5 largely unaffected. In a separat",
+          "section": "1 INTRODUCTION"
+        },
+        {
+          "ref": "case:5:quote:3",
+          "text": "e shared harness, all evaluated models solve only a minority of the available level slots, and complete runs are rare. The model with the highest mean RHAE-L5, Fable-5, reaches 36.4 ± 3.7, solves 414 of 1,700 level slots (4.87 levels per run), and completes 2 of 85 runs. The lowest-scoring model, Qwen3.5-9B, reaches 1.0 ± 0.8, solves 44 level slots (0.52 levels per run), and completes no run. Twelve of the 18 models compl",
+          "section": "3.1 OVERALL PERFORMANCE"
+        },
+        {
+          "ref": "case:5:quote:4",
+          "text": "td><td>Avg levels per game</td><td>OAE L5/L20</td><td>RHAE-uncap L5/L20</td><td>Deepest level</td><td>Beaten games</td><td>RHAE-L20 mean ± std</td></tr><tr><td>Fable-5</td><td>36.4 ± 3.7</td><td>414/1700(24%)</td><td>4.87/20</td><td>20.9/5.4</td><td>156.3/34.3</td><td>20/20</td><td>2/85</td><td>8.3 ± 2.7</td></tr><tr><td>Opus-5</td><td>30.6 ± 2.0</td><td>405/1700(24%)</td><td>4.76/20</td><td>21.2/6.6</td><td>210.9/38.6</t",
+          "section": "3.1 OVERALL PERFORMANCE"
+        },
+        {
+          "ref": "case:5:quote:5",
+          "text": "</tr></table>\n\nSecond, the ranking depends on the evaluation window. GPT-6-Astra-Pro has the highest RHAEL20 at 12.8 ± 1.1 and completes 10 of 85 runs, whereas Fable-5 scores 8.3 on RHAE-L20 with 2 completed runs. Performance on the first five levels and performance over the full curriculum therefore give different orderings, and a higher early score does not imply more completed runs. We report both windows; Sections 3.2",
+          "section": "3.1 OVERALL PERFORMANCE"
+        }
+      ],
+      "canonical_name": "Claude Fable 5",
+      "configuration": "adaptive-max",
+      "alias_evidence_refs": [
+        "case:5:quote:0",
+        "case:5:quote:1",
+        "case:5:quote:2",
+        "case:5:quote:3",
+        "case:5:quote:4",
+        "case:5:quote:5"
+      ],
+      "configuration_evidence_refs": [
+        "case:5:quote:0"
+      ],
+      "reason": "Paper table explicitly lists 'Fable-5' with requested identifier 'claude-fable-5' and reasoning config 'adaptive-max'. Cross-paper identity evidence (identity:0) confirms claude-fable-5 is the API ID for Claude Fable 5.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    },
+    {
+      "case_id": "6",
+      "paper_id": "recent-ca6e1eb3a0860f09",
+      "name": "Fable 5",
+      "setting": "",
+      "paper_title": "LIFT: Scoped Constraints for Evaluating and Training Instruction Following",
+      "arxiv_id": "2610.28819",
+      "source_labels": [
+        "Fable 5"
+      ],
+      "source_available": true,
+      "scored_tables": [
+        {
+          "table_id": "9d2f9fd5320897174da8902fa6b0",
+          "caption": "Table 2: Mean score per split; best per row in bold; averages are ±95% CI; ‘avg (all)’ weighs the structured and flat averages equally.",
+          "raw_sha256": "893fc21a279cc54ca4b24e2c6ad76ee5709e97501c7c1b3c26da41985863008e"
+        },
+        {
+          "table_id": "fda992b3dfea7609db2793ac4ff6",
+          "caption": "Table 10: Mean score per split for all 17 evaluated models, shown as two panels: the ten closedweight models in (a) and the seven open-weight models in (b). Bold marks the best value across all 17 models, not the best within a panel. Averages carry a ±95% CI across examples; ‘avg (all)’ weighs the structured and flat averages equally. (a) closed-weight models",
+          "raw_sha256": "fd5df0548b2d193ee28085543fe08b485dea4ea18aaef2fa14cf8d1fd6eac615"
+        }
+      ],
+      "source_sha256": "c2564342b56d344bc08dce521b7986be3b58d437ff9bee8ebdbe4f15c9fd27a5",
+      "excerpts": [
+        {
+          "ref": "case:6:quote:0",
+          "text": ".\n\nAnthropic. System card: Claude Haiku 4.5. https://www-cdn.anthropic.com/ 7aad69bf12627d42234e01ee7c36305dc2f6a970.pdf, 2025.\n\nAnthropic. System card: Claude Fable 5 and Claude Mythos 5. https://anthropic.com/ claude-fable-5-mythos-5-system-card, 2026a.\n\nAnthropic. System card: Claude Opus 4.8. https://anthropic.com/ claude-opus-4-8-system-card, 2026b.\n\nAnthropic. System card: Claude Opus 5. https://anthropic.com/ claud",
+          "section": "REFERENCES"
+        },
+        {
+          "ref": "case:6:quote:1",
+          "text": "n.anthropic.com/ 7aad69bf12627d42234e01ee7c36305dc2f6a970.pdf, 2025.\n\nAnthropic. System card: Claude Fable 5 and Claude Mythos 5. https://anthropic.com/ claude-fable-5-mythos-5-system-card, 2026a.\n\nAnthropic. System card: Claude Opus 4.8. https://anthropic.com/ claude-opus-4-8-system-card, 2026b.\n\nAnthropic. System card: Claude Opus 5. https://anthropic.com/ claude-opus-5-system-card, 2026c.\n\nAnthropic. System card: Claud",
+          "section": "REFERENCES"
+        },
+        {
+          "ref": "case:6:quote:2",
+          "text": "-31b (Gemma Team, 2026).\n\nThe nine main ones are (1) closed-weight: GPT-5.5 (OpenAI, 2026b), GPT-5.6 Sol (OpenAI,   \n2026c), GPT-5 nano (OpenAI, 2026d), Claude Fable 5 (Anthropic, 2026a) and Claude Opus   \n4.8 (Anthropic, 2026b); and (2) open-weight: DeepSeek (DS) V4-Pro (DeepSeek-AI, 2026), GLM   \n5.3 (GLM-5 Team, 2026), Kimi K3 (Kimi Team, 2026) and Qwen3.8-2.4T-A95B (Qwen Team,   \n2026). Appendix E lists the full set o",
+          "section": "4.1 SETUP"
+        },
+        {
+          "ref": "case:6:quote:3",
+          "text": "penAI, 2026b), GPT-5.6 Sol and GPT-5.6 Luna (OpenAI, 2026c), GPT-5 nano (OpenAI, 2026d), GPT-5.4 nano (OpenAI, 2026a), Claude Opus 5 (Anthropic, 2026c), Claude Fable 5 (Anthropic, 2026a), Claude Opus 4.8 (Anthropic, 2026b), Claude Sonnet 4.6 (Anthropic, 2026d), and Claude Haiku 4.5 (Anthropic, 2025).\n\nOpen-weight. DeepSeek-V4-Pro (DeepSeek-AI, 2026), GLM-5.2 and GLM-5.3 (GLM-5 Team, 2026), Kimi K3 (Kimi Team, 2026), gpt-o",
+          "section": "E EVALUATED MODELS"
+        },
+        {
+          "ref": "case:6:quote:4",
+          "text": "d></td><td colspan=\"3\">GPT</td><td colspan=\"2\">Claude</td><td colspan=\"4\">Open Models</td></tr><tr><td>split</td><td>5.5</td><td>5.6 Sol</td><td>5 nano</td><td>Fable 5</td><td>Opus 4.8</td><td>DS V4 Pro</td><td>GLM-5.3</td><td>Kimi K3</td><td>Qwen3.8-A95B</td></tr><tr><td>short/few</td><td>0.97</td><td>0.95</td><td>0.71</td><td>0.92</td><td>0.94</td><td>0.95</td><td>0.87</td><td>0.97</td><td>0.89</td></tr><tr><td>short/so",
+          "section": "4.2 OVERALL RESULTS"
+        },
+        {
+          "ref": "case:6:quote:5",
+          "text": "n=\"5\">GPT</td><td colspan=\"5\">Claude</td></tr><tr><td>split</td><td>5.5</td><td>5.6 Sol</td><td>5.6 Luna</td><td>5 nano</td><td>5.4 nano</td><td>Opus 5</td><td>Fable 5</td><td>Opus 4.8</td><td>Sonnet 4.6</td><td>Haiku 4.5</td></tr><tr><td>short/few</td><td>0.97</td><td>0.95</td><td>0.88</td><td>0.71</td><td>0.68</td><td>0.92</td><td>0.92</td><td>0.94</td><td>0.76</td><td>0.71</td></tr><tr><td>short/some</td><td>0.96</td><",
+          "section": "F FULL RESULTS"
+        },
+        {
+          "ref": "case:6:quote:6",
+          "text": "d>−1.2%</td></tr><tr><td>Claude Sonnet 4.6</td><td>−1.2% −1.4%</td><td>−1.3%</td></tr><tr><td>GPT-5.5</td><td>−1.3% −1.7%</td><td>−1.5%</td></tr><tr><td>Claude Fable 5</td><td>−3.5% −0.0%</td><td>−1.7%</td></tr><tr><td>GPT-5.4 nano</td><td>−4.1% −1.4%</td><td>−2.7%</td></tr><tr><td>Claude Haiku 4.5</td><td>−4.0% −3.0%</td><td>−3.5%</td></tr><tr><td>GPT-OSS-20B</td><td>−3.7% −3.9%</td><td>−3.8%</td></tr><tr><td>Qwen3-32B</",
+          "section": "I SECTION-LOAD FITTING"
+        }
+      ],
+      "canonical_name": "Claude Fable 5",
+      "configuration": null,
+      "alias_evidence_refs": [
+        "case:6:quote:0",
+        "case:6:quote:1",
+        "case:6:quote:2",
+        "case:6:quote:3",
+        "case:6:quote:4",
+        "case:6:quote:5",
+        "case:6:quote:6"
+      ],
+      "configuration_evidence_refs": [],
+      "reason": "Paper references 'Claude Fable 5' with system card URL 'claude-fable-5-mythos-5-system-card'. No explicit reasoning configuration stated for Fable 5 in this paper.",
+      "decision": "MERGE",
+      "api_proposal_is_not_automatic_ground_truth": true
+    }
+  ],
+  "version_boundaries_preserved": true,
+  "source_bundle_sha256": "030b9c237706ead1c63bd5e845e563d0d927354759cc3e0970d69a0dc3c2cd3b",
+  "proposal_sha256": "616917f8f7de073ef5deef8b63f280a06d658ed17f479e35d3b9dc5333630955",
+  "scope_review_sha256": "9bd21f6ffdbf18f71bddefa5281523e50219c6ae6bd6512fca4a55a7303e8b32",
+  "source_labels_and_original_scores_preserved": true
+}

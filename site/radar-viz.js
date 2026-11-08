@@ -370,7 +370,29 @@
     }
     return [...collected.values()].map(item=>({...item,settings:[...item.settings].sort()})).sort((a,b)=>Boolean(b.verifiedRecords)-Boolean(a.verifiedRecords)||String(a.benchmark.benchmark_name).localeCompare(String(b.benchmark.benchmark_name)));
   }
+  function localElo(snapshot) {
+    return snapshot?.snapshot_id && host.snapshotElo?.snapshot_id === snapshot.snapshot_id ? host.snapshotElo : null;
+  }
+  function eloModel(snapshot,name,setting='') {
+    const board=localElo(snapshot);
+    if(!board)return null;
+    return board.models.find(r=>r.model===name&&r.setting===setting)||
+      board.models.find(r=>r.source_names.some(([n,s])=>n===name&&s===setting))||null;
+  }
   function modelData(snapshot, setting, panelId='') {
+    const board=localElo(snapshot);
+    if(board){
+      const entries=board.models.filter(r=>r.setting===setting);
+      return {kind:'models',elo:true,global:true,opponentAdjusted:true,fixedPanel:true,rows:entries.map(r=>({
+        name:r.model,setting:r.setting,score:r.basket_score_0_100,nBenchmarks:r.benchmarks,papers:r.papers,
+        elo:r.elo_scale,provisional:false,scoreStatus:'Elo',rankRange:'—'
+      })),axes:[],cells:[],setting,referenceModelCount:entries.length,panelVersion:'paper-half',
+      scopeId:'elo:'+snapshot.snapshot_id,selectionKey:'elo:'+setting,title:'综合评分',summaryLabel:'Elo 参考分',
+      valueLabel:'Elo 参考分 · 0–100',note:'同条件比较采用加权 Bradley–Terry 拟合。参考分为对四个固定参考模型的平均预测胜率。'};
+    }
+    return sourceModelData(snapshot,setting,panelId);
+  }
+  function sourceModelData(snapshot, setting, panelId='') {
     if(snapshot?.sources_loaded===false&&snapshot.ranking_charts?.[setting])return snapshot.ranking_charts[setting];
     const panels=(snapshot?.index?.score_panels||[]).filter(p=>p.model_setting===setting);
     const panel=panels.find(p=>p.panel_id===panelId)||panels[0]||(snapshot?.index?.score_panel?.model_setting===setting?snapshot.index.score_panel:null);
@@ -592,6 +614,10 @@
   }
   function csvValue(x) {let s=x==null?'':String(x);if(typeof x!=='number'&&/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
   function csv(data,selected=new Set(data.rows.map(r=>r.name))) {
+    if(data.elo){
+      const rows=data.rows.filter(r=>selected.has(r.name)).map(r=>[r.name,r.setting,r.score,r.elo,r.papers,r.nBenchmarks]);
+      return '\uFEFF'+[['model','setting','reference_score_0_100','elo','papers','benchmarks'],...rows].map(r=>r.map(csvValue).join(',')).join('\r\n');
+    }
     if(data.audience==='visitor'){
       const axes=data.axes||[],cells=new Map((data.cells||[]).map(c=>[JSON.stringify([c.name,c.axis]),c.value]));
       const header=['模型','实验设置',data.summaryLabel||'分数',...(data.opponentAdjusted?['参考区间下界','参考区间上界']:[]),'评测数量',...axes.map(a=>a.label)];
@@ -616,11 +642,111 @@
     return '\uFEFF'+[header,...rows].map(r=>r.map(csvValue).join(',')).join('\r\n');
   }
   function visitorChartData(data){
+    if(data.elo&&data.kind==='models')return {...data,audience:'visitor'};
     const note=data.kind==='coverage'?'展示当前数据版本中，各模型已有可比成绩的评测数量。':data.opponentAdjusted?'综合分范围为 0–100。细线表示参考区间，请结合评测覆盖与共同参测成绩比较。':data.raw?'展示同一指标、同一实验设置下的论文原值。各指标的数值范围与优劣方向以来源说明为准。':data.kind==='models'?'展示当前评测集合中的模型成绩。模型详情提供实验设置和原始来源。':data.kind==='task'?'按所选任务展示模型表现；缺少成绩的分项保留为空。':'展示所选模型与评测项目的已有成绩，原始记录可通过来源导出查看。';
     return {...data,audience:'visitor',note};
   }
-  const api={directoryStats,taskOverview,commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
+  // Display categories shared by the directory, model profiles and individual benchmark pages.
+  // Reviewed excerpts belong to the specific paper and benchmark in this local snapshot.
+  const codingEvidence = {
+    "recent-086746fd2a2671c3/bench-d71ed76091457ecf": ["code_execution_reasoning", "a repository-level benchmark for dynamic execution reasoning containing 480 execution-grounded instances"], // SWE-Flux
+    "recent-0a758628517dbac1/bench-976805289044862c": ["code_execution_reasoning", "hierarchical reasoning, cross-file dependency resolution, and functional verification"], // VHDL-REPOBENCH
+    "recent-28f0083d7ef842b5/bench-0fc12c5662ada521": ["code_execution_reasoning", "the model predicts the input register values that produce it"], // Basic-block input register prediction
+    "recent-3c1ed74077501d36/bench-073144fa51f76816": ["code_execution_reasoning", "test whether agents predict crashes more often on the crashing tree"], // SysRB
+    "recent-55fb547d5c9e0ac9/bench-451131b5cf91c165": ["code_execution_reasoning", "execution traces provide authoritative labels for outcomes and intermediate facts"], // PyINE-v1
+    "recent-b8ca9577be056cf2/bench-da8f7d9e07f4a1cc": ["code_execution_reasoning", "distinguishing directly exposed indicators from those requiring decoding or reconstruction"], // SCRIPTIOC-BENCH
+    "recent-ed669387183d70fe/bench-0f8872e9b314bcd1": ["code_execution_reasoning", "evaluate progressive naming conditions across multiple models and code-comprehension tasks"], // Face/Off
+    "recent-25108a248b1ec7b1/bench-96cb972fb827f151": ["software_testing", "the first Python PR regression benchmark with 154 verified real-world PRs"], // RegBench-Py
+    "recent-421bdc9df9f83b12/bench-4f84fa1c2fc0ddc9": ["software_testing", "testing input construction without and with a distance oracle"], // SWE-Test
+    "recent-42e9eef4c218eb3f/bench-f5a9008f26ea9b3c": ["software_testing", "enable bug repair and regression-test generation on the same defects"], // 83 manually selected, enriched instances
+    "recent-5ec006914a0a1f10/bench-736829fe730252a1": ["software_testing", "Test performance on the merged benchmark constructed from BigVul, PrimeVul, and DiverseVul"], // merged benchmark constructed from BigVul, PrimeVul, and DiverseVul
+    "recent-9c6a0320b0f5bf9f/bench-7ab3e965a4c8c5ce": ["software_testing", "identify the implementation files associated with that weakness"], // VLoc Bench
+    "recent-d44f6e540c0cc684/bench-09fc5b29c6f0e503": ["software_testing", "Performance of vulnerability prediction across vulnerability groups"], // VulDec
+    "recent-b942136c85264241/bench-211636d63d8109f3": ["software_testing", "traces attacker-controlled inputs to sensitive operations and records code-supported candidate attack paths"], // AgentXploit-Bench
+    "recent-e2585dc0c3dc4681/bench-97fb3c0e15caa938": ["software_testing", "an empirical study of unit test generation across 15 student-developed Python and JavaScript/TypeScript repositories"], // VibeCheck
+    "recent-6adb99af7837071c/bench-f15594f180005aab": ["software_testing", "credit the findings matching ground-truth vulnerabilities"], // SecPRBench
+    "recent-cedac75f9be39360/bench-74f6fbf8f2096206": ["code_quality", "human code concentrates issues of mature codebases, AI code repetitive boilerplate"], // CQBench
+    "recent-09631c7bda79e1c5/bench-20ebbeff682f778d": ["code_quality", "mean pattern-level rule violations per function"], // 822 test examples
+    "recent-191d8ce881ea13d9/bench-deda8a1603cc0ca4": ["code_quality", "gains concentrate in Tests & CI, Quality Gates, and Documentation"], // SWE-Prometheus
+    "recent-afc2e476780dccd1/bench-b9d44171af2c7f26": ["code_optimization", "pairs runtime evaluation with an AST-based optimization faithfulness analysis"], // PatternBench
+    "recent-b07424bd97d0ebc9/bench-c3dfd0a3f2a8394e": ["code_optimization", "our best kernel reads 10.6x against a naive baseline but 2.03x against the honest one"], // AutoTuneBench
+    "recent-cc7d19ed6880bad0/bench-4b598ee3fac2b5e5": ["code_optimization", "LEKA achieves 43.5% Fast@1.0, compared with 13.0% for direct generation"], // EdgeKernelBench
+    "recent-b3f88d6827466de2/bench-9e022f014debe20e": ["code_optimization", "geometric mean speedup increases"], // D2K-Bench
+    "recent-e00056ea2cf6dfa0/bench-3885e7f13ee1bc3b": ["code_optimization", "improve executable game-playing algorithms through five rounds of code edits"], // OptiArena
+    "recent-702bf3014a840dd7/bench-4521ee44366a8627": ["code_optimization", "most generated programs take longer to solve than their expert counterparts"], // EfficientOpt
+  };
+  function catalogCodingEvidence(benchmark) {
+    return codingEvidence[benchmark.paper_id + '/' + benchmark.benchmark_id];
+  }
+  function catalogCapabilities(benchmark, existing) {
+    const evidence = catalogCodingEvidence(benchmark);
+    return evidence ? [...new Set([evidence[0], ...existing])] : existing;
+  }
+  const catalogCodingSkills = [
+    {"id": "code_execution_reasoning", "label": "代码理解与执行推理", "group": "code_data", "description": "根据源码推断程序行为、变量状态或跨文件依赖。"},
+    {"id": "software_testing", "label": "软件测试与漏洞发现", "group": "code_data", "description": "评估测试用例生成、回归检测、漏洞发现或定位。"},
+    {"id": "code_quality", "label": "代码质量与可维护性", "group": "code_data", "description": "评估代码规范、设计质量和长期维护条件。"},
+    {"id": "code_optimization", "label": "算法与性能优化", "group": "code_data", "description": "评估模型对算法或实现的改进，包括运行效率和固定预算下的任务表现。"},
+  ];
+  const capabilityLabels = {
+    ...Object.fromEntries(catalogCodingSkills.map(skill => [skill.id, skill.label])),
+    mathematical_reasoning: "数学推理",
+    statistical_reasoning: "统计推理",
+    code_correctness: "代码正确性",
+    code_debugging: "代码调试与修复",
+    domain_knowledge: "知识运用（通用/专业）",
+    common_sense: "常识理解",
+    reasoning: "综合推理（未细分）",
+    logical_reasoning: "逻辑推理",
+    long_context: "长文本理解",
+    cross_document_synthesis: "跨文档整合",
+    information_extraction: "信息抽取",
+    citation_reliability: "引用可靠性",
+    grounded_faithfulness: "来源忠实性",
+    factual_accuracy: "事实正确性",
+    instruction_following: "指令与格式遵循",
+    reading_comprehension: "阅读理解",
+    summarization: "摘要能力",
+    writing: "写作与生成",
+    dialogue: "对话能力",
+    multilingual_communication: "跨语言理解与表达",
+    multimodal_understanding: "多模态理解",
+    visual_perception: "视觉感知",
+    document_chart_understanding: "文档与图表理解",
+    audio_understanding: "音频理解",
+    video_understanding: "视频理解",
+    safety: "安全性",
+    privacy: "隐私保护",
+    bias: "偏见",
+    fairness: "公平性",
+    robustness: "鲁棒性",
+    generalization: "泛化能力",
+    planning: "规划能力",
+    tool_use: "工具使用",
+    information_retrieval: "信息检索",
+    interactive_execution: "多步交互执行"
+  };
+  // Navigation taxonomy: a leaf has one owner; a benchmark can have many leaves.
+  const categoryLeaves = {
+    Science: ['mathematical_reasoning','statistical_reasoning','cross_document_synthesis','citation_reliability'],
+    Coding: ['code_correctness','code_debugging', ...catalogCodingSkills.map(skill => skill.id)],
+    General: ['domain_knowledge','common_sense','reasoning','logical_reasoning','long_context',
+      'information_extraction','grounded_faithfulness','factual_accuracy','instruction_following',
+      'reading_comprehension','summarization','writing','dialogue','multilingual_communication',
+      'multimodal_understanding','visual_perception','document_chart_understanding','audio_understanding',
+      'video_understanding','safety','privacy','bias','fairness','robustness','generalization'],
+    Agent: ['planning','tool_use','information_retrieval','interactive_execution']
+  };
+  const capabilityCategories = Object.fromEntries(Object.entries(categoryLeaves).map(([name, ids]) =>
+    [name, Object.fromEntries(ids.map(id => [id, capabilityLabels[id]]))]));
+  function classifyCapabilities({capabilities = []}) {
+    const leaves = new Set((capabilities || []).map(v => typeof v === 'string' ? v : v?.id));
+    return Object.fromEntries(Object.entries(categoryLeaves).map(([name, ids]) =>
+      [name, ids.filter(id => leaves.has(id))]));
+  }
+  const api={catalogCodingEvidence,catalogCapabilities,catalogCodingSkills,classifyCapabilities,capabilityCategories,directoryStats,taskOverview,commonSourceEvidence,setTaskMeasurements,taskMetricCaps,visitorChartData,directoryKey,directorySources,vendorLogo,measurementLabel,measurementNote,pickerSelectionRows,pickerSelection,rasterDimensions,publicBenchmarkVisible,visitorSnapshot,barInterval,taskMatchPreview,sortTaskCandidates,taskCandidateRows,setModelRegistry,capabilityRadarData,modelInfo,compareModelVendor,sortModelChoices,matchesModelQuery,modelEvidence,modelSourceGroups,benchmarkModelRoster,modelBenchmarkCatalog,modelData,coverageData,taskData,benchmarkData,sourceGroupData,settings,sortRows,csv,sourceCsv,modelColor,vendorColor,labelPositions,publicationScore,publicationLabel,modelPickerRows,defaultRows,valueDomain,relativeDomain,scatterGroups,pairedSources,pairedBenchmarkAxes,defaultPairedModels,publicLabel,directionLabel};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
+  Object.assign(api,{localElo,eloModel,sourceModelData});
   host.RadarViz=api;
   if(typeof document==='undefined')return;
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!=null)n.textContent=String(text);if(cls)n.className=cls;return n;};
@@ -648,6 +774,44 @@
   }
   api.renderModelRoster=renderModelRoster;
   function download(blob,name){const a=node('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  function openBenchmarkPreview(link, name) {
+    const dialog = node('dialog', null, 'pair-benchmark-preview');
+    const header = node('header');
+    const title = node('strong', '评测详情');
+    const close = node('button', '关闭');
+    const frame = node('iframe');
+    dialog.setAttribute('aria-label', name);
+    close.type = 'button';
+    close.autofocus = true;
+    close.onclick = () => dialog.close();
+    frame.title = name;
+    frame.addEventListener('load', () => {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      doc.querySelectorAll('.masthead, main > .top').forEach(el => el.style.display = 'none');
+      doc.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !event.defaultPrevented && !doc.querySelector('dialog[open], :popover-open')) {
+          event.preventDefault();
+          dialog.close();
+        }
+      });
+    });
+    frame.src = link.href;
+    header.append(title, close);
+    dialog.append(header, frame);
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const box = dialog.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      dialog.remove();
+      link.focus({preventScroll: true});
+    }, {once: true});
+    document.body.append(dialog);
+    dialog.showModal();
+  }
+
   function drawPairedRadar(root,axes,left,right,onModel,options={}) {
     root.replaceChildren();
     if(axes.length<3){root.append(node('p',`已选择 ${axes.length} 个共同 Benchmark；至少选择 3 个才能画雷达。下方仍可核对原值。`,'pair-empty'));return;}
@@ -677,7 +841,23 @@
         const p=point(i,1),t=point(i,1.15),line=svg('line',{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:'#e3e9f0'});axisLines.push(line);plot.append(line);
         const marker=svg('g',{class:'pair-axis-trigger',role:'button',tabindex:0,'aria-label':`查看 ${i+1}. ${axis.name} 的${capability?'能力分项':'原始成绩'}`,'aria-expanded':'false'});marker.append(svg('circle',{cx:t[0],cy:t[1],r:19,fill:'transparent',stroke:'none',class:'pair-axis-hit'}),svg('circle',{cx:t[0],cy:t[1],r:14,fill:'#fff',stroke:'#e3e9f0',class:'pair-axis-ring'}),label(String(i+1),{x:t[0],y:t[1]+5,'text-anchor':'middle','font-size':16,fill:'#536175'}),svg('title',{},`点击查看 ${axis.name}`));marker.onclick=()=>choose(i);marker.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(i);}};markers.push(marker);plot.append(marker);
         const entry=node('li',null,'pair-axis-entry'),heading=node('div',null,'pair-axis-heading'),number=node('span',String(i+1),'pair-axis-number'),name=node('strong',axis.name),metric=node('p',`${axis.source.metric} · ${directionLabel(axis.source.direction)}`,'pair-axis-metric'),values=node('div',null,'pair-axis-values');
-        heading.append(number,name);for(const [k,value] of [axis.source.left,axis.source.right].entries()){const raw=node('span',`${k?'■':'●'} ${format(value)}`);raw.style.color=colors[k];raw.title=`${k?right:left}：${format(value)}`;values.append(raw);}entry.append(heading,metric,values);entry.tabIndex=0;entry.setAttribute('aria-label',`${i+1}. ${axis.name}；${metric.textContent}；${left} ${format(axis.source.left)}；${right} ${format(axis.source.right)}`);
+        heading.append(number,name);for(const [k,value] of [axis.source.left,axis.source.right].entries()){const raw=node('span',`${k?'■':'●'} ${format(value)}`);raw.style.color=colors[k];raw.title=`${k?right:left}：${format(value)}`;values.append(raw);}if (options.benchmarkUrl && !capability) {
+          const link = node('a', null, 'pair-axis-link');
+          link.href = options.benchmarkUrl(axis);
+          link.setAttribute('aria-label', '查看 ' + axis.name + ' 的评测详情');
+          link.setAttribute('aria-haspopup', 'dialog');
+          link.addEventListener('click', event => {
+            if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            openBenchmarkPreview(link, axis.name);
+          });
+          link.append(heading, metric, values);
+          entry.append(link);
+        } else {
+          entry.append(heading, metric, values);
+          entry.tabIndex = 0;
+        }
+        entry.setAttribute('aria-label',`${i+1}. ${axis.name}；${metric.textContent}；${left} ${format(axis.source.left)}；${right} ${format(axis.source.right)}`);
         entry.style.setProperty('--axis-order',String(Math.min(i,6)));entry.onmouseenter=()=>highlight(i);entry.onmouseleave=()=>highlight(-1);entry.onfocus=()=>highlight(i);entry.onblur=()=>highlight(-1);entries.push(entry);key.append(entry);
       });
       [left,right].forEach((name,k)=>{
@@ -715,7 +895,7 @@
     else method.append(node('summary','能力画像的计算范围与方法'),node('p','仅纳入双方在相同实验设置下均有成绩记录，且主能力标签已通过核验的来源。原值按后端核验量程转为 0–100，同一 Benchmark 内先平均，再按 Benchmark 等权平均；任一共同来源量程缺失时，该能力不显示分数。每项至少 3 个共同 Benchmark。'),node('p','切换模型会改变共同测试集合；这是一对模型在当前证据子集上的探索性画像，不能跨不同配对排名，也不是实际任务成功率。未满足条件的能力列在证据状态中，不补零或连接成完整轮廓。'));root.append(method);
   }
   api.drawCapabilityRadar=drawCapabilityRadar;
-  function create(root,{compact=false,onAxis,onModel,initial='bar',title}={}) {
+  function create(root,{compact=false,allowExpand=true,onAxis,onModel,initial='bar',title}={}) {
     const visitorMode=document.body?.dataset?.edition==='visitor';
     let pickerOrder='vendor';
     let data={rows:[],axes:[],cells:[],note:''},selected=new Set(),initialized=false,focus='',mode=['bar','table'].includes(initial)?initial:'bar',sort='score',descending=true,axisPage=0,axisLimit=8,xMetric='coverage',onlyCommon=false,search='',expanded=false,previousOverflow='';
@@ -752,11 +932,32 @@
     const limitLabel=node('label','分项数 '),limit=node('select');limit.setAttribute('aria-label','每页图表分项数');for(const n of [4,8,12,20])limit.append(new Option(String(n),String(n)));limit.value=String(axisLimit);limit.addEventListener('change',()=>{axisLimit=Number(limit.value);axisPage=0;render();});limitLabel.append(limit);controls.append(limitLabel);
     const scatterControl=node('label','横轴 '),xSelect=node('select');xSelect.setAttribute('aria-label','散点图横轴');for(const [id,t]of [['coverage','证据覆盖率 %'],['nBenchmarks','Benchmark 数'],['nGroups','可比评测组数']])xSelect.append(new Option(t,id));xSelect.addEventListener('change',()=>{xMetric=xSelect.value;render();});scatterControl.append(xSelect);controls.append(scatterControl);
     const display=node('div',null,'viz-display'),tip=node('div',null,'viz-tooltip');tip.hidden=true;tip.setAttribute('role','status');const legend=node('div',null,'viz-legend'),foot=node('div',null,'viz-foot'),pagination=node('div',null,'viz-pagination'),note=node('p',null,'viz-note'),method=node('details',null,'explanation');method.append(node('summary','评分口径与来源'),note);foot.append(pagination,method);
-    const csvButton=node('button','数据 CSV'),sourceButton=node('button','来源 CSV'),imageButton=node('button','PNG'),svgButton=node('button','SVG'),expand=node('button','放大'),exports=node('details',null,'chart-exports'),exportMenu=node('div',null,'viz-export-menu');exports.append(node('summary','导出'),exportMenu);for(const b of [csvButton,sourceButton,imageButton,svgButton]){b.type='button';b.setAttribute('aria-label',b.textContent);exportMenu.append(b);}expand.type='button';expansionLabel(expand);actions.append(expand,exports);
+    const csvButton=node('button','数据 CSV'),sourceButton=node('button','来源 CSV'),imageButton=node('button','PNG'),svgButton=node('button','SVG'),expand=node('button','放大'),exports=node('details',null,'chart-exports'),exportMenu=node('div',null,'viz-export-menu');exports.append(node('summary','导出'),exportMenu);for(const b of [csvButton,sourceButton,imageButton,svgButton]){b.type='button';b.setAttribute('aria-label',b.textContent);exportMenu.append(b);}if(allowExpand){
+      expand.type='button';
+      expansionLabel(expand);
+      actions.append(expand);
+    }
+    actions.append(exports);
     const intervalNotice=node('p','细线与空心点：基础拟合参考区间；柱长：当前综合分。','viz-interval-note');intervalNotice.hidden=true;
     const rankingNotice=node('p','按拟合综合分排列；上下顺序不代表已确定的能力名次。请结合参考区间、评测覆盖情况及共同参测结果进行分析。','viz-ranking-notice');root.append(head,tabs,controls,rankingNotice,display,intervalNotice,legend,foot,tip);
     csvButton.addEventListener('click',()=>download(new Blob([csv(data,selected)],{type:'text/csv;charset=utf-8'}),'radar-comparison.csv'));
-    sourceButton.addEventListener('click',()=>download(new Blob([sourceCsv(data,selected)],{type:'text/csv;charset=utf-8'}),'radar-comparison-sources.csv'));
+    sourceButton.addEventListener('click',async()=>{
+      if(!data.elo){download(new Blob([sourceCsv(data,selected)],{type:'text/csv;charset=utf-8'}),'radar-comparison-sources.csv');return;}
+      const board=host.snapshotElo, chosen=new Set(selected), setting=data.setting;
+      sourceButton.disabled=true;
+      try{
+        const response=await fetch(new URL('/'+board.pair_source,location.origin));
+        if(!response.ok)throw Error('ELO_SOURCE_HTTP_'+response.status);
+        const archive=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();
+        if(archive.snapshot_id!==board.snapshot_id)throw Error('ELO_SOURCE_SNAPSHOT_MISMATCH');
+        const lines=[['group_id','paper_id','table_id','benchmark_id','metric','model_a','setting_a','model_b','setting_b','outcome_a','weight']];
+        for(const [g,i,j,outcome,weight] of archive.pairs){
+          const a=archive.nodes[i],b=archive.nodes[j];
+          if([a,b].some(([n,s])=>s===setting&&chosen.has(n)))lines.push([...archive.groups[g],...a,...b,outcome,weight]);
+        }
+        download(new Blob(['\uFEFF'+lines.map(r=>r.map(csvValue).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'elo-source-comparisons.csv');
+      }catch(error){sourceButton.title=error.message;sourceButton.textContent=document.documentElement.lang==='en'?'Retry source download':'重新导出来源';}finally{sourceButton.disabled=false;}
+    });
     function exportSvg(){
       const current=display.querySelector('svg'),rows=visibleRows(),chart=mode==='bar'?barChart(rows,true):current?current.cloneNode(true):tableImage(rows,axes());
       const entries=mode==='bar'?[...new Set(rows.map(r=>modelInfo(r.name).vendor))].map(v=>({name:vendorLabel(v),color:vendorColor(v)})):rows.map(r=>({name:r.name,color:modelColor(r.name)}));
@@ -851,7 +1052,7 @@
       layouts.forEach(({r,lines,y,height})=>{
         const color=modelColor(r.name),value=finite(r.score)?r.score:null,group=svg('g',{class:'viz-bar-row'});
         group.style.setProperty('--bar-color',color);
-        group.append(svg('rect',{x:8,y:y-9,width:chartW-16,height:height-6,rx:7,fill:'#f3f7fc',opacity:0,class:'viz-bar-row-bg','pointer-events':forExport?'none':'all'}));
+        group.append(svg('rect',{x:8,y:y-9,width:chartW-16,height:height-6,rx:11,fill:'#f3f7fc',opacity:0,class:'viz-bar-row-bg','pointer-events':forExport?'none':'all'}));
         const logo=vendorLogo(r.name),logoY=y+5+(lines.length-1)*10-logoSize/2,mark=svg('g',{class:'viz-vendor-logo','data-vendor':logo.vendor,'data-logo-kind':logo.kind,'pointer-events':'none','aria-hidden':'true'});
         mark.append(svg('title',{},logo.label===logo.vendor?logo.vendor:logo.label+' · '+logo.vendor));
         if(logo.href)mark.append(svg('image',{href:logo.href,x:logoX,y:logoY,width:logoSize,height:logoSize,preserveAspectRatio:'xMidYMid meet'}));
@@ -863,7 +1064,7 @@
           group.append(rect);}
         const interval=data.opponentAdjusted&&value!==null?barInterval(r):null;
         if(interval){const base=interval.kind==='BASE_FIT_REFERENCE',lo=left+width*position(interval.low,domain),hi=left+width*position(interval.high,domain),mid=left+width*position(interval.center,domain),description=`${interval.label} ${interval.low.toFixed(1)}–${interval.high.toFixed(1)} · 中心 ${interval.center.toFixed(1)}`,whisker=svg('path',{d:`M${lo},${y+24}v8 M${lo},${y+28}H${hi} M${hi},${y+24}v8`,stroke:'#8798ad','stroke-width':1.3,fill:'none',class:base?'viz-base-fit-interval':'viz-score-interval'});whisker.append(svg('title',{},description));const center=svg('circle',{cx:mid,cy:y+28,r:2.7,fill:base?'white':color,stroke:color,'stroke-width':1.3});center.append(svg('title',{},description));group.append(whisker,center,label(`${interval.low.toFixed(1)}–${interval.high.toFixed(1)}`,{x:left+width+10,y:y+34,fill:'#68788d','font-size':10,class:'viz-bar-interval-bounds'}));}
-        if(data.opponentAdjusted&&value!==null)group.append(label(`${r.nBenchmarks} 项 Benchmark`,{x:left,y:y+56,fill:'#68788d','font-size':11,class:'viz-bar-evidence'}));
+        if(data.opponentAdjusted&&value!==null)group.append(label(`${r.nBenchmarks} 项 Benchmark`,{x:left,y:y+(interval?49:36),fill:'#68788d','font-size':11,class:'viz-bar-evidence'}));
         const printed=data.relative?format(value):finite(value)&&!data.raw?value.toFixed(1):format(value);group.append(label(printed,{x:left+width+10,y:y+14,fill:color,'font-size':16,class:'viz-bar-value'}));const item={name:r.name,group,rect};bars.push(item);chart.append(group);
         if(!forExport){
           const showScore=data.kind==='models'&&!data.raw,action=onModel?(showScore?(visitorMode?'点击查看评分概览':'点击查看综合评分构成'):'点击查看模型与来源成绩'):'点击固定高亮';
@@ -877,7 +1078,7 @@
       });if(!forExport)paintSelection();return chart;
     }
     function heatChart(rows,ax){const left=230,top=70,cellW=(W-left-55)/Math.max(1,ax.length),cellH=34,h=Math.max(220,top+rows.length*cellH+40),chart=chartBase(h),values=lookup();ax.forEach((a,i)=>{const t=label(a.label.length>Math.max(4,Math.floor(cellW/16))?a.label.slice(0,Math.max(3,Math.floor(cellW/16)-1))+'…':a.label,{x:left+(i+.5)*cellW,y:45,'text-anchor':'middle','font-size':16});t.append(svg('title',{},a.label));chart.append(t);});rows.forEach((r,i)=>{chart.append(label(r.name.slice(0,24),{x:left-15,y:top+(i+.65)*cellH,'text-anchor':'end',fill:'#34373f'}));ax.forEach((a,j)=>{const c=values.get(JSON.stringify([r.name,a.id])),v=c?.value,domain=data.raw?valueDomain(rows.map(r=>values.get(JSON.stringify([r.name,a.id]))?.value)):[0,100],tone=finite(v)?100*position(v,domain):0,x=left+j*cellW,y=top+i*cellH,rect=svg('rect',{x:x+2,y:y+2,width:cellW-4,height:cellH-4,rx:3,opacity:focus&&focus!==r.name?.3:1,fill:finite(v)?`hsl(216 36% ${96-tone*.43}%)`:'#f4f5f7'});attachTip(rect,cellTip(r,a,c));if(onAxis&&a.benchmark_id)rect.addEventListener('click',()=>openAxis(a));chart.append(rect,label(format(v),{x:x+cellW/2,y:y+22,'text-anchor':'middle',fill:finite(v)&&tone>=75?'white':'#4c5566','font-size':16}));});});return chart;}
-    function allTableColumns(ax){if(data.kind==='coverage')return [['name','模型'],['score','可比 Benchmark 数'],['nGroups','可比评测组数'],['coverage','窗口覆盖 %']];return [['name','模型'],...(data.kind==='benchmark'?[]:[['score',data.summaryLabel]]),...(data.taskCalibration?[['observedReference','已测能力参考分'],['estimatedPercent','待测估计 %']]:[]),...(data.opponentAdjusted?[['scoreIntervalLow','区间下界'],['scoreIntervalHigh','区间上界'],['directOpponents','直接对手数'],['rankRange','区间相容位置（非名次置信区间）']].filter(([id])=>data.rows.some(r=>selected.has(r.name)&&(id==='rankRange'?typeof r[id]==='string'&&r[id]!=='—'&&r[id]!=='' : finite(r[id])))):[]),...ax.map(a=>['axis:'+a.id,a.label]),['coverage','覆盖 %'],['nBenchmarks','评测数量']];}
+    function allTableColumns(ax){if(data.elo)return [['name','模型'],['score','Elo 参考分'],['elo','Elo'],['papers','来源论文'],['nBenchmarks','评测数量']];if(data.kind==='coverage')return [['name','模型'],['score','可比 Benchmark 数'],['nGroups','可比评测组数'],['coverage','窗口覆盖 %']];return [['name','模型'],...(data.kind==='benchmark'?[]:[['score',data.summaryLabel]]),...(data.taskCalibration?[['observedReference','已测能力参考分'],['estimatedPercent','待测估计 %']]:[]),...(data.opponentAdjusted?[['scoreIntervalLow','区间下界'],['scoreIntervalHigh','区间上界'],['directOpponents','直接对手数'],['rankRange','区间相容位置（非名次置信区间）']].filter(([id])=>data.rows.some(r=>selected.has(r.name)&&(id==='rankRange'?typeof r[id]==='string'&&r[id]!=='—'&&r[id]!=='' : finite(r[id])))):[]),...ax.map(a=>['axis:'+a.id,a.label]),['coverage','覆盖 %'],['nBenchmarks','评测数量']];}
     function tableColumns(ax){return allTableColumns(ax).filter(([id])=>!visitorMode||!['directOpponents','rankRange'].includes(id));}
     function tableImage(rows,ax){const cols=tableColumns(ax),h=90+rows.length*37,chart=chartBase(h),left=260,tableW=Math.max(W,left+30+(cols.length-1)*160),cellW=(tableW-left-30)/Math.max(1,cols.length-1),values=lookup();chart.setAttribute('viewBox',`0 0 ${tableW} ${h}`);chart.append(svg('rect',{width:tableW,height:h,fill:'white'}));cols.forEach(([id,t],i)=>chart.append(label(t.slice(0,i?9:25),{x:i?left+(i-.5)*cellW:24,y:30,'text-anchor':i?'middle':'start'})));rows.forEach((r,i)=>{const y=66+i*37;chart.append(svg('line',{x1:24,x2:tableW-24,y1:y+12,y2:y+12,stroke:'#e3e5eb'}));cols.forEach(([id],j)=>{const v=id.startsWith('axis:')?values.get(JSON.stringify([r.name,id.slice(5)]))?.value:r[id];chart.append(label(id==='name'?r.name.slice(0,26):id==='rankRange'?r.rankRange:format(v),{x:j?left+(j-.5)*cellW:24,y,'text-anchor':j?'middle':'start',fill:id==='name'?modelColor(r.name):'#454b56'}));});});return chart;}
     function tableHeader(id,title){
@@ -895,8 +1096,9 @@
     }
     function table(rows,ax){const wrap=node('div',null,'viz-table-wrap'),table=node('table'),thead=node('thead'),tr=node('tr'),cols=tableColumns(ax);wrap.setAttribute('role','region');wrap.setAttribute('aria-label','模型数据表，可横向滚动查看全部指标，点击表头排序');wrap.tabIndex=0;for(const [id,t]of cols)tr.append(tableHeader(id,t));thead.append(tr);const body=node('tbody'),values=lookup();rows.forEach((r,i)=>{const line=node('tr'),name=node('td'),mark=node('span',String(i+1).padStart(2,'0'),'viz-rank'),dot=node('span',r.name.slice(0,1),'viz-monogram');line.classList.toggle('viz-row-muted',Boolean(focus&&focus!==r.name));dot.style.color=modelColor(r.name);if(!data.opponentAdjusted)name.append(mark);name.append(dot,modelLabel(node('strong',r.name),r));if(r.provisional)name.append(node('span',r.scoreStatus||'任务评分条件待核验','viz-small-badge'));line.append(name);for(const [id]of cols.slice(1)){const td=node('td');if(id.startsWith('axis:')){const a=ax.find(a=>'axis:'+a.id===id),c=values.get(JSON.stringify([r.name,a.id]));td.textContent=format(c?.value);td.title=cellTip(r,a,c);}else if(id==='score'){const spark=node('span',null,'viz-inline-track'),fill=node('span',null,'viz-inline-fill');if(data.relative)spark.hidden=true;fill.style.width=finite(r.score)?Math.max(0,Math.min(100,data.kind==='coverage'?100*r.score/Math.max(1,...data.rows.map(r=>r.score||0)):r.score))+'%':'0';fill.style.background=modelColor(r.name);spark.append(fill);td.append(spark,node('b',format(r.score)));if(!finite(r.score))td.title='尚未发布总分；不使用局部观测分代替';}else td.textContent=id==='rankRange'?r.rankRange:format(r[id]);line.append(td);}body.append(line);});table.append(thead,body);wrap.append(table);return wrap;}
     function render(){
-      if(visitorMode){data=visitorChartData(data);method.querySelector('summary').textContent='数据说明';rankingNotice.textContent='按综合评分排列，请结合参考区间、评测覆盖与共同参测结果比较。';}
-      rankingNotice.hidden=!data.opponentAdjusted;root.dataset.chartMode=mode;tip.hidden=true;for(const o of limit.options)o.disabled=mode==='radar'&&Number(o.value)>8;if(mode==='radar'&&axisLimit>8){axisLimit=8;limit.value='8';axisPage=0;}if(data.raw&&['radar','scatter'].includes(mode))mode='table';for(const b of tabs.children){b.setAttribute('aria-pressed',String(b.dataset.chart===mode));b.disabled=Boolean(data.raw&&['radar','scatter'].includes(b.dataset.chart));b.title=b.disabled?'原值单位未经统一校准，不绘制此图':'';}scatterControl.hidden=mode!=='scatter';limitLabel.hidden=['scatter','bar'].includes(mode);commonLabel.hidden=['scatter','bar'].includes(mode);const rows=visibleRows(),ax=axes();display.replaceChildren();heading.textContent=title||data.title||'模型与评测对比';subtitle.textContent=`${selected.size}/${availableRows.length} 个模型 · ${data.setting||'未另列实验设置'}${compact?'':mode==='bar'?' · 按厂商配色':' · 选中图例可高亮'}`;sourceButton.hidden=data.kind==='coverage';note.textContent=(data.note||'')+(mode==='radar'?' 雷达每页最多 8 个分项，其余分项可翻页查看。':'');summary.textContent=`模型 ${selected.size}/${availableRows.length}`;
+      if(visitorMode){data=visitorChartData(data);method.querySelector('summary').textContent='数据说明';rankingNotice.textContent=data.elo?data.note:'按综合评分排列，请结合参考区间、评测覆盖与共同参测结果比较。';}
+      rankingNotice.hidden=Boolean(data.elo)||!data.opponentAdjusted;root.dataset.chartMode=mode;tip.hidden=true;for(const o of limit.options)o.disabled=mode==='radar'&&Number(o.value)>8;if(mode==='radar'&&axisLimit>8){axisLimit=8;limit.value='8';axisPage=0;}if(data.raw&&['radar','scatter'].includes(mode))mode='table';for(const b of tabs.children){b.setAttribute('aria-pressed',String(b.dataset.chart===mode));b.disabled=Boolean(data.raw&&['radar','scatter'].includes(b.dataset.chart));b.title=b.disabled?'原值单位未经统一校准，不绘制此图':'';}scatterControl.hidden=mode!=='scatter';limitLabel.hidden=['scatter','bar'].includes(mode);commonLabel.hidden=['scatter','bar'].includes(mode);const rows=visibleRows(),ax=axes();display.replaceChildren();heading.textContent=title||data.title||'模型与评测对比';subtitle.textContent=`${selected.size}/${availableRows.length} 个模型 · ${data.setting||'未另列实验设置'}${compact?'':mode==='bar'?' · 按厂商配色':' · 选中图例可高亮'}`;sourceButton.hidden=data.kind==='coverage';note.textContent=(data.note||'')+(mode==='radar'?' 雷达每页最多 8 个分项，其余分项可翻页查看。':'');summary.textContent=`模型 ${selected.size}/${availableRows.length}`;
+      if(data.elo&&visitorMode)subtitle.textContent='对四个参考模型的平均预测胜率（0–100）';
       if(data.broadReference)subtitle.textContent=`综合榜 ${data.referenceModelCount} 个${data.referenceLabel||'覆盖合格模型'} · 已显示 ${rows.filter(r=>finite(r.score)).length} 个 · 其余 ${data.rows.length-data.referenceModelCount} 个保留单项成绩`;
       if(data.kind==='models'&&data.rows.length&&!data.rows.some(r=>finite(r.score))&&mode==='bar')empty('综合评分暂未发布');else if(!rows.length)empty(data.rows.length?'请选择至少一个模型':'当前窗口暂无可绘制的核验成绩');else if(['line','radar','heat'].includes(mode)&&!ax.length)empty(onlyCommon?'选中模型没有共同成绩分项':'当前暂无可比的分项成绩');else if(mode==='radar'&&ax.length<3)empty('雷达图需要至少 3 个分项；可切换曲线或柱状');else if(mode==='scatter'&&!rows.some(r=>finite(r.score)))empty('当前未发布总分；请查看分项图和原值');else if(mode==='bar'&&data.kind==='benchmark'){const a=ax[0],values=lookup();if(a){subtitle.textContent+=' · 当前分项：'+a.label;display.append(barChart(rows.map(r=>({...r,score:values.get(JSON.stringify([r.name,a.id]))?.value??null}))));}else empty('暂无可绘制分项');}else if(mode==='table')display.append(table(rows,ax));else display.append(({line:()=>lineChart(rows,ax),radar:()=>radarChart(rows,ax),heat:()=>heatChart(rows,ax),scatter:()=>scatterChart(rows),bar:()=>barChart(rows)})[mode]());
       intervalNotice.hidden=mode!=='bar'||!data.opponentAdjusted||!rows.some(r=>finite(r.score)&&barInterval(r));intervalNotice.textContent=visitorMode?'细线表示参考区间，柱长表示综合评分。':data.temporal?'细线：当前综合评分的近似模型区间；区间按来源论文聚类计算。':'细线与空心点：基础拟合参考区间；柱长：当前综合分。';

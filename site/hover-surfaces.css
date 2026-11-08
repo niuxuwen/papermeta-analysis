@@ -1,0 +1,52 @@
+/* The highlight sits inside the row so the separator stays straight. */
+:root {
+  --hover-row-radius: 12px;
+  --hover-row-fill: #edf2f7;
+}
+.visitor-model-row, .visitor-benchmark-row {
+  position: relative;
+  isolation: isolate;
+  padding-inline: 10px;
+}
+.visitor-model-row::before, .visitor-benchmark-row::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 3px 0;
+  border-radius: var(--hover-row-radius);
+  background: var(--hover-row-fill);
+  opacity: 0;
+  pointer-events: none;
+}
+.visitor-model-row:is(:hover, :focus-visible)::before,
+.visitor-benchmark-row:is(:hover, :focus-visible)::before { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .visitor-model-row::before, .visitor-benchmark-row::before { transition: opacity 150ms ease; }
+}
+
+/* Paint a table highlight across the cells, rounding only the two ends. */
+table:has(tbody) { border-collapse: separate; border-spacing: 0; }
+body tbody tr:hover, body .table-wrap tbody tr:hover,
+body .benchmark-directory-table .benchmark-directory-row:is(:hover, :focus-within) { background: transparent; }
+body tbody tr:hover > td,
+body .benchmark-directory-row:focus-within > td { background-color: #f1f5f9; }
+tbody tr:is(:hover, :focus-within) > td:first-child {
+  border-start-start-radius: var(--hover-row-radius);
+  border-end-start-radius: var(--hover-row-radius);
+}
+tbody tr:is(:hover, :focus-within) > td:last-child {
+  border-start-end-radius: var(--hover-row-radius);
+  border-end-end-radius: var(--hover-row-radius);
+}
+@media (max-width: 680px) {
+  body .benchmark-directory-table .benchmark-directory-row:is(:hover, :focus-within) {
+    background: #f1f5f9;
+    border-radius: var(--hover-row-radius);
+  }
+  body .benchmark-directory-row:is(:hover, :focus-within) > td { background: transparent; }
+}
+.viz-checks .model-choice, .radar-select-option, .paired-values .pair-picker-option,
+.chart-exports .viz-export-menu > button, .task-editor .picker-option,
+.common-evidence-paper > summary, .task-scenario-condition > summary {
+  border-radius: 10px;
+}

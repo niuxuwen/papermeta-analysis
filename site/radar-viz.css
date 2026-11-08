@@ -271,3 +271,23 @@
 
 .viz-pick-count input[type=number]{appearance:textfield;-moz-appearance:textfield}
 .viz-pick-count input[type=number]::-webkit-inner-spin-button,.viz-pick-count input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+
+
+.pair-benchmark-preview {
+  width: min(800px, calc(100vw - 24px));
+  height: min(700px, 80dvh);
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid #dce4ee;
+  border-radius: 16px;
+  background: white;
+  color: #203248;
+  box-shadow: 0 16px 64px #182e492b;
+}
+.pair-benchmark-preview[open] { display: flex; flex-direction: column; }
+.pair-benchmark-preview::backdrop { background: rgb(22 35 51 / 36%); }
+.pair-benchmark-preview > header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid #e4eaf1;
+}
+.pair-benchmark-preview > iframe { width: 100%; flex: 1; min-height: 0; border: 0; }

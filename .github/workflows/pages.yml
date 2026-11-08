@@ -30,6 +30,10 @@ jobs:
         if: steps.feed.outcome == 'success'
         with:
           node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy==2.2.6 scipy==1.15.3
       - name: Build and validate latest verified public data
         if: steps.feed.outcome == 'success'
         env:
@@ -37,6 +41,10 @@ jobs:
         run: |
           python3 backend/build_live.py .live-feed/feed
           node build-home.cjs
+          python ratings/build_elo.py .live-feed/feed
+          python ratings/build_capability_rankings.py .live-feed/feed
+          node refresh-elo-home.cjs
+          python backend/build_editions.py
           node validate-live.cjs .live-feed/feed/publication.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

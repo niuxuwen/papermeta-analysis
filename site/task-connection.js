@@ -1,94 +1,88 @@
-/* Only interactive task routes use the configured backend; evidence stays static. */
-(function(){
+/* The public task scorer runs the published Python rules over this edition's inputs. */
+(() => {
   'use strict';
-  const base=new URL('./',document.currentScript.src),network=window.fetch.bind(window);
-  let connection,measurementConnection,connectionSnapshot;
-  const jobSnapshots=new Map();
-  function snapshotId(){return window.RadarHomeSnapshot?.snapshot_id||JSON.parse(document.getElementById('snapshot-bootstrap').textContent).snapshot.snapshot_id;}
-  function taskUrl(url,route,sid){const result=new URL(route.replace(/^\//,''),url);if(sid)result.searchParams.set('snapshot_id',sid);return result;}
-  const supports=(route,method)=>['/api/task-profile','/api/task-score','/api/interactive-jobs'].includes(route)?method==='POST':['/api/taxonomy','/api/task-measurements'].includes(route)?method==='GET':/^\/api\/interactive-jobs\/[A-Za-z0-9_-]{43}$/.test(route)&&['GET','DELETE'].includes(method);
-  async function health(){
-    const requested=snapshotId();
-    if(connection&&connectionSnapshot===requested)return connection;
-    connectionSnapshot=requested;measurementConnection=null;
-    connection=(async()=>{
-      const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
-      try{
-        const response=await network(new URL('task-backend.json',base),{cache:'no-store',credentials:'omit',signal:controller.signal});
-        if(!response.ok)throw Error('TASK_SERVICE_NOT_CONFIGURED');
-        const config=await response.json();if(!config.enabled)throw Error('TASK_SERVICE_NOT_CONFIGURED');
-        const url=new URL(config.base_url);
-        const local=['127.0.0.1','localhost'].includes(url.hostname)&&['127.0.0.1','localhost'].includes(location.hostname);
-        if((url.protocol!=='https:'&&!local)||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw Error('INVALID_TASK_SERVICE');
-        const health=await network(taskUrl(url,'api/task-service',requested),{cache:'no-store',credentials:'omit',signal:controller.signal});
-        if(!health.ok)throw Error('TASK_SERVICE_UNAVAILABLE');
-        const service=await health.json();
-        if(service.snapshot_id!==requested)throw Error('TASK_SNAPSHOT_MISMATCH');
-        if(service.status!=='READY'||!service.task_score_available)throw Error('TASK_SERVICE_UNAVAILABLE');
-        return {url,service,snapshotId:requested};
-      }finally{clearTimeout(timeout);}
-    })().catch(error=>{connection=null;throw error;});
-    return connection;
-  }
-  async function connect({measurements=true}={}){
-    const info=await health(),{url,service}=info;
-    if(measurements&&service.task_score_method_version>=6){
-      if(!measurementConnection)measurementConnection=(async()=>{
-          let measurements;
-          if(window.RadarLoadTaskEvidence){
-            const data=await window.RadarLoadTaskEvidence();
-            if(data.task_method_version===service.task_score_method_version)measurements=data.measurements;
-            else if(!([8,9,10,11].includes(data.task_method_version)&&[9,10,11,12].includes(service.task_score_method_version)&&data.task_method_version<service.task_score_method_version))throw Error('TASK_SNAPSHOT_MISMATCH');
-          }
-          if(!measurements){
-            const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
-            try{
-              const response=await network(taskUrl(url,'api/task-measurements',service.versioned_snapshots&&info.snapshotId),{cache:'no-store',credentials:'omit',signal:controller.signal});
-              if(!response.ok)throw Error('TASK_MEASUREMENTS_UNAVAILABLE');
-              measurements=await response.json();
-            }finally{clearTimeout(timeout);}
-          }
-          const schema=service.task_score_method_version>=12?'source-scoped-task-measurements-v7':service.task_score_method_version>=11?'source-scoped-task-measurements-v6':service.task_score_method_version>=10?'source-scoped-task-measurements-v5':service.task_score_method_version>=9?'source-scoped-task-measurements-v4':service.task_score_method_version>=7?'source-scoped-task-measurements-v3':'source-scoped-task-measurements-v2';
-          if(measurements.snapshot_id!==service.snapshot_id||measurements.schema_version!==schema)throw Error('TASK_SNAPSHOT_MISMATCH');
-          window.RadarTaskMeasurements=measurements;
-      })().catch(error=>{measurementConnection=null;connection=null;throw error;});
-      await measurementConnection;
+  const boot = JSON.parse(document.getElementById('snapshot-bootstrap').textContent);
+  const manifest = boot.manifest;
+  const jobs = new Map();
+  const prefix = 'papermate-score:'+manifest.snapshot_id+':';
+  const response = (body,status=200) => Response.json(body,{status});
+  const supports = (route,method) => method==='GET' && ['/api/taxonomy','/api/task-measurements'].includes(route) ||
+    method==='POST' && ['/api/task-profile','/api/task-score','/api/interactive-jobs'].includes(route) ||
+    ['GET','DELETE'].includes(method) && /^\/api\/interactive-jobs\/[A-Za-z0-9_-]{43}$/.test(route);
+  async function connect({measurements=true}={}) {
+    if (measurements && !window.RadarTaskMeasurements) {
+      const evidence = await window.RadarLoadTaskEvidence();
+      if (evidence.measurements?.snapshot_id !== manifest.snapshot_id || evidence.task_method_version !== 12) throw Error('task_snapshot_mismatch');
+      window.RadarTaskMeasurements=evidence.measurements;
     }
-    if(!window.RadarTaskConnected){window.RadarTaskConnected=true;activate(service);window.dispatchEvent(new CustomEvent('radar:task-connected'));}
-    return info;
-  }
-  function activate(service){
-    document.getElementById('snapshot-readonly-style')?.remove();
-    document.getElementById('snapshot-task-gate')?.remove();
-    const composer=document.getElementById('visitor-task')?.closest('.visitor-composer');if(composer)composer.hidden=false;
-    document.getElementById('snapshot-asof')?.closest('.snapshot-notice')?.remove();
-    const analyse=document.getElementById('analyse-task');if(analyse)analyse.disabled=!service.task_profile_available;
-    const privacy=document.querySelector('.task-privacy');if(privacy)privacy.textContent='仅在提交任务分析时发送任务描述；任务评分使用本页对应的评测数据。';
-  }
-  async function request(route,init){
-    if(!supports(route,(init?.method||'GET').toUpperCase()))return new Response(JSON.stringify({error:'not_found'}),{status:404,headers:{'Content-Type':'application/json'}});
-    let measurements=route==='/api/task-score';
-    if(route==='/api/interactive-jobs'){try{measurements=JSON.parse(init?.body||'{}').kind!=='profile';}catch{measurements=true;}}
-    try{
-      const token=route.match(/^\/api\/interactive-jobs\/([A-Za-z0-9_-]{43})$/)?.[1];
-      const info=(token&&jobSnapshots.get(token))||await connect({measurements});
-      const {url,service}=info;
-      const response=await network(taskUrl(url,route,service.versioned_snapshots&&info.snapshotId),{...init,credentials:'omit',redirect:'error'});
-      if(route==='/api/interactive-jobs'&&response.ok){const job=await response.clone().json();if(job.id){jobSnapshots.set(job.id,info);if(jobSnapshots.size>64)jobSnapshots.delete(jobSnapshots.keys().next().value);}}
-      return response;
+    if (!window.RadarTaskConnected) {
+      window.RadarTaskConnected=true;
+      document.getElementById('snapshot-readonly-style')?.remove();
+      document.getElementById('snapshot-task-gate')?.remove();
+      const composer=document.getElementById('visitor-task')?.closest('.visitor-composer');
+      if(composer) composer.hidden=false;
+      const analyze=document.getElementById('analyse-task');
+      if(analyze) analyze.disabled=true;
+      const privacy=document.querySelector('.task-privacy');
+      if(privacy) privacy.textContent='手动设置任务能力与权重后即可评分。任务评分在当前浏览器内完成。';
+      window.dispatchEvent(new CustomEvent('radar:task-connected'));
     }
-    catch(error){if(error.name==='AbortError')throw error;return new Response(JSON.stringify({error:error.message==='TASK_SNAPSHOT_MISMATCH'?'task_snapshot_mismatch':'task_service_unavailable'}),{status:503,headers:{'Content-Type':'application/json'}});}
+    return {snapshotId:manifest.snapshot_id};
+  }
+  function launch(id,payload) {
+    const worker=new Worker('/task-score-worker.js');
+    const job={id,state:'RUNNING',started:Date.now(),worker};
+    jobs.set(id,job);
+    const finish=outcome=>{
+      Object.assign(job,outcome);
+      worker.terminate();
+      job.worker=null;
+      try { sessionStorage.removeItem(prefix+id); } catch {}
+    };
+    worker.onmessage=({data})=>finish(data);
+    worker.onerror=()=>finish({state:'FAILED',error:'task_score_failed'});
+    worker.postMessage({meta:manifest,payload});
+    return job;
+  }
+  async function request(route,init={}) {
+    if(route==='/api/taxonomy') return fetch('/task-taxonomy.json');
+    if(route==='/api/task-profile') return response({error:'task_profile_unavailable'},503);
+    await connect();
+    if(route==='/api/task-measurements') return response(window.RadarTaskMeasurements);
+    if(route==='/api/interactive-jobs' || route==='/api/task-score'){
+      const body=JSON.parse(init.body);
+      if(body.kind && body.kind!=='score') return response({error:'task_profile_unavailable'},503);
+      const payload=body.payload||body;
+      const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body.request_id||crypto.randomUUID()));
+      const id=btoa(String.fromCharCode(...new Uint8Array(digest))).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
+      let job=jobs.get(id);
+      if(!job){
+        for(const [oldId,old] of jobs) if(!old.worker && jobs.size>=3) jobs.delete(oldId);
+        try{sessionStorage.setItem(prefix+id,JSON.stringify(payload));}catch{}
+        job=launch(id,payload);
+      }
+      if(route==='/api/task-score'){
+        while(job.state==='RUNNING') await new Promise(resolve=>setTimeout(resolve,150));
+        return job.result?response(job.result):response({error:job.error},500);
+      }
+      return response({id,state:job.state,result:job.result},202);
+    }
+    const id=route.split('/').pop();
+    let job=jobs.get(id);
+    if(init.method==='DELETE'){
+      job?.worker?.terminate(); jobs.delete(id);
+      try{sessionStorage.removeItem(prefix+id);}catch{}
+      return response({id,state:'CANCELLED'});
+    }
+    if(!job){
+      let previous;
+      try { previous=JSON.parse(sessionStorage.getItem(prefix+id)); } catch {}
+      if(previous) job=launch(id,previous);
+    }
+    if(!job) return response({error:'job_expired_or_unknown'},404);
+    return response({id,state:job.state,error:job.error,result:job.result,elapsed_seconds:Math.floor((Date.now()-job.started)/1000)});
   }
   window.RadarTaskConnection=Object.freeze({supports,connect,request});
-  function start(){
-    const gate=document.getElementById('snapshot-task-gate');
-    if(gate){gate.querySelector('h2').textContent='正在连接任务服务';gate.querySelector('p').textContent='连接完成后，可分析任务需求、调整能力权重并比较模型。';}
-    connect({measurements:false}).catch(error=>{
-      if(!gate)return;
-      gate.querySelector('h2').textContent='任务服务暂不可用';
-      gate.querySelector('p').textContent=error.message==='TASK_SNAPSHOT_MISMATCH'?'任务数据与本页版本尚未同步，请稍后重试。':'模型评分与评测来源仍可浏览，请稍后重新连接任务服务。';
-      if(!gate.querySelector('button')){const retry=document.createElement('button');retry.type='button';retry.textContent='重新连接';retry.onclick=()=>{retry.remove();start();};gate.append(retry);}
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+  const start=()=>connect({measurements:false});
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true}); else start();
 })();
