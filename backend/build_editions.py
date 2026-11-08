@@ -51,7 +51,18 @@ def editions():
     (gen/"task-manifest.json").write_text(json.dumps({k:manifest[k] for k in ("snapshot_id","task_inputs","generated_at")}),encoding="utf-8")
     for name in ("index.html","benchmark.html","benchmark/index.html"):
         source = (SITE/name).read_text(encoding="utf-8")
-        source = re.sub(r'\./snapshot-elo-data\.js(?:\?v=[a-f0-9]+)?',f'/snapshot/{sid}/elo.js',source)
+        if name == "index.html":
+            # Keep the compact board in the page so a slow or retired detail archive
+            # cannot turn published model ratings into an empty chart.
+            script = (gen/"elo.js").read_text(encoding="utf-8")
+            assert script.startswith("window.snapshotElo = ")
+            payload = json.loads(script.removeprefix("window.snapshotElo = ").removesuffix(";"))
+            assert payload["snapshot_id"] == sid and payload["task_inputs_sha256"] == manifest["task_inputs"]["sha256"]
+            safe_script = script.replace("<", r"\u003c")
+            source, count = re.subn(r'<script src="\./snapshot-elo-data\.js(?:\?v=[a-f0-9]+)?"></script>',
+                                    lambda _: "<script>"+safe_script+"</script>", source, count=1)
+            assert count == 1, "Missing rating data in homepage"
+
         source = re.sub(r'((?:src|href)=")\./([^"/]+\.(?:css|js))',r'\1/\2',source)
         for english in (False,True):
             text = source

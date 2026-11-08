@@ -930,7 +930,15 @@
   function renderBars(b) {const g=groups(b).find(g=>g.group_id===state.group),box=$('bars');box.replaceChildren();if(!g){$('group-note').textContent='尚无方向已明确、至少包含两个模型的可比评测组。下方保留所有已核验原始成绩。';return;}if(g.blocked_reasons?.length){$('group-note').textContent='本组存在证据冲突，暂不发布模型对比图。下方仍保留来源成绩。';return;}$('group-note').textContent=`${Viz.directionLabel(g.direction)} · 图中为论文原值，从零起画；条形长短保留原始分差 · 实验设置：${g.model_setting||'未另列'}`;
     const values=(g.scores||[]).map(s=>s.value_numeric).filter(x=>typeof x==='number'&&Number.isFinite(x)),[lo,hi]=Viz.valueDomain(values,true),zero=100*(0-lo)/(hi-lo);for(const s of [...(g.scores||[])].sort((a,b)=>(g.direction==='lower'?1:-1)*(a.value_numeric-b.value_numeric))){const row=el('div',null,'bar-row'),track=el('div',null,'bar-track'),fill=el('div',null,'bar-fill');const x=100*((number(s.value_numeric)??0)-lo)/(hi-lo);track.style.position='relative';fill.style.position='absolute';fill.style.left=`${Math.min(x,zero)}%`;fill.style.width=`${Math.abs(x-zero)}%`;fill.style.background=Viz.modelColor(s.model_canonical);track.append(fill);const label=el('span',null,'bar-label');label.append(modelLink(s.model_canonical,g.model_setting));row.append(label,track,el('span',new Intl.NumberFormat('zh-CN',{maximumFractionDigits:6}).format(s.value_numeric),'bar-value'));box.append(row);}}
   function renderVisuals() {
-    if(!state.snapshot||state.snapshot.detail_loaded===false){for(const v of state.view==='models'?[modelVisuals,modelCoverage]:[overviewRanking,overviewCoverage])v.clear();return;}
+    if (!state.snapshot || state.snapshot.detail_loaded === false) {
+      if (state.view === 'models' && Viz.localElo(state.snapshot)) {
+        modelVisuals.update(Viz.modelData(state.snapshot, visualSetting ?? ''));
+        modelCoverage.clear();
+      } else {
+        for (const chart of state.view === 'models' ? [modelVisuals, modelCoverage] : [overviewRanking, overviewCoverage]) chart.clear();
+      }
+      return;
+    }
     const choices=Viz.settings(state.snapshot);
     if(!choices.includes(visualSetting))visualSetting=[...choices].sort((a,b)=>state.snapshot.index.models.filter(m=>m.model_setting===b).length-state.snapshot.index.models.filter(m=>m.model_setting===a).length)[0]??'';
     const d=rankingData(),coverage=Viz.coverageData(d.elo?Viz.sourceModelData(state.snapshot,visualSetting):d);
@@ -1297,7 +1305,10 @@
         err.message==='INVALID_RADAR_DATA'?'快照字段不符合页面要求。'+retry:
         err.message==='RADAR_NOT_CONFIGURED'?'尚未配置可用的评测服务地址。':
         (overviewLoaded?'目录可用，图表和来源成绩暂未加载。':'暂时无法读取评测数据，请检查服务连接。')+retry;
-      if(previous)node.textContent='更新未完成，显示上次已加载内容。'+node.textContent;
+      if (state.view === 'models' && Viz.localElo(state.snapshot) && state.snapshot.detail_loaded === false) {
+        node.textContent='综合评分已加载，详细评测数据暂未加载。可点击“重新载入”重试。';
+        checkPublishedUpdate().catch(()=>{});
+      } else if(previous)node.textContent='更新未完成，显示上次已加载内容。'+node.textContent;
     } finally {state.loading=false;$('refresh').disabled=false;setLoadingUI(false);renderReferences();}
   }
   for (const button of document.querySelectorAll('[data-record-sort]')) {
@@ -1336,7 +1347,13 @@
       if (!response.ok) return;
       const current = await response.json();
       if (current.snapshot_id && current.snapshot_id !== window.snapshotElo?.snapshot_id &&
-          Date.parse(current.generated_at) >= Date.parse(window.RadarHomeSnapshot?.generated_at)) location.reload();
+          Date.parse(current.generated_at) >= Date.parse(window.RadarHomeSnapshot?.generated_at)) {
+        const next = new URL(location.href);
+        if (next.searchParams.get('publication') !== current.snapshot_id) {
+          next.searchParams.set('publication', current.snapshot_id);
+          location.replace(next.href);
+        }
+      }
     } catch { /* An open edition remains readable during network interruptions. */ }
     finally { checkingPublication = false; }
   }

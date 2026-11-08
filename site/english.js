@@ -2,6 +2,7 @@
 (() => {
   const catalog = window.paperMateEnglish;
   Object.assign(catalog.labels,{
+    '综合评分已加载，详细评测数据暂未加载。可点击“重新载入”重试。':'Model ratings are available. Reload to retry loading the detailed evidence.',
     '手动设置任务能力与权重后即可评分。任务评分在当前浏览器内完成。':'Set the capabilities and weights to score models in your browser.',
     '汇总该模型的参测项目、原始成绩与评分依据。':'Explore this model’s benchmarks, reported scores and scoring methods.',
     '评分说明':'Scoring methodology', '评测成绩':'Benchmark results',
