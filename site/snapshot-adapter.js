@@ -202,7 +202,7 @@
     document.body.dataset.snapshotMode='true';
     const css=document.createElement('style');css.id='snapshot-readonly-style';css.textContent='body[data-snapshot-mode] #view-tasks>:not(.snapshot-notice){display:none!important}.snapshot-notice{margin:20px 0;padding:24px;border:1px solid #dfE7f1;border-radius:16px;background:#fff;color:#33475d;line-height:1.9}.snapshot-notice h2{font-size:18px;margin:0 0 10px}.snapshot-notice p{margin:6px 0;font-size:14px}';document.head.append(css);
     const task=document.getElementById('visitor-task')?.closest('.visitor-composer');
-    if(task){task.hidden=true;const info=document.createElement('article');info.className='visitor-composer snapshot-notice';const h=document.createElement('h2');h.textContent='评测数据更新';const p=document.createElement('p');p.textContent='浏览模型综合评分、评测原始成绩和论文来源。后台核验通过的数据自动发布，页面标注最近一批数据的时间。';const asof=document.createElement('p');asof.id='snapshot-asof';info.append(h,p,asof);task.after(info);manifest().then(m=>{asof.textContent='数据截至 '+new Date(m.generated_at).toLocaleString('zh-CN',{hour12:false});}).catch(()=>{});}
+    if(task)task.hidden=true;
     const hint=document.querySelector('.visitor-hero-links span');if(hint)hint.textContent='查看评测范围与原始来源。';
     const view=document.getElementById('view-tasks');if(view){const note=document.createElement('section');note.id='snapshot-task-gate';note.className='snapshot-notice';const h=document.createElement('h2');h.textContent='任务选模型暂未开放';const p=document.createElement('p');p.textContent='当前版本提供模型表现、评测目录和来源查询。任务需求分析与选型暂不可用，可先查阅相关评测和原始成绩。';note.append(h,p);view.append(note);}
     const refresh=document.getElementById('refresh');if(refresh){refresh.textContent='检查更新';refresh.title='检查已发布的新数据；后台每五分钟检查一次';}
