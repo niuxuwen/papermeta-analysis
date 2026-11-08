@@ -61,8 +61,11 @@
     const method=element('details',null,'ability-method');
     const minimum = status.min_papers ?? 5;
     method.append(element('summary',txt('评分方法','Scoring method')),element('p',txt(
-      `本榜根据本领域相同实验条件下的胜负计算 Elo。每个上榜模型及配置在最终比较网络中至少有 ${minimum} 篇来源论文。来源、时间和重复比较沿用主榜权重。本榜平均 Elo 为 1000。四个固定参考模型均入榜时，另列对它们的平均预测胜率。`,
-      `Elo uses results from matched experiments in this category. Each entry needs at least ${minimum} source papers in the final comparison network. Source, time and repeat-match weights follow the overall board. Elo averages 1000 within this board. A reference score is available when all four reference models qualify.`)));
+      `本榜根据本领域相同实验条件下的胜负拟合模型强度，沿用主榜的来源、时间和重复比较权重。每个上榜模型及配置至少有 ${minimum} 篇来源论文。参考分为对本快照该分榜全部上榜模型及配置的平均预测胜率 × 100，每个配置等权，包含与自身的预测平局。参考集合随快照固定，页面筛选不改变分数。各分榜采用各自参考集合，分数用于榜内比较。`,
+      `Strength is fitted from matched experiments using the overall board's source, time and repeat-match weights. Each entry needs at least ${minimum} source papers. The 0–100 score is its average predicted win probability against every qualifying entry in this category, with equal weight per configuration and a predicted tie against itself. This reference set is fixed for the snapshot; display filters do not change scores. Scores are for comparisons within each category.`)));
+    method.append(element('p',txt(
+      '换算公式：分数 = 100 × 平均值[1 / (1 + 10^((参考模型 Elo − 当前模型 Elo) / 400))]。原始 Elo 可点击模型名称查看。',
+      'Score = 100 × mean[1 / (1 + 10^((reference Elo − model Elo) / 400))]. Select a model name to view its raw Elo.')));
     method.append(element('p',txt(
       '分榜优先采用来源表中具体指标所测的任务。指标只有通用标签时，结合评测的领域和任务归类。同一评测的不同指标可以进入不同分榜。',
       'Categories use the task measured by each source-table metric. For broadly labelled metrics, the benchmark subject and tasks provide context. Different metrics from one benchmark can enter different rankings.')));
@@ -70,17 +73,14 @@
     if (!rows.length) content.append(element('p', en
       ? `No comparison network currently meets the minimum of ${minimum} papers per entry.`
       : `当前没有满足每个模型至少 ${minimum} 篇来源论文的互通比较组。`));
-    else if (status.missing.length) content.append(element('p',(en
-      ? 'Reference score unavailable. Missing qualifying anchors: ' : '四参考模型胜率暂缺，本榜缺少达标的参考模型：')+status.missing.join('、'),'ability-board-meta'));
     const table=element('table',null,'ability-rank-table'), header=table.createTHead().insertRow(), body=table.createTBody();
-    for(const name of [txt('名次','Rank'),txt('模型','Model'),'Elo', ...(status.missing.length ? [] : [txt('参考分','Reference score')]),txt('来源论文','Papers'),txt('参评评测','Benchmarks')]){
+    for(const name of [txt('名次','Rank'),txt('模型','Model'),txt('参考分（0–100）','Reference score (0–100)'),txt('来源论文','Papers'),txt('参评评测','Benchmarks')]){
       const th=element('th',name);th.scope='col';header.append(th);
     }
     rows.forEach((row,i)=>{
       const tr=body.insertRow();tr.insertCell().textContent=i+1;
       const name=tr.insertCell(), toggle=element('button',modelName(row),'ability-rank-model');toggle.type='button';toggle.setAttribute('aria-expanded','false');name.append(toggle);
-      tr.insertCell().textContent=row.elo.toFixed(1);
-      if (!status.missing.length) tr.insertCell().textContent=row.score.toFixed(1);
+      tr.insertCell().textContent=row.score.toFixed(1);
       tr.insertCell().textContent=row.papers;
       tr.insertCell().textContent=row.sources.length;
       toggle.onclick=()=>{
@@ -93,7 +93,7 @@
           const [label,paper,benchmark]=sources[idx],a=element('a',label);
           a.href='benchmark/?'+new URLSearchParams({paper_id:paper,benchmark_id:benchmark});links.append(a);
         }
-        cell.append(element('strong',txt('计分来源','Scoring sources')),links);
+        cell.append(element('p',txt('原始 Elo：','Raw Elo: ')+row.elo.toFixed(1)),element('strong',txt('计分来源','Scoring sources')),links);
       };
     });
     if (rows.length) content.append(table);
@@ -104,10 +104,10 @@
   async function load() {
     grid.replaceChildren();
     try {
-      const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json',location.origin));
+      const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json?scale=100-v1',location.origin));
       if (!response.ok) throw Error(response.status);
       const data=await response.json();
-      if (data.method !== 'main-batch-elo' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');
+      if (data.method !== 'main-batch-elo' || data.score_method !== 'fixed-category-basket-v1' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');
       for(const category of ['Science','Coding','General','Agent']){
         const rows=data.boards[category],card=element('button',null,'ability-board-card');card.type='button';
         card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-expanded','false');
@@ -119,7 +119,7 @@
         if (!rows.length) preview.append(element('span',txt('暂无符合计分条件的模型','No models meet the ranking criteria'),'ability-card-empty'));
         for(const [i,row] of rows.slice(0,3).entries()){
           const line=element('span',null,'ability-card-row');
-          const rating=element('b',row.elo.toFixed(0));rating.append(element('small',' Elo'));
+          const rating=element('b',row.score.toFixed(1));rating.append(element('small',' / 100'));
           const name=element('span',modelName(row));
           name.append(element('small', en ? row.papers+' source papers' : row.papers+' 篇来源论文','ability-card-papers'));
           line.append(element('small',String(i+1).padStart(2,'0')),name,rating);preview.append(line);

@@ -10,6 +10,20 @@ from build_elo import SITE, fit_main_elo, load_elo_inputs, export
 
 MIN_CATEGORY_PAPERS = 3
 
+def add_category_scores(rows):
+    """Average predicted win probability over this snapshot's fixed board nodes.
+
+    Each model/configuration has equal reference weight, including the entry
+    itself (a predicted tie). Page filtering must never change this basket.
+    """
+    for row in rows:
+        probabilities = []
+        for reference in rows:
+            delta = (row['elo'] - reference['elo']) * math.log(10) / 400
+            z = math.exp(-abs(delta))
+            probabilities.append(1 / (1 + z) if delta >= 0 else z / (1 + z))
+        row['score'] = 100 * math.fsum(probabilities) / len(rows)
+
 # Explicit task labels describe what was assessed. Skills like reading or
 # following instructions are also used inside specialist tasks.
 GENERAL_TASKS = {'writing', 'summarization', 'translation', 'dialogue', 'reading_comprehension'}
@@ -179,14 +193,16 @@ def main():
         for node in nodes:
             strength = fit['theta'][node]
             rows.append(dict(model=node[0], setting=node[1], elo=1000 + 400 * strength / math.log(10),
-                             score=score_by_node.get(node), papers=len(papers[node]),
+                             main_reference_score=score_by_node.get(node), papers=len(papers[node]),
                              sources=sorted(sources[node], key=lambda idx: benchmarks[idx][0].casefold())))
+        add_category_scores(rows)
         boards[category] = sorted(rows, key=lambda row: (-row['elo'], row['model'], row['setting']))
         status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, missing=missing,
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
         print(category, len(rows), 'missing anchors:', missing)
     result = dict(snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
-                  status=status, references=inputs.references, method='main-batch-elo')
+                  status=status, references=inputs.references, method='main-batch-elo',
+                  score_method='fixed-category-basket-v1')
     output = SITE / 'capability-rankings.json'
     temp = output.with_suffix('.tmp')
     temp.write_text(json.dumps(result, ensure_ascii=False, separators=(',', ':'), allow_nan=False), encoding='utf8')
