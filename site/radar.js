@@ -1028,7 +1028,7 @@
     list.id=select.id+'-options';list.setAttribute('role','listbox');list.setAttribute('aria-label',label+'型号');footer.append(count,more);panel.append(heading,search,list,footer);root.append(trigger,panel);select.after(root);select.classList.add('pair-native-select');
     let rows=[],filtered=[],buttons=[],active=-1,limit=60;
     const card=select.closest('.pair-model-card');
-    function sync(){caption.textContent=select.value||'选择模型';trigger.title=select.value;trigger.disabled=!select.options.length;trigger.setAttribute('aria-label',label+'：'+(select.value||'未选择'));}
+    function sync(){caption.textContent=select.value||(select.options.length?'选择模型':'正在加载模型…');trigger.title=select.value;trigger.disabled=!select.options.length;trigger.setAttribute('aria-label',label+'：'+(select.value||'未选择'));}
     function close(restore=false){panel.hidden=true;trigger.setAttribute('aria-expanded','false');search.setAttribute('aria-expanded','false');search.removeAttribute('aria-activedescendant');card?.classList.remove('pair-picker-open');if(restore)trigger.focus({preventScroll:true});}
     function highlight(index,scroll=false){active=index;buttons.forEach((b,i)=>b.classList.toggle('is-active',i===index));if(buttons[index]){search.setAttribute('aria-activedescendant',buttons[index].id);if(scroll)buttons[index].scrollIntoView({block:'nearest'});}else search.removeAttribute('aria-activedescendant');}
     function render(){
@@ -1050,6 +1050,8 @@
     document.addEventListener('pointerdown',e=>{if(!root.contains(e.target))close();});document.addEventListener('radar-pair-picker-open',()=>close());
     const api={sync,close,update(next){rows=next;close();sync();}};pairModelPickers.set(select,api);sync();return api;
   }
+  pairModelPicker($('pair-left'),'模型 A');
+  pairModelPicker($('pair-right'),'模型 B');
   const pairPreferences=new Map();
   let pairView='benchmark';
   async function openCommonTests(name,setting) {

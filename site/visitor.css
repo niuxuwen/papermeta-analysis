@@ -202,8 +202,9 @@ a.visitor-benchmark-row{text-decoration:none;color:inherit}
 }
 #view-compare > .paired-values > h2 {margin:0 0 12px;font-size:clamp(1.45rem,2.2vw,2.1rem);line-height:1.2;color:#182c41}
 #view-compare .pair-search-options > summary {width:fit-content;font-size:.875rem;color:#52677a;cursor:pointer}
-#view-compare .pair-model-header {gap:8px;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr)}
+#view-compare .pair-model-header {gap:clamp(8px, 1.2vw, 16px);grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
 #view-compare .pair-model-card {min-width:0;padding:12px}
+#view-compare .pair-model-card:is(:hover,:focus-within) {border-top-color:var(--model-color)}
 #pair-radar, #pair-capability-view {container-type:inline-size}
 #view-compare .pair-radar-layout {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);

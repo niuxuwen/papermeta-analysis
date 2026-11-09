@@ -29,7 +29,7 @@
     '评测分类与能力':'Category and capabilities',
     '评测一级标签':'Benchmark categories',
     '参测项目的能力标签':'Capabilities covered by reported benchmarks',
-    'Elo 综合评分':'Elo model ratings','Elo 参考分':'Elo reference score','来源论文':'Source papers',
+    'Elo 综合评分':'Elo model ratings','Elo 参考分':'Elo reference score', '正在加载模型…':'Loading models…','来源论文':'Source papers',
     '同条件比较采用加权 Bradley–Terry 拟合。参考分为对四个固定参考模型的平均预测胜率。':'Ratings use a weighted Bradley–Terry fit to within-condition comparisons. The reference score is the mean predicted win rate against four fixed reference models.'
   });
   const hasChinese = /[\u3400-\u9fff]/;
