@@ -7,25 +7,12 @@ from collections import defaultdict
 
 import math
 from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit, SCORING_REVISION
+from normalization import normalize, METHOD
 
 MIN_CATEGORY_PAPERS = 5
 
-def add_category_scores(rows):
-    """Average predicted win probability over this snapshot's fixed board nodes.
-
-    Each model/configuration has equal reference weight, including the entry
-    itself (a predicted tie). Page filtering must never change this basket.
-    """
-    # Preserve the established reference basket of publishable entries, while
-    # retaining all low-coverage opponents in the underlying BT fit and output.
-    references = [r for r in rows if r['papers'] >= MIN_CATEGORY_PAPERS]
-    for row in rows:
-        probabilities = []
-        for reference in references:
-            delta = (row['elo'] - reference['elo']) * math.log(10) / 400
-            z = math.exp(-abs(delta))
-            probabilities.append(1 / (1 + z) if delta >= 0 else z / (1 + z))
-        row['score'] = 100 * math.fsum(probabilities) / len(references) if references else None
+def add_category_scores(rows, panel=None):
+    return normalize(rows,panel=panel)
 
 # Explicit task labels describe what was assessed. Skills like reading or
 # following instructions are also used inside specialist tasks.
@@ -198,26 +185,21 @@ def main():
             for node in (record['a'], record['b']):
                 sources[node].add(group_bench[record['group_id']])
                 papers[node].add(record['paper_id'])
-        missing = [ref for ref in inputs.references if (ref, '') not in sources]
-        score_by_node = {}
-        if fit and not missing:
-            score_by_node = {(row['model'], row['setting']): row['basket_score_0_100']
-                             for row in export(fit, eligible, inputs.references, min_papers=MIN_CATEGORY_PAPERS)}
         rows = []
         for node in nodes:
             strength = fit['theta'][node]
             rows.append(dict(model=node[0], setting=node[1], elo=1000 + 400 * strength / math.log(10),
-                             main_reference_score=score_by_node.get(node), papers=len(papers[node]),
+                             papers=len(papers[node]),
                              sources=sorted(sources[node], key=lambda idx: benchmarks[idx][0].casefold())))
-        add_category_scores(rows)
+        normalization = add_category_scores(rows)
         boards[category] = sorted(rows, key=lambda row: (-row['elo'], row['model'], row['setting']))
-        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, missing=missing,
+        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, missing=normalization['missing'],normalization=normalization,
                                 coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
-        print(category, len(rows), 'missing anchors:', missing)
+        print(category, len(rows), 'missing anchors:', normalization['missing'])
     result = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=inputs.data.get('reviewed_evidence_audit'), snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
-                  status=status, references=inputs.references, method='main-batch-elo',
-                  score_method='fixed-category-basket-v1', source_quality_policy=inputs.data.get('source_quality_policy'),
+                  status=status, references=[r['model']for r in normalization['references']], method='main-batch-elo',
+                  score_method=METHOD, source_quality_policy=inputs.data.get('source_quality_policy'),
                   coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)
     output = SITE / 'capability-rankings.json'
     temp = output.with_suffix('.tmp')

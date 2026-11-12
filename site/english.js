@@ -14,7 +14,9 @@
     '成绩摘录自公开论文，可查阅原始数值与来源。':'Scores are drawn from published papers. You can consult the original values and sources.',
     '模型榜单':'Model rankings',
     '筛选比较模型':'Filter models',
-    '对四个参考模型的平均预测胜率（0–100）':'Mean predicted win rate against four reference models (0–100)', 
+    '对固定参考组的平均预期得分（0–100）':'Expected score against the fixed reference panel (0–100)',
+    '参考分 · 0–100':'Reference score · 0–100',
+    '固定参考组暂不完整，本次暂不发布换算分数。':'The reference panel is incomplete; normalized scores are unavailable.',
     "代码理解与执行推理": "Code comprehension and execution reasoning",
     "根据源码推断程序行为、变量状态或跨文件依赖。": "Inferring program behavior, variable state, or cross-file dependencies from source code.",
     "软件测试与漏洞发现": "Software testing and vulnerability discovery",
@@ -30,7 +32,7 @@
     '评测一级标签':'Benchmark categories',
     '参测项目的能力标签':'Capabilities covered by reported benchmarks',
     'Elo 综合评分':'Elo model ratings','Elo 参考分':'Elo reference score', '正在加载模型…':'Loading models…','来源论文':'Source papers',
-    '同条件比较采用加权 Bradley–Terry 拟合。参考分为对四个固定参考模型的平均预测胜率。':'Ratings use a weighted Bradley–Terry fit to within-condition comparisons. The reference score is the mean predicted win rate against four fixed reference models.'
+    '同条件比较采用加权 Bradley–Terry 拟合。参考分为对固定参考组的平均预期得分，平局计半分；参考名单与权重不随展示门槛变化。':'Ratings use a weighted Bradley–Terry fit to matched comparisons. Reference scores are expected match scores against a fixed panel, with ties counting as one half. Panel membership and weights do not depend on display thresholds.'
   });
   const hasChinese = /[\u3400-\u9fff]/;
   const chinesePhrase = /[\u3400-\u9fff]+(?:[，、；：][\u3400-\u9fff]+)*/g;

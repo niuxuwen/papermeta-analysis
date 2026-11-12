@@ -60,9 +60,15 @@
     content.append(element('p',en ? rows.length+' entries · '+n+' benchmarks' : rows.length+' 个模型及配置 · '+n+' 项计分评测','ability-board-meta'));
     const method=element('details',null,'ability-method');
     const minimum = status.min_papers ?? 5;
+    const normalization = status.normalization;
     method.append(element('summary',txt('评分方法','Scoring method')),element('p',txt(
-      `本榜根据本领域相同实验条件下的胜负拟合模型强度，沿用主榜的来源、时间和重复比较权重。每个上榜模型及配置至少有 ${minimum} 篇来源论文。参考分为对本快照该分榜全部上榜模型及配置的平均预测胜率 × 100，每个配置等权，包含与自身的预测平局。参考集合随快照固定，页面筛选不改变分数。各分榜采用各自参考集合，分数用于榜内比较。`,
-      `Strength is fitted from matched experiments using the overall board's source, time and repeat-match weights. Each entry needs at least ${minimum} source papers. The 0–100 score is its average predicted win probability against every qualifying entry in this category, with equal weight per configuration and a predicted tie against itself. This reference set is fixed for the snapshot; display filters do not change scores. Scores are for comparisons within each category.`)));
+      `本榜根据本领域同条件比较拟合模型强度。至少 ${minimum} 篇来源论文的模型才展示。总榜与四个分榜使用同一份固定参考名单及权重，共 ${normalization?.reference_count ?? 23} 个模型；分数是对参考组在本领域的平均预期得分 × 100，平局计半分。新增模型、调整展示门槛或页面筛选不会改变参考名单。`,
+      `Strength is fitted from matched comparisons in this field. Entries need ${minimum} source papers for display. All five boards share the same fixed panel of ${normalization?.reference_count ?? 23} equally weighted models. Scores are expected match scores against this panel in the current field, multiplied by 100; ties count as one half. New models and display thresholds do not change panel membership.`)));
+    method.append(element('p',txt('各领域的参考实力分别拟合，分数不是正确率，也不能视为跨领域或跨日期的绝对能力刻度。','Reference strengths are estimated separately in each field. These scores are not accuracy or an absolute scale across fields or dates.')));
+    if(normalization){
+      const refs=element('details');refs.append(element('summary',txt('参考模型','Reference models')),element('p',normalization.references.map(r=>r.model).join(' · ')));method.append(refs);
+      if(normalization.status!=='READY')content.append(element('p',txt('固定参考组暂不完整，本次暂不发布换算分数。','The reference panel is incomplete; normalized scores are unavailable.')));
+    }
     method.append(element('p',txt(
       '换算公式：分数 = 100 × 平均值[1 / (1 + 10^((参考模型 Elo − 当前模型 Elo) / 400))]。原始 Elo 可点击模型名称查看。',
       'Score = 100 × mean[1 / (1 + 10^((reference Elo − model Elo) / 400))]. Select a model name to view its raw Elo.')));
@@ -110,9 +116,9 @@
       const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json?scale=100-v1&revision='+encodeURIComponent(window.snapshotElo.scoring_revision||'legacy'),location.origin));
       if (!response.ok) throw Error(response.status);
       const data=await response.json();
-      if (data.method !== 'main-batch-elo' || data.score_method !== 'fixed-category-basket-v1' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');
+      if (data.method !== 'main-batch-elo' || data.score_method !== 'fixed-reference-panel-v1' || data.snapshot!==window.snapshotElo?.snapshot_id || Object.values(data.status).some(s=>s.normalization?.panel_sha256!==window.snapshotElo?.normalization?.panel_sha256)) throw Error('snapshot');
       for(const category of ['Science','Coding','General','Agent']){
-        const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5)),card=element('button',null,'ability-board-card');card.type='button';
+        const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5) && Number.isFinite(r.score)),card=element('button',null,'ability-board-card');card.type='button';
         card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-expanded','false');
         const head=element('span',null,'ability-card-heading');
         const arrow=element('span','↗','ability-card-arrow');arrow.setAttribute('aria-hidden','true');head.append(element('strong',category),arrow);

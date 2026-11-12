@@ -8,11 +8,14 @@ from pathlib import Path
 import re
 import shutil
 import tarfile
+import sys
 from urllib.request import urlopen
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
+sys.path.insert(0,str(ROOT/'ratings'))
+from normalization import validate, METHOD
 RUNTIME = "0.27.7"
 CHECKSUM = "RUSVJlhQdfWfgO9hVHCiXoG+nVZQRS5D9FzgpLJ/VcgGBLSAKoPL8kTiOikxbHQm1kRISeWUBdulEgO26qpSRA=="
 
@@ -37,12 +40,11 @@ def editions():
     gen = SITE/"snapshot"/sid
     boards = json.loads((SITE/"capability-rankings.json").read_bytes())
     assert boards["snapshot"] == sid and set(boards["boards"]) == {"Science","Coding","General","Agent"}
-    assert boards["score_method"] == "fixed-category-basket-v1"
+    assert boards["score_method"] == METHOD
     for category, rows in boards["boards"].items():
-        scores = [r["score"] for r in rows if r['papers'] >= boards.get('display_min_papers',5)]
+        validate(rows,boards['status'][category]['normalization'])
+        scores = [r["score"] for r in rows if r['papers'] >= boards.get('display_min_papers',5) and r['score'] is not None]
         assert all(0 <= s <= 100 for s in scores) and scores == sorted(scores, reverse=True), category
-        # Every match and its reverse sum to one win, including self-matches (0.5).
-        assert not scores or abs(sum(scores) / len(scores) - 50) < 1e-8, category
     shutil.move(SITE/"capability-rankings.json",gen/"capability-rankings.json")
     shutil.move(SITE/"snapshot-elo-data.js",gen/"elo.js")
     ranking = json.loads(gzip.decompress((SITE/manifest["ranking"]["path"]).read_bytes()))
@@ -63,6 +65,7 @@ def editions():
             script = (gen/"elo.js").read_text(encoding="utf-8")
             assert script.startswith("window.snapshotElo = ")
             payload = json.loads(script.removeprefix("window.snapshotElo = ").removesuffix(";"))
+            validate(payload['models'],payload['normalization'],elo_key='elo_scale',score_key='basket_score_0_100')
             assert payload["snapshot_id"] == sid and payload["task_inputs_sha256"] == manifest["task_inputs"]["sha256"]
             safe_script = script.replace("<", r"\u003c")
             source, count = re.subn(r'<script src="\./snapshot-elo-data\.js(?:\?v=[a-f0-9]+)?"></script>',

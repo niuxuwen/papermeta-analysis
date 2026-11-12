@@ -373,7 +373,7 @@
   function localElo(snapshot) {
     const board=snapshot?.snapshot_id && host.snapshotElo?.snapshot_id === snapshot.snapshot_id ? host.snapshotElo : null;
     // A presentation-only view: never mutate the fitted models or their scores.
-    return board ? {...board,models:board.models.filter(r=>r.papers >= (board.display_min_papers ?? 5))} : null;
+    return board ? {...board,models:board.models.filter(r=>r.papers >= (board.display_min_papers ?? 7) && Number.isFinite(r.basket_score_0_100))} : null;
   }
   function eloModel(snapshot,name,setting='') {
     const board=localElo(snapshot);
@@ -390,7 +390,7 @@
         elo:r.elo_scale,provisional:false,scoreStatus:'Elo',rankRange:'—'
       })),axes:[],cells:[],setting,referenceModelCount:entries.length,panelVersion:'paper-half',
       scopeId:'elo:'+snapshot.snapshot_id,selectionKey:'elo:'+setting,title:'综合评分',summaryLabel:'Elo 参考分',
-      valueLabel:'Elo 参考分 · 0–100',note:'同条件比较采用加权 Bradley–Terry 拟合。参考分为对四个固定参考模型的平均预测胜率。'};
+      valueLabel:'参考分 · 0–100',normalization:board.normalization,note:board.normalization?.status==='REFERENCE_PANEL_INCOMPLETE'?'固定参考组暂不完整，本次暂不发布换算分数。':'同条件比较采用加权 Bradley–Terry 拟合。参考分为对固定参考组的平均预期得分，平局计半分；参考名单与权重不随展示门槛变化。'};
     }
     return sourceModelData(snapshot,setting,panelId);
   }
@@ -1100,7 +1100,7 @@
     function render(){
       if(visitorMode){data=visitorChartData(data);method.querySelector('summary').textContent='数据说明';rankingNotice.textContent=data.elo?data.note:'按综合评分排列，请结合参考区间、评测覆盖与共同参测结果比较。';}
       rankingNotice.hidden=Boolean(data.elo)||!data.opponentAdjusted;root.dataset.chartMode=mode;tip.hidden=true;for(const o of limit.options)o.disabled=mode==='radar'&&Number(o.value)>8;if(mode==='radar'&&axisLimit>8){axisLimit=8;limit.value='8';axisPage=0;}if(data.raw&&['radar','scatter'].includes(mode))mode='table';for(const b of tabs.children){b.setAttribute('aria-pressed',String(b.dataset.chart===mode));b.disabled=Boolean(data.raw&&['radar','scatter'].includes(b.dataset.chart));b.title=b.disabled?'原值单位未经统一校准，不绘制此图':'';}scatterControl.hidden=mode!=='scatter';limitLabel.hidden=['scatter','bar'].includes(mode);commonLabel.hidden=['scatter','bar'].includes(mode);const rows=visibleRows(),ax=axes();display.replaceChildren();heading.textContent=title||data.title||'模型与评测对比';subtitle.textContent=`${selected.size}/${availableRows.length} 个模型 · ${data.setting||'未另列实验设置'}${compact?'':mode==='bar'?' · 按厂商配色':' · 选中图例可高亮'}`;sourceButton.hidden=data.kind==='coverage';note.textContent=(data.note||'')+(mode==='radar'?' 雷达每页最多 8 个分项，其余分项可翻页查看。':'');summary.textContent=`模型 ${selected.size}/${availableRows.length}`;
-      if(data.elo&&visitorMode)subtitle.textContent='对四个参考模型的平均预测胜率（0–100）';
+      if(data.elo&&visitorMode)subtitle.textContent=document.documentElement.lang==='en'?'Expected score against the fixed reference panel (0–100)':'对固定参考组的平均预期得分（0–100）';
       if(data.broadReference)subtitle.textContent=`综合榜 ${data.referenceModelCount} 个${data.referenceLabel||'覆盖合格模型'} · 已显示 ${rows.filter(r=>finite(r.score)).length} 个 · 其余 ${data.rows.length-data.referenceModelCount} 个保留单项成绩`;
       if(data.kind==='models'&&data.rows.length&&!data.rows.some(r=>finite(r.score))&&mode==='bar')empty('综合评分暂未发布');else if(!rows.length)empty(data.rows.length?'请选择至少一个模型':'当前窗口暂无可绘制的核验成绩');else if(['line','radar','heat'].includes(mode)&&!ax.length)empty(onlyCommon?'选中模型没有共同成绩分项':'当前暂无可比的分项成绩');else if(mode==='radar'&&ax.length<3)empty('雷达图需要至少 3 个分项；可切换曲线或柱状');else if(mode==='scatter'&&!rows.some(r=>finite(r.score)))empty('当前未发布总分；请查看分项图和原值');else if(mode==='bar'&&data.kind==='benchmark'){const a=ax[0],values=lookup();if(a){subtitle.textContent+=' · 当前分项：'+a.label;display.append(barChart(rows.map(r=>({...r,score:values.get(JSON.stringify([r.name,a.id]))?.value??null}))));}else empty('暂无可绘制分项');}else if(mode==='table')display.append(table(rows,ax));else display.append(({line:()=>lineChart(rows,ax),radar:()=>radarChart(rows,ax),heat:()=>heatChart(rows,ax),scatter:()=>scatterChart(rows),bar:()=>barChart(rows)})[mode]());
       intervalNotice.hidden=mode!=='bar'||!data.opponentAdjusted||!rows.some(r=>finite(r.score)&&barInterval(r));intervalNotice.textContent=visitorMode?'细线表示参考区间，柱长表示综合评分。':data.temporal?'细线：当前综合评分的近似模型区间；区间按来源论文聚类计算。':'细线与空心点：基础拟合参考区间；柱长：当前综合分。';

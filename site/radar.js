@@ -963,6 +963,12 @@
         $('scoring-readiness').textContent=english?`Elo · ${published} rated models and configurations`:`Elo · ${published} 个模型及配置已发布评分`;
         const minimum=window.snapshotElo?.display_min_papers ?? 7;
         body.append(el('p',english?`Weighted Bradley–Terry fit on within-paper comparisons. The overall ranking displays entries supported by at least ${minimum} independent papers. This threshold does not remove evidence from the fit.`:data.note+` 总榜仅展示至少有 ${minimum} 篇独立论文支持的模型；展示门槛不影响论文参与计算。`));
+        const normalization=window.snapshotElo?.normalization;
+        if(normalization){
+          body.append(el('p',english?`Reference scale: ${normalization.reference_count} fixed models, equally weighted. Scores are expected match scores against this panel, with ties counting as one half; they are not benchmark accuracy. Reference strengths are re-estimated, so changes across dates are not a pure measure of capability improvement.`:`固定参考组包含 ${normalization.reference_count} 个等权模型，平局计半分。分数表示相对于该组的预期得分，不是题目正确率。参考模型强度会随证据重估，跨日期涨分不等同能力提升。`));
+          const references=el('details'),summary=el('summary',english?'Reference models':'参考模型');references.append(summary,el('p',normalization.references.map(r=>r.model).join(' · ')));body.append(references);
+          if(normalization.status!=='READY')body.append(el('p',english?'The reference panel is incomplete; normalized scores are unavailable.':'固定参考组暂不完整，本次暂不发布换算分数。'));
+        }
         modelVisuals.update(data);return;
       }
       if(visitorEdition){

@@ -73,9 +73,9 @@ class BT:
             'optimizer':{'success':bool(result.success),'iterations':result.nit,
             'max_gradient':float(max(abs(gradient))),'objective':float(result.fun)},
             'alpha':self.alpha,'shrinkage':self.shrinkage}
-def export(fit,records,refs,*,min_papers=1):
+def export(fit,records,refs,*,min_papers=1,reference_scores=True):
     theta=fit['theta'];anchors=[(name,'')for name in refs]
-    assert all(name in theta for name in anchors)
+    assert not reference_scores or all(name in theta for name in anchors)
     papers=defaultdict(set);benches=defaultdict(set)
     for r in records:
         for k in ['a','b']:papers[r[k]].add(r['paper_id']);benches[r[k]].add(r['benchmark_id'])
@@ -83,7 +83,7 @@ def export(fit,records,refs,*,min_papers=1):
     for (name,setting),strength in sorted(theta.items(),key=lambda x:-x[1]):
         rows.append({'model':name,'setting':setting,'theta':strength,
             'elo_scale':1000+400/math.log(10)*strength,
-            'basket_score_0_100':float(100*np.mean([expit(strength-theta[ref])for ref in anchors])),
+            'basket_score_0_100':float(100*np.mean([expit(strength-theta[ref])for ref in anchors])) if reference_scores else None,
             'papers':len(papers[name,setting]),'benchmarks':len(benches[name,setting]),'logit_source_papers':0})
     # Paper coverage controls presentation, never the fit or exported evidence.
     assert all(row['papers']>=1 for row in rows)

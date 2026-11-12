@@ -16,4 +16,7 @@ assert.equal(viz.localElo({snapshot_id:'test'}).models.length,0);
 assert.equal(board.models.length,2);
 assert.equal(board.models[0].basket_score_0_100,65);
 assert.equal(viz.localElo({snapshot_id:'other'}),null);
+board.display_min_papers=1;
+for(const r of board.models)r.basket_score_0_100=null;
+assert.equal(viz.localElo({snapshot_id:'test'}).models.length,0);
 console.log('PASS: coverage filters only display; original fitted scores and rows unchanged');

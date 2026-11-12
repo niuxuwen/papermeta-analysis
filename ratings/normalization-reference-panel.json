@@ -1,0 +1,295 @@
+{
+  "version": "common-reference-panel-v1-20261112",
+  "source_snapshot": "52c8cd41c934517aa7a91eb7",
+  "selection": {
+    "minimum_independent_papers_per_board": 10,
+    "boards": [
+      "Main",
+      "Science",
+      "Coding",
+      "General",
+      "Agent"
+    ],
+    "base_configuration_only": true,
+    "frozen_membership": true,
+    "rule": "All observed base model identities with at least 10 distinct fitted papers in each of the five boards; equal reference weights. No score or vendor selection."
+  },
+  "references": [
+    {
+      "model": "Claude 4.8 Opus",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 80,
+        "Science": 19,
+        "Coding": 27,
+        "General": 27,
+        "Agent": 38
+      }
+    },
+    {
+      "model": "Claude 5 Opus",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 103,
+        "Science": 25,
+        "Coding": 34,
+        "General": 30,
+        "Agent": 54
+      }
+    },
+    {
+      "model": "Claude 5 Sonnet",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 97,
+        "Science": 24,
+        "Coding": 24,
+        "General": 36,
+        "Agent": 40
+      }
+    },
+    {
+      "model": "Claude 5.5 Opus",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 48,
+        "Science": 16,
+        "Coding": 12,
+        "General": 22,
+        "Agent": 20
+      }
+    },
+    {
+      "model": "Claude4.5 Haiku",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 94,
+        "Science": 19,
+        "Coding": 17,
+        "General": 46,
+        "Agent": 33
+      }
+    },
+    {
+      "model": "DeepSeek V4 Flash",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 75,
+        "Science": 17,
+        "Coding": 21,
+        "General": 29,
+        "Agent": 37
+      }
+    },
+    {
+      "model": "DeepSeek V4 Pro",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 112,
+        "Science": 27,
+        "Coding": 41,
+        "General": 37,
+        "Agent": 47
+      }
+    },
+    {
+      "model": "DeepSeek V4.1 Flash",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 63,
+        "Science": 16,
+        "Coding": 20,
+        "General": 19,
+        "Agent": 36
+      }
+    },
+    {
+      "model": "GPT-4o",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 80,
+        "Science": 25,
+        "Coding": 10,
+        "General": 43,
+        "Agent": 18
+      }
+    },
+    {
+      "model": "GPT-5",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 56,
+        "Science": 15,
+        "Coding": 12,
+        "General": 27,
+        "Agent": 13
+      }
+    },
+    {
+      "model": "GPT-5.4",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 114,
+        "Science": 31,
+        "Coding": 24,
+        "General": 49,
+        "Agent": 44
+      }
+    },
+    {
+      "model": "GPT-5.5",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 124,
+        "Science": 32,
+        "Coding": 31,
+        "General": 52,
+        "Agent": 38
+      }
+    },
+    {
+      "model": "GPT-5.6-Luna",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 103,
+        "Science": 25,
+        "Coding": 22,
+        "General": 51,
+        "Agent": 35
+      }
+    },
+    {
+      "model": "GPT-5.6-Sol",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 192,
+        "Science": 46,
+        "Coding": 59,
+        "General": 74,
+        "Agent": 86
+      }
+    },
+    {
+      "model": "GPT-6-Astra",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 99,
+        "Science": 36,
+        "Coding": 33,
+        "General": 31,
+        "Agent": 49
+      }
+    },
+    {
+      "model": "GPT-OSS 120B",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 50,
+        "Science": 12,
+        "Coding": 11,
+        "General": 24,
+        "Agent": 21
+      }
+    },
+    {
+      "model": "Gemini 3 Flash",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 55,
+        "Science": 12,
+        "Coding": 10,
+        "General": 32,
+        "Agent": 16
+      }
+    },
+    {
+      "model": "Gemini 3.1 Pro",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 115,
+        "Science": 28,
+        "Coding": 20,
+        "General": 61,
+        "Agent": 36
+      }
+    },
+    {
+      "model": "Gemini 3.8 Flash",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 90,
+        "Science": 15,
+        "Coding": 17,
+        "General": 41,
+        "Agent": 39
+      }
+    },
+    {
+      "model": "Gemini2.5 Pro",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 59,
+        "Science": 15,
+        "Coding": 11,
+        "General": 33,
+        "Agent": 18
+      }
+    },
+    {
+      "model": "Grok 4.6",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 35,
+        "Science": 10,
+        "Coding": 14,
+        "General": 13,
+        "Agent": 23
+      }
+    },
+    {
+      "model": "Kimi K2.6",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 51,
+        "Science": 10,
+        "Coding": 12,
+        "General": 21,
+        "Agent": 19
+      }
+    },
+    {
+      "model": "Kimi K3",
+      "setting": "",
+      "weight": 0.043478260869565216,
+      "papers": {
+        "Main": 96,
+        "Science": 19,
+        "Coding": 37,
+        "General": 32,
+        "Agent": 48
+      }
+    }
+  ]
+}

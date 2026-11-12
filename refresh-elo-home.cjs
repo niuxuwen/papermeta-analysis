@@ -12,7 +12,7 @@ if (board.snapshot_id !== manifest.snapshot_id || board.task_inputs_sha256 !== m
 }
 const ranking = JSON.parse(zlib.gunzipSync(read(manifest.ranking.path)));
 V.setModelRegistry(ranking.model_registry);
-const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 5)).slice(0,6);
+const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 7) && Number.isFinite(r.basket_score_0_100)).slice(0,6);
 const escape = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const buttons = top.map((r,i)=>{
   const name=escape(r.model), vendor=V.modelInfo(r.model).vendor;

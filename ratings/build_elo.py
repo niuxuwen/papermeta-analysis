@@ -18,7 +18,8 @@ from source_quality import prepare_data, attach_provenance, filter_board_records
 from identity_projection import project_edges
 from effort_projection import pool_efforts, fit_observations
 from reviewed_evidence import merge as merge_reviewed, publish_pack
-SCORING_REVISION = "source-order-effort-dedup-reviewed-live-20261112"
+from normalization import normalize
+SCORING_REVISION = "source-order-effort-dedup-reviewed-panel-v1-20261112"
 MAIN_DISPLAY_MIN_PAPERS = 7
 
 RULES = Path(__file__).resolve().parent
@@ -134,8 +135,9 @@ def main():
     registry, defaults, exclusions = inputs.registry, inputs.default_papers, inputs.exclusions
     item = inputs.manifest['task_inputs']
     eligible, nodes, fit = fit_main_elo(inputs.comparisons, weights)
-    ranking = export(fit,eligible,refs)
-    audit = assess(eligible,ranking,vendor,minimum_papers=1)
+    ranking = export(fit,eligible,refs,reference_scores=False)
+    normalization = normalize(ranking,elo_key='elo_scale',score_key='basket_score_0_100')
+    audit = assess(eligible,ranking,vendor,minimum_papers=1) if normalization['status']=='READY' else dict(reviews=[])
     node_ids = {node:i for i,node in enumerate(nodes)}
     group_nodes = defaultdict(set)
     repeats = Counter()
@@ -179,7 +181,7 @@ def main():
     audit_raw = gzip.compress(json.dumps(fit['input_audit'],ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
     audit_path = 'snapshot/'+inputs.manifest['snapshot_id']+'/input-audit-'+hashlib.sha256(audit_raw).hexdigest()[:16]+'.json.gz'
     (SITE/audit_path).write_bytes(audit_raw)
-    payload = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=publish_pack(SITE,data['snapshot_id']), input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
+    payload = dict(scoring_revision=SCORING_REVISION, normalization=normalization, reviewed_evidence=publish_pack(SITE,data['snapshot_id']), input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=[r['model'] for r in normalization['references']],
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),
@@ -192,7 +194,7 @@ def main():
     temp.replace(output)
 
     print(data['snapshot_id'],len(nodes),payload['papers'],len(eligible),'default tier papers',len(defaults))
-    print([(r['model'],round(r['basket_score_0_100'],2)) for r in ranking[:6]])
+    print([(r['model'],round(r['basket_score_0_100'],2) if r['basket_score_0_100'] is not None else None) for r in ranking[:6]])
 
 if __name__ == '__main__':
     main()
