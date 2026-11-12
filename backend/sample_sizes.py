@@ -3,6 +3,7 @@ import csv
 import hashlib
 import io
 import json
+import re
 from pathlib import Path
 
 REGISTRY = Path(__file__).with_name('benchmark-sample-sizes.json')
@@ -12,6 +13,12 @@ def entries():
 
 def key(row):
     return tuple(str(row.get(k) or '') for k in ('paper_id','table_id','metric'))
+
+def benchmark_matches(bench, record):
+    def clean(value): return re.sub(r'[\s_-]+','',str(value or '')).casefold()
+    return bench['paper_id']==record['paper_id'] and (
+        bench['benchmark_id']==record['benchmark_id'] or
+        clean(bench.get('benchmark_name')) in {clean(n) for n in record.get('benchmark_names',[])})
 
 def evidence(row, registry):
     source=row.get('reviewed_source') or {}
@@ -42,7 +49,7 @@ def annotate(snapshot):
         row['sample_size']=proof
     # Counts remain attached to the source metric. A benchmark may have different subsets.
     for bench in snapshot.get('benchmarks',[]):
-        matches=[r for r in records if r['paper_id']==bench['paper_id'] and r['benchmark_id']==bench['benchmark_id']]
+        matches=[r for r in records if benchmark_matches(bench,r)]
         bench['sample_sizes']=matches
         bench['evaluation_n']=None
     return records

@@ -1,6 +1,6 @@
 import unittest
 from copy import deepcopy
-from sample_sizes import annotate, entries
+from sample_sizes import annotate, entries, benchmark_matches
 
 class SampleSizeTests(unittest.TestCase):
     def fixture(self, table):
@@ -26,3 +26,8 @@ class SampleSizeTests(unittest.TestCase):
         before=deepcopy(s);annotate(s)
         self.assertEqual(before['score_groups'][0]['scores'],s['score_groups'][0]['scores'])
         self.assertIsNone(s['score_groups'][0]['evaluation_n'])
+    def test_reviewed_name_matches_only_same_paper(self):
+        p=next(r for r in entries() if r['n']==400)
+        b=dict(paper_id=p['paper_id'],benchmark_id='service-id',benchmark_name='HEARSAYBENCH')
+        self.assertTrue(benchmark_matches(b,p))
+        b['paper_id']='another-paper';self.assertFalse(benchmark_matches(b,p))
