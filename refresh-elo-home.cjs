@@ -12,7 +12,7 @@ if (board.snapshot_id !== manifest.snapshot_id || board.task_inputs_sha256 !== m
 }
 const ranking = JSON.parse(zlib.gunzipSync(read(manifest.ranking.path)));
 V.setModelRegistry(ranking.model_registry);
-const top = board.models.filter(r=>!r.setting).slice(0,6);
+const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 5)).slice(0,6);
 const escape = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const buttons = top.map((r,i)=>{
   const name=escape(r.model), vendor=V.modelInfo(r.model).vendor;
@@ -28,7 +28,7 @@ html=html.replace(/<script src="\.\/snapshot-elo-data\.js[^"]*"><\/script>/g,'')
     boot.snapshot.home_summary.models=top.map(r=>({name:r.model,score:r.basket_score_0_100,nBenchmarks:r.benchmarks,vendor:V.modelInfo(r.model).vendor}));
     return a+JSON.stringify(boot).replace(/</g,'\\u003c')+b;
   })
-  .replace(/src="\.\/(snapshot-elo-data|radar-viz|radar)\.js(?:\?v=[a-f0-9]+)?"/g,(_,n)=>
+  .replace(/src="\.\/(snapshot-elo-data|radar-viz|radar|capability-rankings)\.js(?:\?v=[^"<>]+)?"/g,(_,n)=>
     `src="./${n}.js?v=${crypto.createHash('sha256').update(read(n+'.js')).digest('hex').slice(0,12)}"`);
 if(!html.includes('src="./snapshot-elo-data.js?') || !html.includes(buttons))throw Error('Home template mismatch');
 fs.writeFileSync(path.join(site,'index.html.tmp'),html);

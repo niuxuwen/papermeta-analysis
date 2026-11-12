@@ -39,7 +39,7 @@ def editions():
     assert boards["snapshot"] == sid and set(boards["boards"]) == {"Science","Coding","General","Agent"}
     assert boards["score_method"] == "fixed-category-basket-v1"
     for category, rows in boards["boards"].items():
-        scores = [r["score"] for r in rows]
+        scores = [r["score"] for r in rows if r['papers'] >= boards.get('display_min_papers',5)]
         assert all(0 <= s <= 100 for s in scores) and scores == sorted(scores, reverse=True), category
         # Every match and its reverse sum to one win, including self-matches (0.5).
         assert not scores or abs(sum(scores) / len(scores) - 50) < 1e-8, category

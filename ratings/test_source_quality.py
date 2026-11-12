@@ -71,12 +71,12 @@ class SourceQualityTests(unittest.TestCase):
     def test_conflicting_source_cells_fail_loudly(self):
         g=group();g2=deepcopy(g);g2['group_id']='copy';g2['scores'][0]['value_numeric']=.1;d,r=self.pipeline([g,g2])
         with self.assertRaises(ValueError):filter_board_records(r)
-    def test_minimum_papers_applied_after_quality_exclusions(self):
+    def test_low_coverage_opponents_survive_quality_exclusions(self):
         r=[]
         for i in range(5):
             r.append(dict(a=('A',''),b=('B',''),y=float(i%2),paper_id=str(i),group_id=str(i),benchmark_id='b',source_quality={'eligible':i!=4}))
         eligible,nodes,fit=fit_main_elo(r,{str(i):1. for i in range(5)})
-        self.assertFalse(eligible);self.assertFalse(nodes);self.assertIsNone(fit)
+        self.assertEqual(len(eligible),4);self.assertEqual(len(nodes),2);self.assertIsNotNone(fit)
     def test_all_verified_replacement_columns_survive(self):
         g=group();extra=group('singleton');extra['scores']=extra['scores'][:1];rule=rules([g])
         for name in ['P','NPC']:

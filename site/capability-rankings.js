@@ -70,9 +70,12 @@
       '分榜优先采用来源表中具体指标所测的任务。指标只有通用标签时，结合评测的领域和任务归类。同一评测的不同指标可以进入不同分榜。',
       'Categories use the task measured by each source-table metric. For broadly labelled metrics, the benchmark subject and tasks provide context. Different metrics from one benchmark can enter different rankings.')));
     content.append(method);
+    method.append(element('p',txt(
+      '论文数量门槛仅控制榜单展示。低于门槛的模型仍作为比较对象参与拟合，其来源成绩保留；隐藏模型不会触发重新拟合。',
+      'The paper threshold only controls ranking visibility. Models below it remain comparison opponents in the fit, and their source results are retained. Hiding entries does not refit the model.')));
     if (!rows.length) content.append(element('p', en
-      ? `No comparison network currently meets the minimum of ${minimum} papers per entry.`
-      : `当前没有满足每个模型至少 ${minimum} 篇来源论文的互通比较组。`));
+      ? `No entry currently meets the display threshold of ${minimum} source papers.`
+      : `当前没有达到至少 ${minimum} 篇来源论文展示门槛的模型。`));
     const table=element('table',null,'ability-rank-table'), header=table.createTHead().insertRow(), body=table.createTBody();
     for(const name of [txt('名次','Rank'),txt('模型','Model'),txt('参考分（0–100）','Reference score (0–100)'),txt('来源论文','Papers'),txt('参评评测','Benchmarks')]){
       const th=element('th',name);th.scope='col';header.append(th);
@@ -109,7 +112,7 @@
       const data=await response.json();
       if (data.method !== 'main-batch-elo' || data.score_method !== 'fixed-category-basket-v1' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');
       for(const category of ['Science','Coding','General','Agent']){
-        const rows=data.boards[category],card=element('button',null,'ability-board-card');card.type='button';
+        const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5)),card=element('button',null,'ability-board-card');card.type='button';
         card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-expanded','false');
         const head=element('span',null,'ability-card-heading');
         const arrow=element('span','↗','ability-card-arrow');arrow.setAttribute('aria-hidden','true');head.append(element('strong',category),arrow);

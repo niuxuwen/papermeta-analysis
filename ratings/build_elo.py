@@ -86,9 +86,29 @@ def load_elo_inputs():
 
 def fit_main_elo(records, weights, *, min_papers=5, quality_board='Main'):
     records, _ = filter_board_records(records, board=quality_board)
-    eligible, nodes, _ = admissible(records, min_papers, mutual_components)
+    # min_papers is retained for caller compatibility, but is DISPLAY ONLY.
+    # No coverage pruning or cascading removal before fitting. The existing
+    # identifiability requirement is separate from the display threshold.
+    parts = mutual_components(records)
+    nodes = parts[0] if parts else []
+    core = set(nodes)
+    eligible = [r for r in records if r['a'] in core and r['b'] in core]
     fit = fitters(eligible, nodes, weights)('paper-half') if eligible else None
     return eligible, nodes, fit
+
+
+def coverage_audit(records, fitted, *, board='Main'):
+    retained, _ = filter_board_records(records, board=board)
+    parts = mutual_components(retained)
+    fitted_papers = {r['paper_id'] for r in fitted}
+    retained_papers = {r['paper_id'] for r in retained}
+    return dict(policy='coverage-display-only-v1', display_min_papers=5,
+                retained_papers=len(retained_papers), retained_comparisons=len(retained),
+                fitted_papers=len(fitted_papers), fitted_comparisons=len(fitted),
+                coverage_removed_papers=0, coverage_removed_comparisons=0,
+                comparison_components=len(parts),
+                outside_global_component_papers=sorted(retained_papers-fitted_papers),
+                component_rule='Existing strongly connected comparison scope; coverage is not used to construct it')
 
 
 def main():
@@ -100,7 +120,7 @@ def main():
     item = inputs.manifest['task_inputs']
     eligible, nodes, fit = fit_main_elo(inputs.comparisons, weights)
     ranking = export(fit,eligible,refs)
-    audit = assess(eligible,ranking,vendor)
+    audit = assess(eligible,ranking,vendor,minimum_papers=1)
     node_ids = {node:i for i,node in enumerate(nodes)}
     group_nodes = defaultdict(set)
     repeats = Counter()
@@ -136,6 +156,8 @@ def main():
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),
+                   display_min_papers=5, coverage_policy='coverage-display-only-v1',
+                   coverage_audit=coverage_audit(inputs.comparisons, eligible),
                    source_quality_overlap_audit=filter_board_records(inputs.comparisons)[1])
     output = SITE/'snapshot-elo-data.js'
     temp = output.with_suffix('.tmp')

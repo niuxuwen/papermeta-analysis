@@ -371,7 +371,9 @@
     return [...collected.values()].map(item=>({...item,settings:[...item.settings].sort()})).sort((a,b)=>Boolean(b.verifiedRecords)-Boolean(a.verifiedRecords)||String(a.benchmark.benchmark_name).localeCompare(String(b.benchmark.benchmark_name)));
   }
   function localElo(snapshot) {
-    return snapshot?.snapshot_id && host.snapshotElo?.snapshot_id === snapshot.snapshot_id ? host.snapshotElo : null;
+    const board=snapshot?.snapshot_id && host.snapshotElo?.snapshot_id === snapshot.snapshot_id ? host.snapshotElo : null;
+    // A presentation-only view: never mutate the fitted models or their scores.
+    return board ? {...board,models:board.models.filter(r=>r.papers >= (board.display_min_papers ?? 5))} : null;
   }
   function eloModel(snapshot,name,setting='') {
     const board=localElo(snapshot);

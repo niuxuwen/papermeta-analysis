@@ -16,8 +16,10 @@ def run(output):
     js=(site/'snapshot-elo-data.js').read_text(encoding='utf8');main=json.loads(js.removeprefix('window.snapshotElo = ').removesuffix(';'))
     cats=json.loads((site/'capability-rankings.json').read_text(encoding='utf8'))
     assert main['source_quality_policy']==cats['source_quality_policy']=='source-quality-v1-20261112'
-    assert all(r['papers']>=5 for r in main['models'])
-    assert all(r['papers']>=5 and 0<=r['score']<=100 for rows in cats['boards'].values() for r in rows)
+    assert main['coverage_policy']==cats['coverage_policy']=='coverage-display-only-v1'
+    assert main['coverage_audit']['coverage_removed_papers']==0
+    assert all(r['papers']>=1 for r in main['models'])
+    assert all(r['papers']>=1 and (r['score'] is None or 0<=r['score']<=100) for rows in cats['boards'].values() for r in rows)
     assert all(s['min_papers']==5 for s in cats['status'].values())
     report={'policy':main['source_quality_policy'],'entrypoints':['build_elo.main','build_capability_rankings.main'],'output_only':str(site),'production_changed':False,'min_papers':5,'models':{'Main':len(main['models']),**{c:len(rs) for c,rs in cats['boards'].items()}},'files':{name:hashlib.sha256((site/name).read_bytes()).hexdigest() for name in ['snapshot-elo-data.js','capability-rankings.json']}}
     (output/'builder-smoke.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')

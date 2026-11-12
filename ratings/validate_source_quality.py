@@ -42,7 +42,7 @@ def run(output):
                     for n in (edge['a'],edge['b']):pp[n].add(edge['paper_id'])
                 rank=[{'model':n[0],'setting':n[1],'theta':v,'elo':1000+400*v/math.log(10),'papers':len(pp[n])} for n,v in sorted(fit['theta'].items(),key=lambda x:-x[1])]
                 add_category_scores(rank)
-            assert all(r['papers']>=5 for r in rank)
+            assert all(r['papers']>=1 for r in rank)
             return {'papers':len({r['paper_id'] for r in rows}),'comparisons':len(rows),'models':len(rank),'ranking':rank}
         report['boards'][name]={'before':summary(er,bfit),'after':summary(fr,afit),'overlap_removals':dict(Counter(x['reason'] for x in filter_board_records(ar,board=name)[1]))}
         (output/'replay.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf8')

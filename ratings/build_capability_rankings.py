@@ -6,7 +6,7 @@ import subprocess
 from collections import defaultdict
 
 import math
-from build_elo import SITE, fit_main_elo, load_elo_inputs, export
+from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit
 
 MIN_CATEGORY_PAPERS = 5
 
@@ -16,13 +16,16 @@ def add_category_scores(rows):
     Each model/configuration has equal reference weight, including the entry
     itself (a predicted tie). Page filtering must never change this basket.
     """
+    # Preserve the established reference basket of publishable entries, while
+    # retaining all low-coverage opponents in the underlying BT fit and output.
+    references = [r for r in rows if r['papers'] >= MIN_CATEGORY_PAPERS]
     for row in rows:
         probabilities = []
-        for reference in rows:
+        for reference in references:
             delta = (row['elo'] - reference['elo']) * math.log(10) / 400
             z = math.exp(-abs(delta))
             probabilities.append(1 / (1 + z) if delta >= 0 else z / (1 + z))
-        row['score'] = 100 * math.fsum(probabilities) / len(rows)
+        row['score'] = 100 * math.fsum(probabilities) / len(references) if references else None
 
 # Explicit task labels describe what was assessed. Skills like reading or
 # following instructions are also used inside specialist tasks.
@@ -203,11 +206,13 @@ def main():
         add_category_scores(rows)
         boards[category] = sorted(rows, key=lambda row: (-row['elo'], row['model'], row['setting']))
         status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, missing=missing,
+                                coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
         print(category, len(rows), 'missing anchors:', missing)
     result = dict(snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
                   status=status, references=inputs.references, method='main-batch-elo',
-                  score_method='fixed-category-basket-v1', source_quality_policy=inputs.data.get('source_quality_policy'))
+                  score_method='fixed-category-basket-v1', source_quality_policy=inputs.data.get('source_quality_policy'),
+                  coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)
     output = SITE / 'capability-rankings.json'
     temp = output.with_suffix('.tmp')
     temp.write_text(json.dumps(result, ensure_ascii=False, separators=(',', ':'), allow_nan=False), encoding='utf8')

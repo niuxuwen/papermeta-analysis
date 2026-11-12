@@ -73,7 +73,7 @@ class BT:
             'optimizer':{'success':bool(result.success),'iterations':result.nit,
             'max_gradient':float(max(abs(gradient))),'objective':float(result.fun)},
             'alpha':self.alpha,'shrinkage':self.shrinkage}
-def export(fit,records,refs,*,min_papers=5):
+def export(fit,records,refs,*,min_papers=1):
     theta=fit['theta'];anchors=[(name,'')for name in refs]
     assert all(name in theta for name in anchors)
     papers=defaultdict(set);benches=defaultdict(set)
@@ -85,7 +85,8 @@ def export(fit,records,refs,*,min_papers=5):
             'elo_scale':1000+400/math.log(10)*strength,
             'basket_score_0_100':float(100*np.mean([expit(strength-theta[ref])for ref in anchors])),
             'papers':len(papers[name,setting]),'benchmarks':len(benches[name,setting]),'logit_source_papers':0})
-    assert all(row['papers']>=min_papers for row in rows)
+    # Paper coverage controls presentation, never the fit or exported evidence.
+    assert all(row['papers']>=1 for row in rows)
     return rows
 
 SPECS = {'paper-half': ('paper', .5)}
