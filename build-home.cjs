@@ -16,6 +16,12 @@ if(manifest.benchmark_entities){
  if(raw.length!==meta.bytes||crypto.createHash('sha256').update(raw).digest('hex')!==meta.sha256)throw Error('BENCHMARK_ENTITY_INTEGRITY_FAILURE');
  snapshot=require('./benchmark-entity-projection.cjs')(snapshot,JSON.parse(zlib.gunzipSync(raw)));
 }
+if(manifest.sample_sizes){
+ const meta=manifest.sample_sizes,raw=fs.readFileSync(path.join(site,meta.path));
+ if(raw.length!==meta.bytes||crypto.createHash('sha256').update(raw).digest('hex')!==meta.sha256)throw Error('SAMPLE_SIZE_INTEGRITY_FAILURE');
+ const records=JSON.parse(raw).entries;
+ for(const b of snapshot.benchmarks){b.evaluation_n=null;b.sample_sizes=records.filter(r=>r.paper_id===b.paper_id&&r.benchmark_id===b.benchmark_id);}
+}
 const V=context.RadarViz,publicData=V.visitorSnapshot(snapshot);V.setModelRegistry(publicData.model_registry);
 require('./build-ranking.cjs')(snapshot,publicData,V,manifest,site);
 const rows=V.modelData(publicData,'').rows.filter(r=>Number.isFinite(r.score)).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));

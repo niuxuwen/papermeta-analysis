@@ -45,7 +45,8 @@ jobs:
           python -m unittest discover -s ratings -p test_effort_projection.py
           python -m unittest discover -s ratings -p test_opus_release.py
           python -m unittest discover -s ratings -p test_reviewed_evidence.py
-          python -m unittest discover -s ratings -p test_normalization.py
+          python -m unittest discover -s ratings -p test_raw_elo.py
+          python -m unittest discover -s backend -p test_sample_sizes.py
           node ratings/test_display_coverage.cjs
           python3 backend/build_live.py .live-feed/feed
           node build-home.cjs

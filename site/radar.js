@@ -17,8 +17,8 @@
   function selectedRankingPanel(setting){const panels=(state.snapshot?.index?.score_panels||[]).filter(p=>p.model_setting===setting);return panels.find(p=>p.panel_id===rankingPanels.get(setting))||panels[0];}
   function rankingData(){return Viz.modelData(state.snapshot,visualSetting,selectedRankingPanel(visualSetting)?.panel_id);}
   function scopedModels(){const elo=Viz.localElo(state.snapshot);
-    if(elo)return elo.models.map(r=>({model_canonical:r.model,model_setting:r.setting,score:r.basket_score_0_100,
-      publication_score:r.basket_score_0_100,score_panel_id:'elo',publication_eligible:true,n_benchmarks:r.benchmarks,status:'COMPLETE'}));
+    if(elo)return elo.models.map(r=>({model_canonical:r.model,model_setting:r.setting,score:r.elo_scale,
+      publication_score:r.elo_scale,score_panel_id:'elo',publication_eligible:true,n_benchmarks:r.benchmarks,status:'COMPLETE'}));
     const rows=state.snapshot?.index?.models||[];if(state.snapshot?.index?.method?.score_unit!=='z_score')return rows;return rows.map(m=>{const panel=selectedRankingPanel(m.model_setting);return panel?.models?.find(x=>x.model_canonical===m.model_canonical)||{...m,score:null,publication_score:null,publication_eligible:false,score_panel_id:panel?.panel_id||null,score_components:[],missing_score_groups:[],provisional:true,status:'PARTIAL',blocked_group_ids:[],publication_status:panel?'INCOMPLETE_COMMON_PANEL':'NO_COMMON_RELATIVE_PANEL'};});}
   const chartAxis=a=>{const b=state.snapshot?.benchmarks.find(b=>b.paper_id===a.paper_id&&b.benchmark_id===a.benchmark_id);if(b)selectBenchmark(b);};
   const overviewRanking=Viz.create($('overview-ranking'),{allowExpand:false,compact:true,initial:'bar',onAxis:chartAxis,onModel:openModel});
@@ -135,8 +135,8 @@
       summary.textContent=`${benchmarks.size} 个有可比成绩的 Benchmark · ${rows.length} 条来源记录 · 数据更新 ${date(detailSnapshot.generated_at)}`;
       content.replaceChildren();scoreContent.replaceChildren();stats.replaceChildren();
       const localBoard=Viz.localElo(detailSnapshot),rating=setting===initialSetting&&requestedElo?requestedElo:Viz.eloModel(detailSnapshot,name,setting);
-      const scored=(detailSnapshot.index?.models||[]).find(m=>m.model_canonical===name&&m.model_setting===setting),published=localBoard?(rating?.basket_score_0_100??null):Viz.publicationScore(scored||{},detailSnapshot.index.method?.min_benchmarks||3);
-      for(const [value,text] of [[published,scored?.score_unit==='z_score'?'相对参考分':'综合分 · 0–100'],[localBoard?(rating?.benchmarks??null):(scored?.scored_benchmarks??scored?.n_benchmarks??null),'计分评测'],[benchmarks.size,'可比评测'],[rows.length,'来源记录']]){const item=el('div',null,'model-stat'),number=el('strong',fmt(value));item.append(el('span',text),number);stats.append(item);}
+      const scored=(detailSnapshot.index?.models||[]).find(m=>m.model_canonical===name&&m.model_setting===setting),published=localBoard?(rating?.elo_scale??null):Viz.publicationScore(scored||{},detailSnapshot.index.method?.min_benchmarks||3);
+      for(const [value,text] of [[published,localBoard?'Elo':scored?.score_unit==='z_score'?'相对参考分':'综合分 · 0–100'],[localBoard?(rating?.benchmarks??null):(scored?.scored_benchmarks??scored?.n_benchmarks??null),'计分评测'],[benchmarks.size,'可比评测'],[rows.length,'来源记录']]){const item=el('div',null,'model-stat'),number=el('strong',fmt(value));item.append(el('span',text),number);stats.append(item);}
       scoreContext.textContent=published===null?Viz.publicationLabel(scored||{}):'数据更新 '+date(detailSnapshot.generated_at);
 
       if(localBoard){
@@ -145,11 +145,11 @@
         const overview=el('section',null,'visitor-score-overview');
         overview.append(el('h3',english?'Composite score':'综合评分'));
         overview.append(el('p',rating?(english?
-          `Elo ${rating.elo_scale.toFixed(1)} · Reference score ${published.toFixed(2)} / 100 · ${rating.papers} papers`:
-          `Elo ${rating.elo_scale.toFixed(1)} · 篮子参考分 ${published.toFixed(2)} / 100 · ${rating.papers} 篇论文`):
+          `Elo ${rating.elo_scale.toFixed(1)} · ${rating.papers} papers`:
+          `Elo ${rating.elo_scale.toFixed(1)} · ${rating.papers} 篇论文`):
           (english?'No published Elo rating for this configuration.':'该配置暂无已发布的 Elo 分数。')));
         if(rating){
-          overview.append(el('p',(english?'Reference models: ':'参考模型：')+localBoard.references.join('、')));
+
           for(const pair of localBoard.reviews.filter(pair=>[pair.upper,pair.lower].some(([n,s])=>n===rating.model&&s===rating.setting))){
             const above=pair.upper[0]===rating.model&&pair.upper[1]===rating.setting;
             const peer=(above?pair.lower:pair.upper).filter(Boolean).join(' · ');
@@ -963,18 +963,17 @@
         $('scoring-readiness').textContent=english?`Elo · ${published} rated models and configurations`:`Elo · ${published} 个模型及配置已发布评分`;
         const minimum=window.snapshotElo?.display_min_papers ?? 7;
         body.append(el('p',english?`Weighted Bradley–Terry fit on within-paper comparisons. The overall ranking displays entries supported by at least ${minimum} independent papers. This threshold does not remove evidence from the fit.`:data.note+` 总榜仅展示至少有 ${minimum} 篇独立论文支持的模型；展示门槛不影响论文参与计算。`));
-        const normalization=window.snapshotElo?.normalization;
-        if(normalization){
-          body.append(el('p',english?`Reference scale: ${normalization.reference_count} fixed models, equally weighted. Scores are expected match scores against this panel, with ties counting as one half; they are not benchmark accuracy. Reference strengths are re-estimated, so changes across dates are not a pure measure of capability improvement.`:`固定参考组包含 ${normalization.reference_count} 个等权模型，平局计半分。分数表示相对于该组的预期得分，不是题目正确率。参考模型强度会随证据重估，跨日期涨分不等同能力提升。`));
-          const references=el('details'),summary=el('summary',english?'Reference models':'参考模型');references.append(summary,el('p',normalization.references.map(r=>r.model).join(' · ')));body.append(references);
-          if(normalization.status!=='READY')body.append(el('p',english?'The reference panel is incomplete; normalized scores are unavailable.':'固定参考组暂不完整，本次暂不发布换算分数。'));
-        }
+        body.append(el('p',english?'Elo = 1000 + 400 × θ / ln(10). The 1000 baseline is a choice of origin, not a percentage. Ratings from independently fitted boards or dates do not share an absolute scale.':'Elo = 1000 + 400 × θ / ln(10)。1000 是刻度基准，不是百分比。各榜单独立拟合，不作为跨领域或跨日期的绝对能力刻度。'));
+        const sampleMeta=window.radarSnapshotManifest?.sample_sizes;
+        if(sampleMeta){const link=el('a',english?'Download benchmark sample counts (CSV)':'下载 Benchmark 测试样本数（CSV）');link.href='/'+sampleMeta.csv_path;link.download='benchmark-sample-sizes.csv';body.append(link);}
         modelVisuals.update(data);return;
       }
       if(visitorEdition){
         $('scoring-readiness').textContent=`${published} 个模型已有综合评分 · ${benchmarks.size} 项评测。可查看各模型的评测覆盖和原始成绩。`;
         $('scoring-scope').querySelector('summary').textContent='评分与数据说明';
         body.append(el('p','综合评分汇总当前版本中的已测表现，范围为 0–100。筛选模型仅改变展示范围。'),el('p','细线表示参考区间。评测覆盖和实验设置可能不同，请结合共同参测项目比较；成绩来源可在模型详情中查询。'));
+        const sampleMeta=window.radarSnapshotManifest?.sample_sizes;
+        if(sampleMeta){const link=el('a',english?'Download benchmark sample counts (CSV)':'下载 Benchmark 测试样本数（CSV）');link.href='/'+sampleMeta.csv_path;link.download='benchmark-sample-sizes.csv';body.append(link);}
         modelVisuals.update(data);return;
       }
       if(snap.index.method.version>=8&&snap.index.method.version!==9)body.append(el('p','综合分使用跨任务共享强度，而不是将全部任务都视为同一种能力。同场来源成绩用于拟合对应任务的表现，任务专项强度与自身共享强度通过对称的部分共享正则项联合估计；这些正则项不算真实比较、不建立跨模型证据连接，也不增加 Benchmark 数。'),el('p',`基础共享强度正则 ${snap.index.method.prior_strength}；任务共享系数 ${snap.index.method.task_coupling_strength}，按同一来源任务预算比例缩放。系数用隐藏整类任务的预测损失选择，不按预期型号顺序选择。未观测任务不增加来源记录，模型详情可查看已有任务的专项修正。`,'method-note'));

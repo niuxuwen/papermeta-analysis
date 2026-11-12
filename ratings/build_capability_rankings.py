@@ -7,12 +7,12 @@ from collections import defaultdict
 
 import math
 from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit, SCORING_REVISION
-from normalization import normalize, METHOD
+from raw_elo import annotate, METHOD
 
 MIN_CATEGORY_PAPERS = 5
 
 def add_category_scores(rows, panel=None):
-    return normalize(rows,panel=panel)
+    return annotate(rows)
 
 # Explicit task labels describe what was assessed. Skills like reading or
 # following instructions are also used inside specialist tasks.
@@ -191,14 +191,14 @@ def main():
             rows.append(dict(model=node[0], setting=node[1], elo=1000 + 400 * strength / math.log(10),
                              papers=len(papers[node]),
                              sources=sorted(sources[node], key=lambda idx: benchmarks[idx][0].casefold())))
-        normalization = add_category_scores(rows)
+        add_category_scores(rows)
         boards[category] = sorted(rows, key=lambda row: (-row['elo'], row['model'], row['setting']))
-        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, missing=normalization['missing'],normalization=normalization,
+        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, score_unit='elo',
                                 coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
-        print(category, len(rows), 'missing anchors:', normalization['missing'])
+        print(category, len(rows), 'raw Elo')
     result = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=inputs.data.get('reviewed_evidence_audit'), snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
-                  status=status, references=[r['model']for r in normalization['references']], method='main-batch-elo',
+                  status=status, references=[], score_unit='elo', method='main-batch-elo',
                   score_method=METHOD, source_quality_policy=inputs.data.get('source_quality_policy'),
                   coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)
     output = SITE / 'capability-rankings.json'

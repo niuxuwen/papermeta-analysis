@@ -33,7 +33,7 @@ module.exports=function(snapshot,publicData,V,manifest,site){
   for(const row of publicData.observations){const id=identity(row);if(!byBenchmark.has(id))byBenchmark.set(id,[]);byBenchmark.get(id).push(row);}
   for(const row of publicData.capability_annotations?.items||[]){const id=identity(row);if(!annotations.has(id))annotations.set(id,[]);annotations.get(id).push(row);}
   const catalog=publicData.benchmarks.map(b=>{
-    const item=pick(b,['paper_id','benchmark_id','benchmark_name','paper_title','release_date','paper_first_published','eligibility','arxiv_id','source_benchmark_name','benchmark_aliases','catalog_identity','catalog_aliases','directory_identity','directory_aliases','directory_grouping_basis','name_audit','benchmark_entity_id','benchmark_variant_id','benchmark_entity_name','benchmark_entity_status','benchmark_entity_match_basis']);
+    const item=pick(b,['paper_id','benchmark_id','benchmark_name','paper_title','release_date','paper_first_published','eligibility','arxiv_id','source_benchmark_name','benchmark_aliases','catalog_identity','catalog_aliases','directory_identity','directory_aliases','directory_grouping_basis','name_audit','benchmark_entity_id','benchmark_variant_id','benchmark_entity_name','benchmark_entity_status','benchmark_entity_match_basis','evaluation_n','sample_sizes']);
     for(const key of ['catalog_sources','directory_sources'])if(b[key])item[key]=b[key].map(ref=>pick(ref,['paper_id','benchmark_id','paper_title']));
     item.progress=pick(b.progress||{},['paper_status','observations','models','tables']);
     item.catalog_display_tags={};

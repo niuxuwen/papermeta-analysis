@@ -93,6 +93,10 @@ def merge(data, papers, pack=None, manifest=None):
                evidence_sha256=(manifest or {}).get('sha256'),attested_review_papers=pack['attested_verified_papers'],
                added_groups=len(accepted),added_papers=len({by_id[g]['paper_id'] for g in accepted}),
                classified_groups=classified,event_counts=dict(Counter(e['reason'] for e in events)),events=events)
+    import sys
+    sys.path.insert(0,str(ROOT.parent/'backend'))
+    from sample_sizes import annotate
+    annotate(out)
     out['reviewed_evidence_audit']=audit
     return out,papers,audit
 

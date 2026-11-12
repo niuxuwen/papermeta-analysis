@@ -2,6 +2,10 @@
 (() => {
   const catalog = window.paperMateEnglish;
   Object.assign(catalog.labels,{
+    '测试样本 n':'Test sample n', '综合评分 · Elo':'Model ratings · Elo',
+    '加权 Bradley–Terry 拟合 · Elo 分数':'Weighted Bradley–Terry ratings on the Elo scale',
+    '同条件比较采用加权 Bradley–Terry 拟合，直接展示 Elo 分数。Elo = 1000 + 400 × θ / ln(10)。':'Weighted Bradley–Terry fit on matched comparisons. Elo = 1000 + 400 × θ / ln(10).',
+
     '综合评分已加载，详细评测数据暂未加载。可点击“重新载入”重试。':'Model ratings are available. Reload to retry loading the detailed evidence.',
     '手动设置任务能力与权重后即可评分。任务评分在当前浏览器内完成。':'Set the capabilities and weights to score models in your browser.',
     '汇总该模型的参测项目、原始成绩与评分依据。':'Explore this model’s benchmarks, reported scores and scoring methods.',

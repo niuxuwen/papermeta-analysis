@@ -15,7 +15,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 sys.path.insert(0,str(ROOT/'ratings'))
-from normalization import validate, METHOD
+from raw_elo import validate, METHOD
+from math import isfinite
 RUNTIME = "0.27.7"
 CHECKSUM = "RUSVJlhQdfWfgO9hVHCiXoG+nVZQRS5D9FzgpLJ/VcgGBLSAKoPL8kTiOikxbHQm1kRISeWUBdulEgO26qpSRA=="
 
@@ -42,9 +43,9 @@ def editions():
     assert boards["snapshot"] == sid and set(boards["boards"]) == {"Science","Coding","General","Agent"}
     assert boards["score_method"] == METHOD
     for category, rows in boards["boards"].items():
-        validate(rows,boards['status'][category]['normalization'])
+        validate(rows)
         scores = [r["score"] for r in rows if r['papers'] >= boards.get('display_min_papers',5) and r['score'] is not None]
-        assert all(0 <= s <= 100 for s in scores) and scores == sorted(scores, reverse=True), category
+        assert all(isfinite(s) for s in scores) and scores == sorted(scores, reverse=True), category
     shutil.move(SITE/"capability-rankings.json",gen/"capability-rankings.json")
     shutil.move(SITE/"snapshot-elo-data.js",gen/"elo.js")
     ranking = json.loads(gzip.decompress((SITE/manifest["ranking"]["path"]).read_bytes()))
@@ -65,7 +66,8 @@ def editions():
             script = (gen/"elo.js").read_text(encoding="utf-8")
             assert script.startswith("window.snapshotElo = ")
             payload = json.loads(script.removeprefix("window.snapshotElo = ").removesuffix(";"))
-            validate(payload['models'],payload['normalization'],elo_key='elo_scale',score_key='basket_score_0_100')
+            validate(payload['models'],elo_key='elo_scale')
+            assert payload['score_method'] == METHOD
             assert payload["snapshot_id"] == sid and payload["task_inputs_sha256"] == manifest["task_inputs"]["sha256"]
             safe_script = script.replace("<", r"\u003c")
             source, count = re.subn(r'<script src="\./snapshot-elo-data\.js(?:\?v=[a-f0-9]+)?"></script>',

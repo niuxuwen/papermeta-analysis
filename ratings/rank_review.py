@@ -22,10 +22,10 @@ def validate_edges(records):
         seen.add(key)
 
 
-def assess(records, ranking, vendor, minimum_papers=5, review_minimum=3):
+def assess(records, ranking, vendor, minimum_papers=5, review_minimum=3, score_key='basket_score_0_100'):
     nodes = [(row['model'], row['setting']) for row in ranking]
-    scores = [row['basket_score_0_100'] for row in ranking]
-    if len(set(nodes)) != len(nodes) or any(not isfinite(s) or not 0 <= s <= 100 for s in scores):
+    scores = [row[score_key] for row in ranking]
+    if len(set(nodes)) != len(nodes) or any(not isfinite(s) or (score_key == 'basket_score_0_100' and not 0 <= s <= 100) for s in scores):
         raise ValueError('Invalid model identity or basket score')
     if scores != sorted(scores, reverse=True):
         raise ValueError('Display order differs from fitted scores')

@@ -20,6 +20,7 @@
     return manifestPromise||(manifestPromise=(async()=>{
       const data=bootstrap?.manifest||JSON.parse(new TextDecoder().decode(await bytes('snapshot/current.json')));
       if(data.format!=='radar-static-snapshot-v1'||!Array.isArray(data.parts)||!data.parts.every(p=>safePath(p.path)))throw Error('INVALID_SNAPSHOT_MANIFEST');
+      window.radarSnapshotManifest=data;
       return data;
     })().catch(e=>{manifestPromise=null;throw e;}));
   }
@@ -99,7 +100,7 @@
       if(snapshot.snapshot_id!==next.snapshot_id||snapshot.catalog_loaded!==true||snapshot.sources_loaded!==false)throw Error('PUBLICATION_SNAPSHOT_MISMATCH');
       // Prepare and verify the new generation before replacing any cached data.
       return {snapshot,commit(){
-        manifestPromise=Promise.resolve(next);rankingPromise=Promise.resolve(snapshot);
+        window.radarSnapshotManifest=next;manifestPromise=Promise.resolve(next);rankingPromise=Promise.resolve(snapshot);
         workspacePromise=decodedPromise=comparisonPromise=modelIndexPromise=taskEvidencePromise=null;
         modelPromises.clear();window.RadarTaskMeasurements=null;
         window.RadarHomeSnapshot=snapshot;

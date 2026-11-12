@@ -12,11 +12,11 @@ if (board.snapshot_id !== manifest.snapshot_id || board.task_inputs_sha256 !== m
 }
 const ranking = JSON.parse(zlib.gunzipSync(read(manifest.ranking.path)));
 V.setModelRegistry(ranking.model_registry);
-const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 7) && Number.isFinite(r.basket_score_0_100)).slice(0,6);
+const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 7) && Number.isFinite(r.elo_scale)).slice(0,6);
 const escape = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const buttons = top.map((r,i)=>{
   const name=escape(r.model), vendor=V.modelInfo(r.model).vendor;
-  return `<button type="button" class="visitor-model-row" data-home-model="${name}"><span class="visitor-rank">${String(i+1).padStart(2,'0')}</span><span class="visitor-model-swatch" style="background:${V.vendorColor(vendor)}"></span><span class="visitor-model-name"><strong>${name}</strong><small>${escape(vendor)} · ${r.benchmarks} 项评测</small></span><strong class="visitor-model-score">${r.basket_score_0_100.toFixed(1)}</strong></button>`;
+  return `<button type="button" class="visitor-model-row" data-home-model="${name}"><span class="visitor-rank">${String(i+1).padStart(2,'0')}</span><span class="visitor-model-swatch" style="background:${V.vendorColor(vendor)}"></span><span class="visitor-model-name"><strong>${name}</strong><small>${escape(vendor)} · ${r.benchmarks} 项评测</small></span><strong class="visitor-model-score">${r.elo_scale.toFixed(1)}</strong></button>`;
 }).join('');
 let html=read('index.html').toString();
 html=html.replace(/<script src="\.\/snapshot-elo-data\.js[^"]*"><\/script>/g,'')
@@ -25,7 +25,7 @@ html=html.replace(/<script src="\.\/snapshot-elo-data\.js[^"]*"><\/script>/g,'')
   .replace('<h2>模型综合评分</h2>','<h2>综合评分</h2>')
   .replace(/(<script id="snapshot-bootstrap"[^>]*>)([\s\S]*?)(<\/script>)/,(_,a,data,b)=>{
     const boot=JSON.parse(data);
-    boot.snapshot.home_summary.models=top.map(r=>({name:r.model,score:r.basket_score_0_100,nBenchmarks:r.benchmarks,vendor:V.modelInfo(r.model).vendor}));
+    boot.snapshot.home_summary.models=top.map(r=>({name:r.model,score:r.elo_scale,nBenchmarks:r.benchmarks,vendor:V.modelInfo(r.model).vendor}));
     return a+JSON.stringify(boot).replace(/</g,'\\u003c')+b;
   })
   .replace(/src="\.\/(snapshot-elo-data|radar-viz|radar|capability-rankings)\.js(?:\?v=[^"<>]+)?"/g,(_,n)=>

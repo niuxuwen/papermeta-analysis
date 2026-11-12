@@ -41,6 +41,8 @@ def build(feed, site, rules_path):
         value = raw[offset:offset + 4 * 1024 * 1024]
         p.write_bytes(value)
         parts.append({'path': p.relative_to(site).as_posix(), 'bytes': len(value)})
+    from sample_sizes import publish
+    sample_meta = publish(snapshot, root, site)
     overview = {k: snapshot[k] for k in ('snapshot_id', 'generated_at', 'window', 'status', 'benchmarks')}
     overview.update(observations=[], index={'models': [], 'groups': []}, score_groups=[], detail_loaded=False,
         capability_annotations={'items': []}, capability_atlas=snapshot.get('capability_atlas'))
@@ -68,6 +70,7 @@ def build(feed, site, rules_path):
         'source_sha256': report['source_sha256'], 'observations': report['observations'], 'method_version': snapshot['index']['method']['version'],
         'score_version': snapshot['index']['method'].get('score_version'), 'model_calls': 0,
         'automatic_publication': True}
+    manifest['sample_sizes'] = sample_meta
     manifest['benchmark_entities'] = {'path': entity_path.relative_to(site).as_posix(),
         'sha256': entity_hash, 'bytes': len(entity_raw), 'snapshot_id': sid}
     if report.get('task_inputs_sha256'):

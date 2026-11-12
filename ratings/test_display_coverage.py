@@ -35,11 +35,11 @@ class DisplayCoverageTests(unittest.TestCase):
         self.assertEqual(audit['retained_papers'],8)
         self.assertEqual(audit['outside_global_component_papers'],['other'])
         self.assertEqual(audit['coverage_removed_papers'],0)
-    def test_category_reference_basket_is_independent_of_display(self):
+    def test_category_elo_is_independent_of_display(self):
         rows=[dict(model='A',papers=5,elo=1200),dict(model='B',papers=5,elo=1000),dict(model='C',papers=1,elo=1600)]
         panel=dict(version='test',references=[dict(model='A',weight=.5),dict(model='B',weight=.5)])
         add_category_scores(rows,panel)
-        self.assertAlmostEqual((rows[0]['score']+rows[1]['score'])/2,50.)
+        self.assertEqual([r['score'] for r in rows],[1200,1000,1600])
         self.assertEqual(len(rows),3);self.assertIsNotNone(rows[2]['score'])
         before=[r['score'] for r in rows]
         for row in rows:row['papers']=1
