@@ -19,6 +19,7 @@ from identity_projection import project_edges
 from effort_projection import pool_efforts, fit_observations
 from reviewed_evidence import merge as merge_reviewed, publish_pack
 SCORING_REVISION = "source-order-effort-dedup-reviewed-live-20261112"
+MAIN_DISPLAY_MIN_PAPERS = 7
 
 RULES = Path(__file__).resolve().parent
 ROOT = RULES.parent
@@ -116,7 +117,7 @@ def coverage_audit(records, fitted, *, board='Main'):
     parts = mutual_components(observations)
     fitted_papers = {r['paper_id'] for r in fitted}
     retained_papers = {r['paper_id'] for r in retained}
-    return dict(policy='coverage-display-only-v1', display_min_papers=5,
+    return dict(policy='coverage-display-only-v1', display_min_papers=MAIN_DISPLAY_MIN_PAPERS if board=='Main' else 5,
                 retained_papers=len(retained_papers), retained_comparisons=len(retained),
                 fitted_papers=len(fitted_papers), fitted_comparisons=len(fitted),
                 coverage_removed_papers=0, coverage_removed_comparisons=0,
@@ -182,7 +183,7 @@ def main():
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),
-                   display_min_papers=5, coverage_policy='coverage-display-only-v1',
+                   display_min_papers=MAIN_DISPLAY_MIN_PAPERS, coverage_policy='coverage-display-only-v1',
                    coverage_audit=coverage_audit(inputs.comparisons, eligible),
                    source_quality_overlap_audit=filter_board_records(inputs.comparisons)[1])
     output = SITE/'snapshot-elo-data.js'

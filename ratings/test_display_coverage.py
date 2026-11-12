@@ -22,7 +22,7 @@ class DisplayCoverageTests(unittest.TestCase):
     def test_display_minimum_cannot_change_strengths_or_papers(self):
         rows,q=self.fixture()
         r1,n1,f1=fit_main_elo(rows,q,min_papers=1)
-        r5,n5,f5=fit_main_elo(rows,q,min_papers=5)
+        r5,n5,f5=fit_main_elo(rows,q,min_papers=7)
         self.assertEqual(r1,r5);self.assertEqual(n1,n5);self.assertEqual(f1['theta'],f5['theta'])
     def test_rare_opponent_changes_estimated_comparison(self):
         rows,q=self.fixture();_,_,full=fit_main_elo(rows,q)

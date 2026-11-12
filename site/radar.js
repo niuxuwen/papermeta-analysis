@@ -961,7 +961,8 @@
       if(data.elo){
         const english=document.documentElement.lang==='en';
         $('scoring-readiness').textContent=english?`Elo · ${published} rated models and configurations`:`Elo · ${published} 个模型及配置已发布评分`;
-        body.append(el('p',english?'Weighted Bradley–Terry fit on within-paper comparisons. Repeated comparisons of a pair in one paper receive a square-root discount. Ratings require five source papers.':data.note+' 同篇重复比较按平方根折扣，每个入榜配置至少有 5 篇论文。'));
+        const minimum=window.snapshotElo?.display_min_papers ?? 7;
+        body.append(el('p',english?`Weighted Bradley–Terry fit on within-paper comparisons. The overall ranking displays entries supported by at least ${minimum} independent papers. This threshold does not remove evidence from the fit.`:data.note+` 总榜仅展示至少有 ${minimum} 篇独立论文支持的模型；展示门槛不影响论文参与计算。`));
         modelVisuals.update(data);return;
       }
       if(visitorEdition){
