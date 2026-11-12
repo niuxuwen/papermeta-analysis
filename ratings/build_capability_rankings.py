@@ -84,6 +84,8 @@ def measurement_categories(group, label, tags, reviewed_code, owners):
         return set()
     if quality.get('categories') is not None:
         return set(quality['categories'])
+    if 'reviewed_categories' in group:
+        return set(group['reviewed_categories'])
     metric = group['metric'].strip()
     if label is not None and not label.get('capabilities'):
         return set()
@@ -149,6 +151,10 @@ def category_evidence(inputs):
     for group in task['index']['groups']:
         gid, pid, bid, metric = (group[k] for k in ('group_id','paper_id','benchmark_id','metric'))
         bench = by_source.get((pid, bid))
+        source_url = ''
+        if bench is None and group.get('reviewed_evidence_version'):
+            bench = dict(paper_id=pid,benchmark_id=bid,benchmark_name=bid)
+            source_url = group.get('reviewed_source_url','')
         label = task['measurements']['groups'].get(gid)
         if not bench:
             continue
@@ -160,7 +166,7 @@ def category_evidence(inputs):
         identity = bench.get('directory_identity') or (pid, bid)
         if identity not in bench_indices:
             bench_indices[identity] = len(benchmarks)
-            benchmarks.append([bench['benchmark_name'], pid, bid])
+            benchmarks.append([bench['benchmark_name'], pid, bid, source_url])
         group_bench[gid] = bench_indices[identity]
         scoped[gid] = cats
     edges = defaultdict(list)
@@ -209,7 +215,7 @@ def main():
                                 coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
         print(category, len(rows), 'missing anchors:', missing)
-    result = dict(scoring_revision=SCORING_REVISION, snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
+    result = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=inputs.data.get('reviewed_evidence_audit'), snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
                   status=status, references=inputs.references, method='main-batch-elo',
                   score_method='fixed-category-basket-v1', source_quality_policy=inputs.data.get('source_quality_policy'),
                   coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)

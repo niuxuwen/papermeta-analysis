@@ -93,8 +93,8 @@
         const more=body.insertRow(tr.sectionRowIndex+1),cell=more.insertCell();cell.colSpan=header.cells.length;
         const links=element('div',null,'ability-source-links');
         for(const idx of row.sources){
-          const [label,paper,benchmark]=sources[idx],a=element('a',label);
-          a.href='benchmark/?'+new URLSearchParams({paper_id:paper,benchmark_id:benchmark});links.append(a);
+          const [label,paper,benchmark,sourceUrl]=sources[idx],a=element('a',label);
+          a.href=sourceUrl && /^https:\/\/arxiv\.org\//.test(sourceUrl) ? sourceUrl : 'benchmark/?'+new URLSearchParams({paper_id:paper,benchmark_id:benchmark});links.append(a);
         }
         cell.append(element('p',txt('原始 Elo：','Raw Elo: ')+row.elo.toFixed(1)),element('strong',txt('计分来源','Scoring sources')),links);
       };

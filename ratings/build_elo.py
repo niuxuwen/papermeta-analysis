@@ -17,7 +17,8 @@ from alias_projection import project_records
 from source_quality import prepare_data, attach_provenance, filter_board_records
 from identity_projection import project_edges
 from effort_projection import pool_efforts, fit_observations
-SCORING_REVISION = "source-order-effort-dedup-20261112"
+from reviewed_evidence import merge as merge_reviewed, publish_pack
+SCORING_REVISION = "source-order-effort-dedup-reviewed-live-20261112"
 
 RULES = Path(__file__).resolve().parent
 ROOT = RULES.parent
@@ -43,12 +44,14 @@ def load_elo_inputs():
     item = manifest['task_inputs']
     raw = (SITE / item['path']).read_bytes()
     assert hashlib.sha256(raw).hexdigest() == item['sha256']
-    reviewed, quality_audit = prepare_data(json.loads(gzip.decompress(raw)))
-    data, _ = project(reviewed)
+    original = json.loads(gzip.decompress(raw))
     source = load(Path(sys.argv[1]) / 'source.json.gz')
-    assert source['snapshot_id'] == data['snapshot_id'] == manifest['snapshot_id']
+    assert source['snapshot_id'] == original['snapshot_id'] == manifest['snapshot_id']
     papers = {b['paper_id']: b for b in source['benchmarks']}
     del source
+    combined, papers, review_audit = merge_reviewed(original,papers)
+    reviewed, quality_audit = prepare_data(combined)
+    data, _ = project(reviewed)
 
     tiers = {p['paper_id']:p for p in load(RULES / 'paper-weights.json')}
     official = load(RULES / 'official-source-registry.json')
@@ -82,6 +85,7 @@ def load_elo_inputs():
         r['a'], r['b'] = tuple(r['a']), tuple(r['b'])
     mapped = attach_provenance(mapped, groups)
     exclusions['source_quality_audit'] = quality_audit
+    exclusions['reviewed_evidence_audit'] = review_audit
     validate_edges(mapped)
     refs = load(RULES/'references.json')
     return EloInputs(manifest, data, mapped, weights, refs, registry, exclusions, defaults)
@@ -174,7 +178,7 @@ def main():
     audit_raw = gzip.compress(json.dumps(fit['input_audit'],ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
     audit_path = 'snapshot/'+inputs.manifest['snapshot_id']+'/input-audit-'+hashlib.sha256(audit_raw).hexdigest()[:16]+'.json.gz'
     (SITE/audit_path).write_bytes(audit_raw)
-    payload = dict(scoring_revision=SCORING_REVISION, input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
+    payload = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=publish_pack(SITE,data['snapshot_id']), input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),
