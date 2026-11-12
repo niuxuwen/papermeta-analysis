@@ -16,7 +16,11 @@ REGISTRY = Path(__file__).with_name('source-quality-registry.json')
 
 @lru_cache(None)
 def registry():
-    return json.loads(REGISTRY.read_text(encoding='utf8'))
+    rules = json.loads(REGISTRY.read_text(encoding='utf8'))
+    supplemental = json.loads(REGISTRY.with_name('opus-source-registry.json').read_text(encoding='utf8'))
+    for gid, rule in supplemental['groups'].items():
+        rules['groups'].setdefault(gid, {}).update(rule)
+    return rules
 
 def cell_signature(group):
     cells = sorted((s['model_canonical'], s['value_numeric']) for s in group.get('scores', []))
@@ -59,6 +63,8 @@ def prepare_data(data, rules=None):
             else:
                 if spec.get('exclude_reason'):
                     quality.update(eligible=False, reason=spec['exclude_reason'])
+                if spec.get('categories') is not None:
+                    quality['categories'] = spec['categories']
                 if spec.get('direction'):
                     quality['original_direction'] = group.get('direction')
                     group['direction'] = spec['direction']

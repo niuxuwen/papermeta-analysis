@@ -107,7 +107,7 @@
   async function load() {
     grid.replaceChildren();
     try {
-      const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json?scale=100-v1',location.origin));
+      const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json?scale=100-v1&revision='+encodeURIComponent(window.snapshotElo.scoring_revision||'legacy'),location.origin));
       if (!response.ok) throw Error(response.status);
       const data=await response.json();
       if (data.method !== 'main-batch-elo' || data.score_method !== 'fixed-category-basket-v1' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');

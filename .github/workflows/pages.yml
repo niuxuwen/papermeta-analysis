@@ -41,6 +41,9 @@ jobs:
         run: |
           python -m unittest discover -s ratings -p test_source_quality.py
           python -m unittest discover -s ratings -p test_display_coverage.py
+          python -m unittest discover -s ratings -p test_identity_projection.py
+          python -m unittest discover -s ratings -p test_effort_projection.py
+          python -m unittest discover -s ratings -p test_opus_release.py
           node ratings/test_display_coverage.cjs
           python3 backend/build_live.py .live-feed/feed
           node build-home.cjs

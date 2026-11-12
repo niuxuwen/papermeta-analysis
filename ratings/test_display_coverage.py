@@ -15,7 +15,7 @@ class DisplayCoverageTests(unittest.TestCase):
     def test_rare_opponent_and_its_paper_remain_in_fit(self):
         rows,q=self.fixture();old=deepcopy(rows)
         kept,nodes,fit=fit_main_elo(rows,q,min_papers=5)
-        self.assertEqual(kept,rows);self.assertIn(('C',''),nodes);self.assertEqual(rows,old)
+        self.assertEqual([{k:r[k] for k in rows[0]} for r in kept],rows);self.assertIn(('C',''),nodes);self.assertEqual(rows,old)
         result=export(fit,kept,['A','B']);c=next(r for r in result if r['model']=='C')
         self.assertEqual(c['papers'],1)
         self.assertEqual(coverage_audit(rows,kept)['coverage_removed_papers'],0)

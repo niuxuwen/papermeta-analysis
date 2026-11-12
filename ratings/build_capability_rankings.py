@@ -6,7 +6,7 @@ import subprocess
 from collections import defaultdict
 
 import math
-from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit
+from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit, SCORING_REVISION
 
 MIN_CATEGORY_PAPERS = 5
 
@@ -209,7 +209,7 @@ def main():
                                 coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
         print(category, len(rows), 'missing anchors:', missing)
-    result = dict(snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
+    result = dict(scoring_revision=SCORING_REVISION, snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
                   status=status, references=inputs.references, method='main-batch-elo',
                   score_method='fixed-category-basket-v1', source_quality_policy=inputs.data.get('source_quality_policy'),
                   coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)

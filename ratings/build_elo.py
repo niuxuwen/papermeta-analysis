@@ -15,6 +15,9 @@ from publication_weights import time_factor, official_factor, composite
 from model_dedup import project
 from alias_projection import project_records
 from source_quality import prepare_data, attach_provenance, filter_board_records
+from identity_projection import project_edges
+from effort_projection import pool_efforts, fit_observations
+SCORING_REVISION = "source-order-effort-dedup-20261112"
 
 RULES = Path(__file__).resolve().parent
 ROOT = RULES.parent
@@ -86,20 +89,27 @@ def load_elo_inputs():
 
 def fit_main_elo(records, weights, *, min_papers=5, quality_board='Main'):
     records, _ = filter_board_records(records, board=quality_board)
-    # min_papers is retained for caller compatibility, but is DISPLAY ONLY.
-    # No coverage pruning or cascading removal before fitting. The existing
-    # identifiability requirement is separate from the display threshold.
-    parts = mutual_components(records)
-    nodes = parts[0] if parts else []
+    # Normalize identities and effort BEFORE selecting the finite comparison core.
+    # In particular, an undefeated effort configuration must not disappear first.
+    records, _, identity_audit = project_edges(records)
+    projected, observations, _, effort_audit = pool_efforts(records, weights)
+    parts = mutual_components(observations)
+    nodes = sorted(parts[0]) if parts else []
     core = set(nodes)
-    eligible = [r for r in records if r['a'] in core and r['b'] in core]
-    fit = fitters(eligible, nodes, weights)('paper-half') if eligible else None
+    eligible = [r for r in projected if r['a'] in core and r['b'] in core]
+    observations = [r for r in observations if r['a'] in core and r['b'] in core]
+    fit = fit_observations(observations, nodes) if observations else None
+    if fit is not None:
+        fit['input_audit'] = dict(identity=identity_audit, effort=effort_audit)
     return eligible, nodes, fit
+
 
 
 def coverage_audit(records, fitted, *, board='Main'):
     retained, _ = filter_board_records(records, board=board)
-    parts = mutual_components(retained)
+    retained, _, _ = project_edges(retained)
+    retained, observations, _, _ = pool_efforts(retained, {r["paper_id"]:1. for r in retained})
+    parts = mutual_components(observations)
     fitted_papers = {r['paper_id'] for r in fitted}
     retained_papers = {r['paper_id'] for r in retained}
     return dict(policy='coverage-display-only-v1', display_min_papers=5,
@@ -135,7 +145,7 @@ def main():
     for edge in eligible:
         a,b = edge['a'],edge['b']
         gid,pid = edge['group_id'],edge['paper_id']
-        weight = weights[pid]/(len(group_nodes[gid])-1)/math.sqrt(repeats[pid,tuple(sorted((a,b)))])
+        weight = edge['fit_weight']
         sources['pairs'].append([group_ids[gid],node_ids[a],node_ids[b],edge['y'],weight])
     packed=gzip.compress(json.dumps(sources,ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
     proof_path='snapshot/'+inputs.manifest['snapshot_id']+'/elo-pairs-'+hashlib.sha256(packed).hexdigest()[:16]+'.json.gz'
@@ -151,8 +161,20 @@ def main():
             source_names[node][s['dedup_original_model_name'],s['dedup_original_model_setting']] += 1
     for row in ranking:
         node = row['model'],row['setting']
-        row['source_names'] = [list(pair) for pair,count in source_names[node].most_common()]
-    payload = dict(snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
+        identity = fit['input_audit']['identity']['registry']
+        efforts = fit['input_audit']['effort']['registry']
+        aliases = {tuple(v):tuple(e['target']) for e in identity if e['status']=='EXACT_IDENTITY_MERGED' for v in e['source_nodes']}
+        pooled = {tuple(v):tuple(e['model']) for e in efforts for v in e['source_configurations']}
+        combined = Counter()
+        for original, names in source_names.items():
+            normalized = aliases.get(original,original)
+            if pooled.get(normalized,normalized)==node:
+                combined.update(names)
+        row['source_names'] = [list(pair) for pair,count in combined.most_common()]
+    audit_raw = gzip.compress(json.dumps(fit['input_audit'],ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
+    audit_path = 'snapshot/'+inputs.manifest['snapshot_id']+'/input-audit-'+hashlib.sha256(audit_raw).hexdigest()[:16]+'.json.gz'
+    (SITE/audit_path).write_bytes(audit_raw)
+    payload = dict(scoring_revision=SCORING_REVISION, input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),

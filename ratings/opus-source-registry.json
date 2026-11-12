@@ -1,0 +1,75 @@
+{
+  "revision": "opus-source-review-20261112",
+  "groups": {
+    "90f15effe0545bb7c029810b": {
+      "paper_id": "recent-4568c753564d600d",
+      "table_id": "10fb919ea405d03c90d382984306",
+      "metric": "Strict pass@1",
+      "cell_sha256": "7e77d00d7fd75f8bf49d765c65fabcc9eb3ee64b1352f7cbcbe188ecd6e1ef74"
+    },
+    "0863f7a625022b55710d0c67": {
+      "paper_id": "recent-4568c753564d600d",
+      "table_id": "3b658acdf32d68db125dc4acd051",
+      "metric": "Strict pass@1",
+      "cell_sha256": "d4f32b86104c25089df8c9881e3b7f300f717f305dfc37335b5a9fe520404808",
+      "aggregate_parents": [
+        "90f15effe0545bb7c029810b"
+      ]
+    },
+    "bf87419c46a30b09407ba817": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "a01f08850a2cf8db5ab219927095",
+      "metric": "text",
+      "cell_sha256": "5f9f697e278917e404dbadf899a0be9800252a857559d4ca49313b5bc7314882"
+    },
+    "b84346d0debacc5974687de5": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "2dae432c83db13b8499f85eed305",
+      "metric": "text",
+      "cell_sha256": "4a5c90ff2807b0a9a262d07ab7a5dedf091da6a78c68f427f45b315036f9656e",
+      "aggregate_parents": [
+        "bf87419c46a30b09407ba817"
+      ]
+    },
+    "9d5c559f98c3937f2ad5c084": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "a01f08850a2cf8db5ab219927095",
+      "metric": "text",
+      "cell_sha256": "6e6c5e6c42abb93c82e1a3d7358a45e24ca470a561491f59fcd136f57e08f32d"
+    },
+    "b1428a02884e2b04e1b745e4": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "2dae432c83db13b8499f85eed305",
+      "metric": "text",
+      "cell_sha256": "86d441bc8478b487f3f08f8dc94a512a38eceb65b62912534d06035b5660ff89",
+      "aggregate_parents": [
+        "9d5c559f98c3937f2ad5c084"
+      ]
+    },
+    "5cb419254e0c46a3f6bf88a2": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "a01f08850a2cf8db5ab219927095",
+      "metric": "text",
+      "cell_sha256": "87064465581220fa6b779317c07b10c131d93e6c0e130618542cd3f09c52bcd9"
+    },
+    "b96a7a973fbf460bb7c3a096": {
+      "paper_id": "recent-0e4213c1ac27ab10",
+      "table_id": "2dae432c83db13b8499f85eed305",
+      "metric": "text",
+      "cell_sha256": "23e36c806eae86e26f7ec4d2932a3b3ee7dba21f242a77a3d58dd451410909d3",
+      "aggregate_parents": [
+        "5cb419254e0c46a3f6bf88a2"
+      ]
+    },
+    "ea24a55889232ded744b7574": {
+      "paper_id": "recent-acfaf28254604c68",
+      "table_id": "f280c10561e20600d183925b72ae",
+      "metric": "Strict",
+      "cell_sha256": "64087fb6dd77964e38aecd08aabd0f6a148d5ecd46852b28c7b75e6142a7f9f6",
+      "categories": [
+        "General",
+        "Agent"
+      ]
+    }
+  }
+}
