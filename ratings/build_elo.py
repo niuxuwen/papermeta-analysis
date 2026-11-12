@@ -14,6 +14,7 @@ from weighted_bt import pair_records, mutual_components
 from publication_weights import time_factor, official_factor, composite
 from model_dedup import project
 from alias_projection import project_records
+from source_quality import prepare_data, attach_provenance, filter_board_records
 
 RULES = Path(__file__).resolve().parent
 ROOT = RULES.parent
@@ -39,7 +40,8 @@ def load_elo_inputs():
     item = manifest['task_inputs']
     raw = (SITE / item['path']).read_bytes()
     assert hashlib.sha256(raw).hexdigest() == item['sha256']
-    data, _ = project(json.loads(gzip.decompress(raw)))
+    reviewed, quality_audit = prepare_data(json.loads(gzip.decompress(raw)))
+    data, _ = project(reviewed)
     source = load(Path(sys.argv[1]) / 'source.json.gz')
     assert source['snapshot_id'] == data['snapshot_id'] == manifest['snapshot_id']
     papers = {b['paper_id']: b for b in source['benchmarks']}
@@ -75,12 +77,15 @@ def load_elo_inputs():
                                  official_factor(paper,official)[0])
     for r in mapped:
         r['a'], r['b'] = tuple(r['a']), tuple(r['b'])
+    mapped = attach_provenance(mapped, groups)
+    exclusions['source_quality_audit'] = quality_audit
     validate_edges(mapped)
     refs = load(RULES/'references.json')
     return EloInputs(manifest, data, mapped, weights, refs, registry, exclusions, defaults)
 
 
-def fit_main_elo(records, weights, *, min_papers=5):
+def fit_main_elo(records, weights, *, min_papers=5, quality_board='Main'):
+    records, _ = filter_board_records(records, board=quality_board)
     eligible, nodes, _ = admissible(records, min_papers, mutual_components)
     fit = fitters(eligible, nodes, weights)('paper-half') if eligible else None
     return eligible, nodes, fit
@@ -130,7 +135,8 @@ def main():
     payload = dict(snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=refs,
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
-                   exclusions=exclusions)
+                   exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),
+                   source_quality_overlap_audit=filter_board_records(inputs.comparisons)[1])
     output = SITE/'snapshot-elo-data.js'
     temp = output.with_suffix('.tmp')
     temp.write_text('window.snapshotElo = '+json.dumps(payload,ensure_ascii=False,separators=(',',':'),allow_nan=False)+';',encoding='utf8')

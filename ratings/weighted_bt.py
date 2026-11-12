@@ -6,6 +6,8 @@ from numerical_solver import fit_graph,sigmoid,objective
 def pair_records(groups, paper_weights=None, benchmark_beta=None, projections=None, *, default_paper_weight=1., default_beta=1.):
     paper_weights=paper_weights or {};benchmark_beta=benchmark_beta or {};records=[];excluded=defaultdict(int)
     for g in groups:
+        if not g.get('source_quality',{}).get('eligible',True):
+            excluded['source_quality_excluded']+=1;continue
         if g.get('blocked_reasons')or g.get('extraction_in_progress')or g.get('direction')not in {'higher','lower'}:
             excluded['source_not_comparable']+=1;continue
         meta=(projections or {}).get(g['group_id'])

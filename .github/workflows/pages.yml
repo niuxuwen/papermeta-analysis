@@ -39,6 +39,7 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=6144
         run: |
+          python -m unittest discover -s ratings -p test_source_quality.py
           python3 backend/build_live.py .live-feed/feed
           node build-home.cjs
           python ratings/build_elo.py .live-feed/feed
