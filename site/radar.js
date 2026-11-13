@@ -963,7 +963,7 @@
         $('scoring-readiness').textContent=english?`Elo · ${published} rated models and configurations`:`Elo · ${published} 个模型及配置已发布评分`;
         const minimum=window.snapshotElo?.display_min_papers ?? 7;
         body.append(el('p',english?`Weighted Bradley–Terry fit on within-paper comparisons. The overall ranking displays entries supported by at least ${minimum} independent papers. This threshold does not remove evidence from the fit.`:data.note+` 总榜仅展示至少有 ${minimum} 篇独立论文支持的模型；展示门槛不影响论文参与计算。`));
-        body.append(el('p',english?'Elo = 1000 + 400 × θ / ln(10). The 1000 baseline is a choice of origin, not a percentage. Ratings from independently fitted boards or dates do not share an absolute scale.':'Elo = 1000 + 400 × θ / ln(10)。1000 是刻度基准，不是百分比。各榜单独立拟合，不作为跨领域或跨日期的绝对能力刻度。'));
+        body.append(el('p',english?'Elo = 1000 + 400 × (θ − Σ wₖθₖ) / ln(10). All five boards use the same fixed reference models and weights, with a weighted mean Elo of 1000. Differences retain the Elo scale; this is not a percentage or an absolute cross-domain ability scale.':'Elo = 1000 + 400 × (θ − Σ wₖθₖ) / ln(10)。总榜与四个分榜采用同一组固定参照模型及权重，将参照组加权平均 Elo 设为 1000，保留 Elo 分差；不是百分比，也不是跨领域的绝对能力刻度。'));
         const sampleMeta=window.radarSnapshotManifest?.sample_sizes;
         if(sampleMeta){const link=el('a',english?'Download benchmark sample counts (CSV)':'下载 Benchmark 测试样本数（CSV）');link.href='/'+sampleMeta.csv_path;link.download='benchmark-sample-sizes.csv';body.append(link);}
         modelVisuals.update(data);return;

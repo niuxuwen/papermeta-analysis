@@ -15,7 +15,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 sys.path.insert(0,str(ROOT/'ratings'))
-from raw_elo import validate, METHOD
+from raw_elo import validate
+from common_basket import METHOD
 from math import isfinite
 RUNTIME = "0.27.7"
 CHECKSUM = "RUSVJlhQdfWfgO9hVHCiXoG+nVZQRS5D9FzgpLJ/VcgGBLSAKoPL8kTiOikxbHQm1kRISeWUBdulEgO26qpSRA=="

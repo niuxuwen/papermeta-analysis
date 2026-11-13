@@ -42,7 +42,7 @@ class EffortTest(unittest.TestCase):
         _,_,m,_=pool_efforts(records,{'p':.4})
         self.assertNotEqual(m[records[0]['a']],m[records[1]['a']])
         self.assertNotEqual(m[records[0]['b']],m[records[1]['b']])
-    def test_no_change_when_no_effort_variants(self):
+    def test_measurements_average_before_paper_incident_budget(self):
         from collections import Counter,defaultdict
         import math
         records=[edge('GPT-6-Astra','Claude 5 Opus',1,g='a'),edge('GPT-6-Astra','Claude 5 Opus',0,g='b'),edge('GPT-6-Astra','Gemini 3.1 Pro',1,g='b'),edge('Claude 5 Opus','Gemini 3.1 Pro',1,g='b')]
@@ -53,11 +53,15 @@ class EffortTest(unittest.TestCase):
         count=Counter(tuple(sorted((e['a'],e['b']))) for e in records)
         for e in records:
             a,b=sorted((e['a'],e['b']));y=e['y'] if a==e['a'] else 1-e['y']
-            w=.4/(len(groups[e['group_id']])-1)/math.sqrt(count[a,b])
+            w=.4/(len(groups[e['group_id']])-1)/count[a,b]
             mass,win=original.get((a,b),(0,0));original[a,b]=(mass+w,win+w*y)
+        incident={}
+        for (a,b),(mass,win) in original.items():
+            incident[a]=incident.get(a,0)+mass;incident[b]=incident.get(b,0)+mass
+        factor=min(1.,.4/max(incident.values()))
         for r in obs:
             mass,win=original[r['a'],r['b']]
-            self.assertAlmostEqual(r['weight'],mass)
+            self.assertAlmostEqual(r['weight'],mass*factor)
             self.assertAlmostEqual(r['y'],win/mass)
 
 if __name__=='__main__':unittest.main()

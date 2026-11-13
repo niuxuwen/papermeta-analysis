@@ -34,6 +34,11 @@ class IdentityTest(unittest.TestCase):
     def test_same_result_different_paper_is_not_duplicate(self):
         out,_,_=project_edges([edge('GPT6 Astra','Claude 5 Opus',p='p'),edge('GPT-6-Astra','Claude 5 Opus',p='q')])
         self.assertEqual(len(out),2)
+    def test_soft_complement_roundoff_does_not_block_identity_merge(self):
+        out,_,audit=project_edges([edge('GPT6 Astra','Claude 5 Opus',.8),
+                                  edge('GPT-6-Astra','Claude 5 Opus',1-(1-.8)+1e-16)])
+        self.assertEqual(len(out),1)
+        self.assertFalse(audit['conflicts'])
     def test_unknown_config_kept(self):
         a=edge('GPT-6-Astra','Claude 5 Opus');b=edge('GPT-6-Astra','Claude 5 Opus',p='q');b['a']=('GPT-6-Astra','tools enabled')
         _,m,_=project_edges([a,b])

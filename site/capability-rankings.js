@@ -63,7 +63,8 @@
     method.append(element('summary',txt('评分方法','Scoring method')),element('p',txt(
       `本榜采用本领域同条件比较的加权 Bradley–Terry 拟合，直接展示 Elo。至少 ${minimum} 篇来源论文的模型才展示。`,
       `Weighted Bradley–Terry ratings from matched comparisons in this field, displayed as Elo. Entries need ${minimum} source papers for display.`)));
-    method.append(element('p',txt('Elo = 1000 + 400 × θ / ln(10)。1000 是刻度基准，分数没有 100 分上限。各榜独立拟合，不宜直接跨榜比较。','Elo = 1000 + 400 × θ / ln(10). The baseline is 1000, with no 100-point ceiling. Independently fitted boards are not directly comparable.')));
+    method.append(element('p',txt('总榜与四个分榜采用同一组固定参照模型及权重，将参照组的加权平均 Elo 设为 1000；保留原有 Elo 分差。各榜反映对应领域内相对参照组的表现，不代表相同的绝对能力。','All five rankings use the same fixed reference models and weights, centering their weighted mean Elo at 1000 while preserving Elo differences. Ratings express performance relative to that panel within each domain, not identical absolute ability across domains.')));
+    method.append(element('p',txt('对局采用分差软胜负：题目数与准确率口径经核验时使用二项近似，其余指标使用同评测、同指标的表内分差尺度；原始 Elo 指标使用 Elo 胜率公式。','Comparisons use soft outcomes from score differences: a binomial approximation for reviewed accuracy and sample counts, an empirical within-table difference scale for other metrics, and the Elo expected-score formula for Elo metrics.')));
     method.append(element('p',txt(
       '分榜优先采用来源表中具体指标所测的任务。指标只有通用标签时，结合评测的领域和任务归类。同一评测的不同指标可以进入不同分榜。',
       'Categories use the task measured by each source-table metric. For broadly labelled metrics, the benchmark subject and tasks provide context. Different metrics from one benchmark can enter different rankings.')));
@@ -108,7 +109,14 @@
       const response=await fetch(new URL('/snapshot/'+window.snapshotElo.snapshot_id+'/capability-rankings.json?scale=elo-v1&revision='+encodeURIComponent(window.snapshotElo.scoring_revision||'legacy'),location.origin));
       if (!response.ok) throw Error(response.status);
       const data=await response.json();
-      if (data.method !== 'main-batch-elo' || data.score_method !== 'raw-batch-elo-v1' || data.snapshot!==window.snapshotElo?.snapshot_id) throw Error('snapshot');
+      const main=window.snapshotElo;
+      if (data.method !== 'main-batch-elo' || data.score_method !== 'common-basket-centered-elo-v1' || data.snapshot!==main?.snapshot_id || data.scoring_revision!==main.scoring_revision || data.outcome_method!==main.outcome_method) throw Error('snapshot');
+      const basket=main.basket;
+      if (!basket?.panel_sha256 || basket.status!=='READY') throw Error('basket');
+      for (const category of ['Science','Coding','General','Agent']) {
+        const other=data.status[category]?.basket;
+        if (other?.status!=='READY' || other.panel_sha256!==basket.panel_sha256 || other.baseline!==basket.baseline || JSON.stringify(other.references)!==JSON.stringify(basket.references)) throw Error('basket');
+      }
       for(const category of ['Science','Coding','General','Agent']){
         const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5) && Number.isFinite(r.score)),card=element('button',null,'ability-board-card');card.type='button';
         card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-expanded','false');

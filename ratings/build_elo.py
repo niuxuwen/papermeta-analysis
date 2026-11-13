@@ -18,8 +18,9 @@ from source_quality import prepare_data, attach_provenance, filter_board_records
 from identity_projection import project_edges
 from effort_projection import pool_efforts, fit_observations
 from reviewed_evidence import merge as merge_reviewed, publish_pack
-from raw_elo import annotate, METHOD
-SCORING_REVISION = "source-order-effort-dedup-raw-elo-v1-20261113"
+from common_basket import calibrate, METHOD
+from soft_outcomes import METHOD as OUTCOME_METHOD
+SCORING_REVISION = "source-soft-outcome-common-basket-v5-20261113"
 MAIN_DISPLAY_MIN_PAPERS = 7
 
 RULES = Path(__file__).resolve().parent
@@ -59,7 +60,9 @@ def load_elo_inputs():
     official = load(RULES / 'official-source-registry.json')
     projections = data['measurements']['groups']
     groups = data['index']['groups']
-    records, exclusions = pair_records(groups, projections=projections)
+    records, exclusions = pair_records(groups, projections=projections, soft=True)
+    exclusions['outcome_method'] = OUTCOME_METHOD
+    exclusions['outcome_links'] = dict(Counter(r['outcome_audit']['method'] for r in records))
     identities = load(RULES / 'verified-alias-registry.json')['entries']
     registry = {(e['paper_id'],e['name'],e['setting']):e for e in identities}
     by_id = {g['group_id']:g for g in groups}
@@ -136,7 +139,7 @@ def main():
     item = inputs.manifest['task_inputs']
     eligible, nodes, fit = fit_main_elo(inputs.comparisons, weights)
     ranking = export(fit,eligible,refs,reference_scores=False)
-    annotate(ranking, elo_key='elo_scale')
+    basket_audit = calibrate(ranking, elo_key='elo_scale')
     for row in ranking: row.pop('basket_score_0_100', None)
     audit = assess(eligible,ranking,vendor,minimum_papers=1,score_key='elo_scale')
     node_ids = {node:i for i,node in enumerate(nodes)}
@@ -149,7 +152,7 @@ def main():
     group_ids = {gid:i for i,gid in enumerate(sorted(group_nodes))}
     sources = dict(snapshot_id=data['snapshot_id'],nodes=nodes,
         groups=[[gid,by_id[gid]['paper_id'],by_id[gid]['table_id'],by_id[gid]['benchmark_id'],by_id[gid]['metric']]
-                for gid in group_ids], pairs=[],
+                for gid in group_ids], pairs=[], outcome_method=OUTCOME_METHOD, outcome_details=[],
         sample_sizes={gid:by_id[gid].get('sample_size') for gid in group_ids},
         evaluation_n={gid:by_id[gid].get('evaluation_n') for gid in group_ids})
     for edge in eligible:
@@ -157,6 +160,9 @@ def main():
         gid,pid = edge['group_id'],edge['paper_id']
         weight = edge['fit_weight']
         sources['pairs'].append([group_ids[gid],node_ids[a],node_ids[b],edge['y'],weight])
+        # Aligned with pairs; source_a/source_b retain the original orientation
+        # when alias or effort projection reverses the exported pair.
+        sources['outcome_details'].append(edge['outcome_audit'])
     packed=gzip.compress(json.dumps(sources,ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
     proof_path='snapshot/'+inputs.manifest['snapshot_id']+'/elo-pairs-'+hashlib.sha256(packed).hexdigest()[:16]+'.json.gz'
     (SITE/proof_path).write_bytes(packed)
@@ -184,7 +190,7 @@ def main():
     audit_raw = gzip.compress(json.dumps(fit['input_audit'],ensure_ascii=False,separators=(',',':')).encode(),mtime=0)
     audit_path = 'snapshot/'+inputs.manifest['snapshot_id']+'/input-audit-'+hashlib.sha256(audit_raw).hexdigest()[:16]+'.json.gz'
     (SITE/audit_path).write_bytes(audit_raw)
-    payload = dict(scoring_revision=SCORING_REVISION, score_method=METHOD, score_unit="elo", reviewed_evidence=publish_pack(SITE,data['snapshot_id']), input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=[],
+    payload = dict(scoring_revision=SCORING_REVISION, score_method=METHOD, outcome_method=OUTCOME_METHOD, basket=basket_audit, score_unit="elo", reviewed_evidence=publish_pack(SITE,data['snapshot_id']), input_audit_path=audit_path, snapshot_id=data['snapshot_id'], task_inputs_sha256=item['sha256'], references=basket_audit['references'],
                    papers=len({r['paper_id'] for r in eligible}), comparisons=len(eligible),
                    models=ranking, reviews=audit['reviews'], pair_source=proof_path, source_tier_default_papers=sorted(defaults),
                    exclusions=exclusions, source_quality_policy=data.get('source_quality_policy'),

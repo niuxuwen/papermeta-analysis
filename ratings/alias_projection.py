@@ -3,6 +3,7 @@ from collections import defaultdict
 from copy import deepcopy
 from itertools import combinations
 import re
+from math import isclose
 
 POLICY='reviewed-source-alias-projection-v1'
 
@@ -67,11 +68,20 @@ def project_records(data,raw,registry):
                     'observation_ids':sorted({oid for s in scores for oid in s.get('observation_ids',[])})})
         m=len(accepted)
         if m>=2:
-            prototype=records[0]
-            for a,b in combinations(sorted(accepted),2):
-                delta=(accepted[a]-accepted[b])*(1 if group['direction']=='higher' else -1)
-                output.append({**prototype,'a':list(a),'b':list(b),
-                    'y':1. if delta>0 else 0. if delta<0 else .5,'m':m,'w':prototype['q']/(m-1)})
+            remapped={}
+            for record in records:
+                a,b=(replacement[tuple(record[k])] for k in ('a','b'))
+                if a==b or a not in accepted or b not in accepted:continue
+                y=record['y']
+                if a>b:a,b,y=b,a,1-y
+                if (a,b) in remapped:
+                    if not isclose(remapped[a,b]['y'],y,abs_tol=1e-12):
+                        raise ValueError('Conflicting outcomes for merged alias pair')
+                    continue
+                remapped[a,b]={**record,'a':list(a),'b':list(b),'y':y,'m':m,'w':record['q']/(m-1)}
+            # Identity projection must not recreate hard wins or copy the first
+            # pair's observation metadata to every pair in the source table.
+            output.extend(remapped[k] for k in sorted(remapped))
         audit.append({'group_id':gid,'paper_id':pid,'comparisons_before':len(records),
             'comparisons_after':m*(m-1)//2,'nodes_before':len(original_nodes),'nodes_after':m})
     return output,{'policy':POLICY,'snapshot_id':data['snapshot_id'],'changes':changes,

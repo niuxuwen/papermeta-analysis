@@ -12,7 +12,7 @@ def validate_edges(records):
         a, b = sorted((tuple(row['a']), tuple(row['b'])))
         group = row['group_id']
         origin = row['paper_id'], row['benchmark_id']
-        if not group or not all(origin) or a == b or row['y'] not in (0, .5, 1):
+        if not group or not all(origin) or a == b or not isfinite(row['y']) or not 0 <= row['y'] <= 1:
             raise ValueError(f'Invalid source comparison in {group}')
         if origins.setdefault(group, origin) != origin:
             raise ValueError(f'Conflicting source identity for group {group}')

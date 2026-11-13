@@ -3,9 +3,12 @@ import math
 from collections import defaultdict
 from itertools import combinations
 from numerical_solver import fit_graph,sigmoid,objective
-def pair_records(groups, paper_weights=None, benchmark_beta=None, projections=None, *, default_paper_weight=1., default_beta=1.):
-    paper_weights=paper_weights or {};benchmark_beta=benchmark_beta or {};records=[];excluded=defaultdict(int)
+from metric_semantics import check_direction
+def pair_records(groups, paper_weights=None, benchmark_beta=None, projections=None, *, default_paper_weight=1., default_beta=1., soft=False):
+    paper_weights=paper_weights or {};benchmark_beta=benchmark_beta or {};records=[];excluded=defaultdict(int);prepared=[]
     for g in groups:
+        if check_direction(g)['status'] in {'CONFLICT','REVIEW_REQUIRED'}:
+            excluded['metric_direction_requires_review']+=1;continue
         if not g.get('source_quality',{}).get('eligible',True):
             excluded['source_quality_excluded']+=1;continue
         if g.get('blocked_reasons')or g.get('extraction_in_progress')or g.get('direction')not in {'higher','lower'}:
@@ -17,6 +20,11 @@ def pair_records(groups, paper_weights=None, benchmark_beta=None, projections=No
         scores=[s for s in g['scores']if (allowed is None or s['model_canonical']in allowed)and math.isfinite(s['value_numeric'])]
         if len({(s['model_canonical'],s.get('dedup_condition',g.get('model_setting','')))for s in scores})!=len(scores):
             excluded['conflicting_model_axis']+=1;continue
+        prepared.append((g,scores))
+    if soft:
+        from soft_outcomes import rms_scales, outcome
+        scales=rms_scales(prepared)
+    for g,scores in prepared:
         w=float(paper_weights.get(g['paper_id'],default_paper_weight));bid=g.get('benchmark_identity')or g['benchmark_id'];beta=float(benchmark_beta.get(bid,default_beta))
         if not math.isfinite(w)or w<=0 or not math.isfinite(beta)or beta<=0:raise ValueError('Weights and beta must be finite and positive')
         for a,b in combinations(sorted(scores,key=lambda s:s['model_canonical']),2):
@@ -24,7 +32,12 @@ def pair_records(groups, paper_weights=None, benchmark_beta=None, projections=No
             setting=g.get('model_setting','')or g.get('source_condition_key','')
             an=(a['model_canonical'],a.get('dedup_condition',setting));bn=(b['model_canonical'],b.get('dedup_condition',setting))
             if an==bn:continue
-            records.append({'a':an,'b':bn,'y':1. if delta>0 else 0. if delta<0 else .5,'w':w,'beta':beta,'paper_id':g['paper_id'],'benchmark_id':bid,'group_id':g['group_id']})
+            y,detail=outcome(g,a,b,scales) if soft else (1. if delta>0 else 0. if delta<0 else .5,None)
+            record={'a':an,'b':bn,'y':y,'w':w,'beta':beta,'paper_id':g['paper_id'],'benchmark_id':bid,'group_id':g['group_id']}
+            if detail is not None:
+                detail.update(source_a=an,source_b=bn,source_y=y)
+                record['outcome_audit']=detail
+            records.append(record)
     return records,dict(excluded)
 
 def components(adjacency):

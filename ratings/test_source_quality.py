@@ -54,7 +54,7 @@ class SourceQualityTests(unittest.TestCase):
         g=group();rule=rules([g],{'g':{'required_setting':'reasoning effort: low'}})
         d,a=prepare_data(data([g]),rule);d2,a2=prepare_data(d,rule);self.assertEqual(d,d2);self.assertEqual(a,a2)
     def test_direction_flip_preserves_original_values(self):
-        g=group();d,r=self.pipeline([g],{'g':{'direction':'lower'}})
+        g=group(metric='Error rate');d,r=self.pipeline([g],{'g':{'direction':'lower'}})
         self.assertEqual(r[0]['y'],0);self.assertEqual(d['index']['groups'][0]['scores'],g['scores'])
     def test_aggregate_removal_only_after_board_selection(self):
         gs=[group('total'),group('child')];d,r=self.pipeline(gs,{'child':{'aggregate_parents':['total']}})

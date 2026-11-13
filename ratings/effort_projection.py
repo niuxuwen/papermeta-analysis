@@ -1,5 +1,5 @@
 """Pool explicit effort settings into base model ratings with configuration budgets."""
-from collections import defaultdict
+from collections import defaultdict, Counter
 import math,re
 from model_dedup import identify
 
@@ -27,7 +27,7 @@ def base_node(node):
         bits.append(bit)
     return name,' | '.join(bits)
 
-def pool_efforts(edges,weights,references=(),measurement_factors=None,measurement_exponent=.5):
+def pool_efforts(edges,weights,references=(),measurement_factors=None,measurement_exponent=1.):
     old_nodes=sorted({e[k] for e in edges for k in ('a','b')})
     parsed={n:identify(*base_node(n)) for n in old_nodes}
     buckets=defaultdict(list)
@@ -55,25 +55,53 @@ def pool_efforts(edges,weights,references=(),measurement_factors=None,measuremen
     # Each variant retains paper-half weighting over its source measurements;
     # average their total masses instead of adding a new budget per effort.
     by_pair=defaultdict(lambda:defaultdict(list))
-    for e in projected:by_pair[e['paper_id'],e['a'],e['b']][e['effort_variant']].append(e)
+    for e in projected:
+        sid=e.get('source_quality',{}).get('evidence_source_id') or e['paper_id']
+        by_pair[e['paper_id'],sid,e['a'],e['b']][e['effort_variant']].append(e)
     observations=[];multi=[]
-    for (pid,a,b),variants in sorted(by_pair.items()):
+    for (pid,sid,a,b),variants in sorted(by_pair.items()):
         masses=[];wins=[]
         for rows in variants.values():
-            ww=[weights[pid]/(len(rosters[pid,e['group_id']])-1)/len(rows)**measurement_exponent
+            counts=Counter(e['benchmark_id'] for e in rows)
+            ww=[weights[pid]/(len(rosters[pid,e['group_id']])-1)/(len(counts)*counts[e['benchmark_id']])**measurement_exponent
                 * (measurement_factors.get(e['group_id'],1.) if measurement_factors is not None else 1.) for e in rows]
             for row,weight in zip(rows,ww):row['fit_weight']=weight/len(variants)
             masses.append(math.fsum(ww));wins.append(math.fsum(w*e['y'] for w,e in zip(ww,rows)))
         mass=math.fsum(masses)/len(masses)
-        observations.append(dict(paper_id=pid,a=a,b=b,y=math.fsum(wins)/math.fsum(masses),weight=mass))
+        observations.append(dict(paper_id=pid,evidence_source_id=sid,a=a,b=b,y=math.fsum(wins)/math.fsum(masses),weight=mass))
         if len(variants)>1:multi.append(dict(paper_id=pid,a=a,b=b,configurations=len(variants),weight=mass))
+    # A paper's many submetrics share a budget, including disjoint opponent sets.
+    # Corroborated reprints share one source budget without dropping either paper.
+    incident=defaultdict(lambda:defaultdict(float))
+    source_papers=defaultdict(set)
+    for r in observations:
+        sid=r['evidence_source_id'];source_papers[sid].add(r['paper_id'])
+        incident[sid][r['a']]+=r['weight'];incident[sid][r['b']]+=r['weight']
+    factors={sid:min(1.,max(weights[p] for p in source_papers[sid])/max(masses.values()))
+             for sid,masses in incident.items()}
+    for r in observations:r['weight']*=factors[r['evidence_source_id']]
+    for r in projected:r['fit_weight']*=factors[r.get('source_quality',{}).get('evidence_source_id') or r['paper_id']]
+    model_sources=defaultdict(lambda:defaultdict(float))
+    for r in observations:
+        for node in (r['a'],r['b']):model_sources[node][r['evidence_source_id']]+=r['weight']
+    concentration=[]
+    for node,sources in sorted(model_sources.items()):
+        total=math.fsum(sources.values())
+        if total<=0:continue
+        shares={sid:w/total for sid,w in sources.items()}
+        dominant=max(shares,key=shares.get)
+        concentration.append(dict(model=node[0],setting=node[1],independent_sources=len(sources),
+            largest_source=dominant,largest_source_share=shares[dominant],
+            effective_sources=1./math.fsum(v*v for v in shares.values())))
     before={e['paper_id']for e in edges};after={e['paper_id']for e in projected}
     audit=dict(policy='base-model-effort-pooling-v1',merged_models=sum(len(r['source_configurations'])>1 for r in registry),
         nodes_before=len(old_nodes),nodes_after=len(set(mapping.values())),papers_before=len(before),papers_after=len(after),
         source_comparisons=len(edges),cross_model_comparisons=len(projected),pooled_paper_pair_observations=len(observations),
         only_within_model_papers=sorted(before-after),self_comparisons=len(self_edges),
         registry=registry,within_model_comparisons=self_edges,multiple_configuration_pairs=multi,
-        likelihood='unchanged Bradley-Terry',weighting='paper-half within each configuration pair; mean budget across effort variants within a paper/base-model pair',
+        source_budget_factors=factors,
+        source_concentration=concentration,
+        likelihood='unchanged Bradley-Terry',weighting='mean metrics within benchmark; mean benchmarks and effort variants; source incident mass bounded by source quality weight',
         raw_sources_modified=False)
     return projected,observations,mapping,audit
 

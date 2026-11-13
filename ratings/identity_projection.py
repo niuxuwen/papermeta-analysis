@@ -5,6 +5,7 @@ Conflicting same-group outcomes block a proposed merge, not the whole paper.
 """
 from collections import defaultdict
 import re
+from math import isclose
 from model_dedup import identify
 
 def project_edges(edges, references=()):
@@ -52,7 +53,7 @@ def project_edges(edges, references=()):
                 pair=(a,b) if a<b else (b,a)
                 outcomes[pair].append((e['y'] if a<b else 1-e['y'],ka,kb))
         for pair, values in outcomes.items():
-            if len({v[0] for v in values})>1:
+            if max(v[0] for v in values)-min(v[0] for v in values)>1e-12:
                 for _,ka,kb in values:
                     if len(clusters[ka])>1:blocked.add(ka)
                     if len(clusters[kb])>1:blocked.add(kb)
@@ -69,7 +70,7 @@ def project_edges(edges, references=()):
         if a>b:a,b,y=b,a,1-y
         key=(e['paper_id'],e['group_id'],e['benchmark_id'],a,b,e.get('beta',1))
         if key in seen:
-            assert seen[key]==y
+            assert isclose(seen[key],y,abs_tol=1e-12)
             duplicates.append(dict(paper_id=e['paper_id'],group_id=e['group_id'],pair=[a,b]))
             continue
         seen[key]=y

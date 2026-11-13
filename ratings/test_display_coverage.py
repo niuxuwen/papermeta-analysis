@@ -39,7 +39,7 @@ class DisplayCoverageTests(unittest.TestCase):
         rows=[dict(model='A',papers=5,elo=1200),dict(model='B',papers=5,elo=1000),dict(model='C',papers=1,elo=1600)]
         panel=dict(version='test',references=[dict(model='A',weight=.5),dict(model='B',weight=.5)])
         add_category_scores(rows,panel)
-        self.assertEqual([r['score'] for r in rows],[1200,1000,1600])
+        self.assertEqual([r['score'] for r in rows],[1100,900,1500])
         self.assertEqual(len(rows),3);self.assertIsNotNone(rows[2]['score'])
         before=[r['score'] for r in rows]
         for row in rows:row['papers']=1

@@ -388,9 +388,9 @@
       return {kind:'models',elo:true,global:true,opponentAdjusted:true,fixedPanel:true,rows:entries.map(r=>({
         name:r.model,setting:r.setting,score:r.elo_scale,nBenchmarks:r.benchmarks,papers:r.papers,
         elo:r.elo_scale,provisional:false,scoreStatus:'Elo',rankRange:'—'
-      })),axes:[],cells:[],setting,referenceModelCount:entries.length,panelVersion:'paper-half',
+      })),axes:[],cells:[],setting,referenceModelCount:board.basket?.reference_count ?? entries.length,panelVersion:board.basket?.version ?? 'paper-half',
       scopeId:'elo:'+snapshot.snapshot_id,selectionKey:'elo:'+setting,title:'综合评分',summaryLabel:'Elo',
-      valueLabel:'Elo',scoreUnit:'elo',note:'同条件比较采用加权 Bradley–Terry 拟合，直接展示 Elo 分数。Elo = 1000 + 400 × θ / ln(10)。'};
+      valueLabel:'Elo',scoreUnit:'elo',note:board.basket?.status==='READY'?'同条件分差形成软胜负，再进行加权 Bradley–Terry 拟合。总榜与四个分榜使用相同参照模型和权重，将篮子加权平均 Elo 设为 1000；保留 Elo 分差。分数反映对应领域内相对参照组的表现。':'同条件比较采用加权 Bradley–Terry 拟合，直接展示 Elo 分数。Elo = 1000 + 400 × θ / ln(10)。'};
     }
     return sourceModelData(snapshot,setting,panelId);
   }

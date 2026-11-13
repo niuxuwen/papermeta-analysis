@@ -7,12 +7,13 @@ from collections import defaultdict
 
 import math
 from build_elo import SITE, fit_main_elo, load_elo_inputs, export, coverage_audit, SCORING_REVISION
-from raw_elo import annotate, METHOD
+from common_basket import calibrate, METHOD
+from soft_outcomes import METHOD as OUTCOME_METHOD
 
 MIN_CATEGORY_PAPERS = 5
 
 def add_category_scores(rows, panel=None):
-    return annotate(rows)
+    return calibrate(rows, panel=panel)
 
 # Explicit task labels describe what was assessed. Skills like reading or
 # following instructions are also used inside specialist tasks.
@@ -191,14 +192,14 @@ def main():
             rows.append(dict(model=node[0], setting=node[1], elo=1000 + 400 * strength / math.log(10),
                              papers=len(papers[node]),
                              sources=sorted(sources[node], key=lambda idx: benchmarks[idx][0].casefold())))
-        add_category_scores(rows)
+        basket_audit = add_category_scores(rows)
         boards[category] = sorted(rows, key=lambda row: (-row['elo'], row['model'], row['setting']))
-        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, score_unit='elo',
+        status[category] = dict(min_papers=MIN_CATEGORY_PAPERS, score_unit='elo', basket=basket_audit,
                                 coverage_audit=coverage_audit(edges[category], eligible, board=category),
                                 available_benchmarks=len({group_bench[e['group_id']] for e in edges[category]}))
         print(category, len(rows), 'raw Elo')
     result = dict(scoring_revision=SCORING_REVISION, reviewed_evidence=inputs.data.get('reviewed_evidence_audit'), snapshot=manifest['snapshot_id'], benchmarks=benchmarks, boards=boards,
-                  status=status, references=[], score_unit='elo', method='main-batch-elo',
+                  status=status, references=basket_audit['references'], outcome_method=OUTCOME_METHOD, score_unit='elo', method='main-batch-elo',
                   score_method=METHOD, source_quality_policy=inputs.data.get('source_quality_policy'),
                   coverage_policy='coverage-display-only-v1', display_min_papers=MIN_CATEGORY_PAPERS)
     output = SITE / 'capability-rankings.json'

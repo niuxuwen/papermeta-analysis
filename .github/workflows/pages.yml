@@ -46,12 +46,17 @@ jobs:
           python -m unittest discover -s ratings -p test_opus_release.py
           python -m unittest discover -s ratings -p test_reviewed_evidence.py
           python -m unittest discover -s ratings -p test_raw_elo.py
+          python -m unittest discover -s ratings -p test_soft_outcomes.py
+          python -m unittest discover -s ratings -p test_common_basket.py
+          python -m unittest discover -s ratings -p test_source_integrity.py
+          python -m unittest discover -s ratings -p test_metric_semantics.py
           python -m unittest discover -s backend -p test_sample_sizes.py
           node ratings/test_display_coverage.cjs
           python3 backend/build_live.py .live-feed/feed
           node build-home.cjs
           python ratings/build_elo.py .live-feed/feed
           python ratings/build_capability_rankings.py .live-feed/feed
+          python ratings/validate_common_basket_publication.py
           node refresh-elo-home.cjs
           python backend/build_editions.py
           node validate-live.cjs .live-feed/feed/publication.json

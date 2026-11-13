@@ -20,6 +20,7 @@ def registry():
     supplemental = json.loads(REGISTRY.with_name('opus-source-registry.json').read_text(encoding='utf8'))
     for gid, rule in supplemental['groups'].items():
         rules['groups'].setdefault(gid, {}).update(rule)
+    rules['version'] += '|' + json.loads(REGISTRY.with_name('source-integrity-registry.json').read_text(encoding='utf8'))['version'] + '|column-direction-guard-v1'
     return rules
 
 def cell_signature(group):
@@ -122,6 +123,11 @@ def prepare_data(data, rules=None):
             else:
                 derived['source_quality'].update(eligible=False, reason='replacement_measurement_scope_not_available')
         report['events'].append({'group_id': derived['group_id'], 'paper_id': derived['paper_id'], **derived['source_quality']})
+    from source_integrity import apply_repairs
+    report['integrity_repairs'] = apply_repairs(out)
+    from metric_semantics import audit_directions
+    report['direction_conflicts'] = audit_directions(out['index']['groups'])
+    report['direction_check_counts'] = dict(Counter(g['metric_direction_check']['status'] for g in out['index']['groups']))
     report['counts'] = dict(Counter(e.get('reason') or ('verified_reextraction' if e.get('verified_reextraction') else 'configuration_or_direction') for e in report['events']))
     out['source_quality_policy'] = rules['version']
     out['source_quality_audit'] = report
