@@ -72,7 +72,11 @@
     method.append(element('p',txt(
       '论文数量门槛仅控制榜单展示。低于门槛的模型仍作为比较对象参与拟合，其来源成绩保留；隐藏模型不会触发重新拟合。',
       'The paper threshold only controls ranking visibility. Models below it remain comparison opponents in the fit, and their source results are retained. Hiding entries does not refit the model.')));
-    if (!rows.length) content.append(element('p', en
+    const basket = status.basket;
+    if (basket.status === 'INSUFFICIENT_REFERENCE_PAPERS') {
+      const counts = Object.entries(basket.observed_papers).map(([name,n]) => name+' ('+n+'/'+basket.minimum_independent_papers_per_board+')');
+      content.append(element('p',txt('参照模型的独立论文数未达门槛：','Reference models below the independent-paper minimum: ')+counts.join(', ')));
+    } else if (!rows.length) content.append(element('p', en
       ? `No entry currently meets the display threshold of ${minimum} source papers.`
       : `当前没有达到至少 ${minimum} 篇来源论文展示门槛的模型。`));
     const table=element('table',null,'ability-rank-table'), header=table.createTHead().insertRow(), body=table.createTBody();
@@ -115,7 +119,7 @@
       if (!basket?.panel_sha256 || basket.status!=='READY') throw Error('basket');
       for (const category of ['Science','Coding','General','Agent']) {
         const other=data.status[category]?.basket;
-        if (other?.status!=='READY' || other.panel_sha256!==basket.panel_sha256 || other.baseline!==basket.baseline || JSON.stringify(other.references)!==JSON.stringify(basket.references)) throw Error('basket');
+        if (!other || !(other.status==='READY' || (other.status==='INSUFFICIENT_REFERENCE_PAPERS' && data.boards[category]?.length===0)) || other.panel_sha256!==basket.panel_sha256 || other.baseline!==basket.baseline || JSON.stringify(other.references)!==JSON.stringify(basket.references)) throw Error('basket');
       }
       for(const category of ['Science','Coding','General','Agent']){
         const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5) && Number.isFinite(r.score)),card=element('button',null,'ability-board-card');card.type='button';
@@ -125,7 +129,8 @@
         card.append(head);
         const status = data.status[category];
         const preview=element('span',null,'ability-card-preview');card.append(preview);
-        if (!rows.length) preview.append(element('span',txt('暂无符合计分条件的模型','No models meet the ranking criteria'),'ability-card-empty'));
+        if (status.basket.status==='INSUFFICIENT_REFERENCE_PAPERS') preview.append(element('span',txt('参照模型来源不足，暂缓发布','Reference evidence below threshold'),'ability-card-empty'));
+        else if (!rows.length) preview.append(element('span',txt('暂无符合计分条件的模型','No models meet the ranking criteria'),'ability-card-empty'));
         for(const [i,row] of rows.slice(0,3).entries()){
           const line=element('span',null,'ability-card-row');
           const rating=element('b',row.score.toFixed(1));

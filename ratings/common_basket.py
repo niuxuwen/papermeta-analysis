@@ -9,6 +9,12 @@ METHOD = 'common-basket-centered-elo-v1'
 BASELINE = 1000.
 
 
+class InsufficientReferencePapers(ValueError):
+    def __init__(self, counts):
+        self.counts = counts
+        super().__init__('Common basket references below paper minimum: ' + ', '.join(counts))
+
+
 def calibrate(rows, *, elo_key='elo', panel=None):
     panel = panel or reference_panel()
     refs = panel['references']
@@ -28,10 +34,10 @@ def calibrate(rows, *, elo_key='elo', panel=None):
         # Never quietly use a different panel or synthesize missing strengths.
         raise ValueError('Common basket missing or ambiguous references: ' + ', '.join(invalid))
     minimum = panel.get('selection', {}).get('minimum_independent_papers_per_board', 0)
-    insufficient = [r['model'] for r, key in zip(refs, keys)
-                    if by_key[key][0].get('papers', 0) < minimum]
+    insufficient = {r['model']: by_key[key][0].get('papers', 0) for r, key in zip(refs, keys)
+                    if by_key[key][0].get('papers', 0) < minimum}
     if insufficient:
-        raise ValueError('Common basket references below paper minimum: ' + ', '.join(insufficient))
+        raise InsufficientReferencePapers(insufficient)
     original = elo_key + '_uncentered'
     anchor_values = [by_key[key][0].get(original, by_key[key][0][elo_key]) for key in keys]
     center = math.fsum(w * v for w, v in zip(weights, anchor_values))

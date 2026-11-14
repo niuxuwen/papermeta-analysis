@@ -21,9 +21,16 @@ def validate(main, categories):
         (name, rows, 'elo', categories['status'][name]['basket'])
         for name, rows in categories['boards'].items()]
     for name, rows, key, basket in boards:
-        assert basket['status'] == 'READY'
         for field in ('panel_sha256', 'references', 'baseline', 'minimum_independent_papers_per_board'):
             assert basket[field] == reference[field], (name, field)
+        if name != 'Main' and basket['status'] == 'INSUFFICIENT_REFERENCE_PAPERS':
+            counts = basket['observed_papers']
+            assert not rows and counts
+            assert set(counts) <= {ref['model'] for ref in reference['references']}
+            assert all(type(n) is int and 0 <= n < reference['minimum_independent_papers_per_board'] for n in counts.values())
+            report[name] = {'withheld': counts}
+            continue
+        assert basket['status'] == 'READY'
         lookup = {identify(r['model'], r.get('setting', ''))['key']: r for r in rows}
         values = []
         for ref in reference['references']:
