@@ -1,0 +1,74 @@
+name: Publish visitor website
+on:
+  push:
+    branches: [main, live-data]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+      - uses: actions/checkout@v6
+        id: feed
+        with:
+          ref: live-data
+          path: .live-feed
+      - uses: actions/setup-node@v4
+        if: steps.feed.outcome == 'success'
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy==2.2.6 scipy==1.15.3
+      - name: Build and validate latest verified public data
+        if: steps.feed.outcome == 'success'
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: |
+          python -m unittest discover -s ratings -p test_source_quality.py
+          python -m unittest discover -s ratings -p test_display_coverage.py
+          python -m unittest discover -s ratings -p test_identity_projection.py
+          python -m unittest discover -s ratings -p test_effort_projection.py
+          python -m unittest discover -s ratings -p test_opus_release.py
+          python -m unittest discover -s ratings -p test_reviewed_evidence.py
+          python -m unittest discover -s ratings -p test_raw_elo.py
+          python -m unittest discover -s ratings -p test_soft_outcomes.py
+          python -m unittest discover -s ratings -p test_common_basket.py
+          python -m unittest discover -s ratings -p test_source_integrity.py
+          python -m unittest discover -s ratings -p test_metric_semantics.py
+          python -m unittest discover -s backend -p test_sample_sizes.py
+          node ratings/test_display_coverage.cjs
+          python3 backend/build_live.py .live-feed/feed
+          node build-home.cjs
+          python ratings/build_elo.py .live-feed/feed
+          python ratings/build_capability_rankings.py .live-feed/feed
+          python ratings/validate_common_basket_publication.py
+          node refresh-elo-home.cjs
+          python backend/build_editions.py
+          node validate-live.cjs .live-feed/feed/publication.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          # Re-runs can retain artifacts from earlier attempts.
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          # Allow bounded extra time for Pages server-side file synchronization.
+          timeout: 1200000
