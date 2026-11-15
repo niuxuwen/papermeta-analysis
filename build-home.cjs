@@ -10,7 +10,7 @@ const radar=read('radar.js');
 const decoder=radar.slice(radar.indexOf('  function decodeSnapshot('),radar.indexOf('  async function fetchSnapshotJSON('));
 const context={console,Intl,URL};context.window=context;vm.createContext(context);
 vm.runInContext(decoder+'\n'+read('radar-viz.js'),context);
-let snapshot=context.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed)));
+let snapshot=context.decodeSnapshot(require('./large-json.cjs')(zlib.gunzipSync(packed)));
 if(manifest.benchmark_entities){
  const meta=manifest.benchmark_entities,raw=fs.readFileSync(path.join(site,meta.path));
  if(raw.length!==meta.bytes||crypto.createHash('sha256').update(raw).digest('hex')!==meta.sha256)throw Error('BENCHMARK_ENTITY_INTEGRITY_FAILURE');
@@ -65,3 +65,4 @@ const report={snapshot_id:manifest.snapshot_id,generated_at:manifest.generated_a
  models:summary.home_summary.models,featured:summary.home_summary.featured,observations:snapshot.observations.length};
 fs.writeFileSync(path.join(__dirname,'performance-validation.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({initial_snapshot_download_bytes:0,previous_required_snapshot_bytes:report.previous_required_snapshot_bytes,embedded_bootstrap_bytes:report.embedded_bootstrap_bytes,compact_manifest_bytes:report.compact_manifest_bytes,models:top.length,featured:featured.length}));
+

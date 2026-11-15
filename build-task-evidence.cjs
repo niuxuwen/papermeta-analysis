@@ -6,7 +6,7 @@ const packed=Buffer.concat(manifest.parts.map(p=>fs.readFileSync(path.join(site,
 if(crypto.createHash('sha256').update(packed).digest('hex')!==manifest.workspace_sha256)throw Error('SNAPSHOT_HASH');
 const source=fs.readFileSync(path.join(site,'radar.js'),'utf8'),ctx={};vm.createContext(ctx);
 vm.runInContext(source.slice(source.indexOf('  function decodeSnapshot('),source.indexOf('  async function fetchSnapshotJSON(')),ctx);
-const full=ctx.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed))),V=require('./site/radar-viz.js'),snapshot=V.visitorSnapshot(full);
+const full=ctx.decodeSnapshot(require('./large-json.cjs')(zlib.gunzipSync(packed))),V=require('./site/radar-viz.js'),snapshot=V.visitorSnapshot(full);
 const rules=JSON.parse(fs.readFileSync(path.join(__dirname,'validation/task-measurements-v8-real.json')));
 if(rules.snapshot_id!==snapshot.snapshot_id)throw Error('TASK_SNAPSHOT_MISMATCH');
 const pick=(row,keys)=>Object.fromEntries(keys.filter(k=>row[k]!==undefined).map(k=>[k,row[k]]));
@@ -31,3 +31,4 @@ fs.writeFileSync(manifestPath,JSON.stringify(manifest));
 const report={snapshot_id:snapshot.snapshot_id,task_method_version:taskVersion,task_evidence_bytes:bytes.length,full_archive_bytes:packed.length,archive_reduction:1-bytes.length/packed.length,groups:groups.length,models:task.snapshot.index.models.length,raw_scores_unchanged:true};
 fs.writeFileSync(path.join(__dirname,'task-loading-validation.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report));
+

@@ -8,7 +8,7 @@ assert.equal(m.snapshot_id,report.snapshot_id);assert.equal(m.observations,repor
 const packed=Buffer.concat(m.parts.map(p=>fs.readFileSync('site/'+p.path)));
 assert.equal(createHash('sha256').update(packed).digest('hex'),m.workspace_sha256);
 const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync('site/snapshot-codec.js','utf8'),ctx);
-const original=ctx.decodeSnapshot(JSON.parse(zlib.gunzipSync(packed)));
+const original=ctx.decodeSnapshot(require('./large-json.cjs')(zlib.gunzipSync(packed)));
 let entities;
 if(m.benchmark_entities){
  const meta=m.benchmark_entities,raw=fs.readFileSync('site/'+meta.path);
@@ -43,3 +43,4 @@ assert.equal(boot.manifest.snapshot_id,m.snapshot_id);
 assert(!fs.existsSync('site/backend'));
 console.log(JSON.stringify({snapshot_id:m.snapshot_id,observations:full.observations.length,models:names.length,
  settings:V.settings(pub).length,rankings:'exact',catalog_counts:'exact',model_sources:'exact',model_calls:0}));
+
