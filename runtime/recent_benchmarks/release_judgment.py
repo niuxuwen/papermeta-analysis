@@ -47,6 +47,8 @@ def lookup_keys(record):
     aliases=record.get('aliases',[])
     if isinstance(aliases,list):keys.update(a for a in aliases if isinstance(a,str))
     for ref in record.get('source_records',[]):
+        if ref.get('paper_id') and ref.get('benchmark_id'):
+            keys.add(ref['paper_id']+'::'+ref['benchmark_id'])
         keys.update(ref.get(k) for k in ('benchmark_name','benchmark_id','paper_id','arxiv_id','source_url'))
         aliases=ref.get('benchmark_aliases',[])
         if isinstance(aliases,list):keys.update(a for a in aliases if isinstance(a,str))

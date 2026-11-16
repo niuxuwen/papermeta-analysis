@@ -12,7 +12,7 @@ export async function renderReleaseDate(node,benchmark,{snapshotId,queryFunction
   const key=JSON.stringify([snapshotId,benchmark.paper_id,benchmark.benchmark_id]);
   node.dataset.releaseLookup=key;node.textContent='Benchmark 首发：待核（正在读取日期台账）';
   try {
-    const result=await queryFunction(benchmark.benchmark_id,new URL('./manifest.json',import.meta.url),
+    const result=await queryFunction(benchmark.paper_id+'::'+benchmark.benchmark_id,new URL('./manifest.json',import.meta.url),
       (url,options)=>fetch(url,{...options,signal:AbortSignal.timeout(8000)}));
     if(node.dataset.releaseLookup!==key||node.isConnected===false)return;
     if(!snapshotId||result.snapshot_id!==snapshotId)throw Error('首发台账与当前成绩快照不一致，待同步');

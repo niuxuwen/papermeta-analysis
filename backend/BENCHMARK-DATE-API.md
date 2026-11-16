@@ -45,6 +45,8 @@ SHA-256, snapshot ID, source hash, registry hash and generation are checked.
 `api_root` is resolved relative to that manifest URL, preserving project paths.
 Exact normalized names are indexed; there is no automatic fuzzy identity merge.
 ArXiv URLs normalize to versionless IDs. Name collisions return multiple sources.
+For an exact source, query `paper_id::benchmark_id`; detail pages use this key so
+a common benchmark ID cannot hide the current source behind a truncated name query.
 
 ## Returned date fields
 

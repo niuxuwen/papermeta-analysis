@@ -26,6 +26,7 @@ class JudgmentTests(unittest.TestCase):
         a=answer('SameBench',values,index);self.assertEqual(a['result_status'],'AMBIGUOUS')
         self.assertIsNone(a['is_new_in_report_period'])
         self.assertEqual(answer('SameBench',values,index,paper_id='p1')['match_count'],1)
+        self.assertEqual(answer('p2::p2',values,index)['matches'][0]['source_refs'][0]['paper_id'],'p2')
 
     def test_all_source_rows_get_overlay_without_changing_proxy(self):
         row=dict(paper_id='p',benchmark_id='b',benchmark_name='Old',release_date='2026-11-14',date_basis='PAPER_V1_PROXY')
