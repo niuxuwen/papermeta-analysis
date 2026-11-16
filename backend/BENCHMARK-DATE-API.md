@@ -134,3 +134,12 @@ Each immutable generation includes `automatic-review-progress.json`; source
 checking, precise dates, bounds and remaining evidence gaps are shown separately.
 
 This process does not resume the paused manual 1,400-paper review automation.
+
+`automatic_date_publish.py` provides a separate bounded publication retry job.
+It may run every minute, uses its own overlap lock, and throttles successful
+publications to at least five minutes apart. Each invocation tries the shared
+publisher lock at most five times, ten seconds apart. A long review cycle or a
+busy score publisher therefore does not discard a completed date checkpoint.
+The publisher acquires the shared lock before loading the large evidence file.
+Internal freeze, collection, generation and planned dates are retained as
+nonpublic source claims, rather than credited as public release evidence.
