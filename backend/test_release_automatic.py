@@ -15,6 +15,14 @@ from test_release_ledger import entity
 
 
 class AutomaticEvidenceTests(unittest.TestCase):
+    def test_freeze_collection_and_planned_dates_are_not_publication(self):
+        day='2026-07-24'
+        for text in ['FTB-Core was frozen on '+day,'The data were collected on '+day,
+                     'Benchmark will be publicly released on '+day,
+                     'The snapshot was generated on '+day+'; documentation is public.']:
+            self.assertFalse(worker.public_date_clause(text,day),text)
+        self.assertTrue(worker.public_date_clause('ExampleBench was publicly released on '+day,day))
+
     def test_api_rate_limit_uses_official_atom_without_exact_first_credit(self):
         class Cache:
             def get(self,url):

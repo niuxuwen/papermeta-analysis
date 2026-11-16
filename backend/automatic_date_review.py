@@ -36,6 +36,12 @@ BJ=timezone(timedelta(hours=8))
 
 def now():return datetime.now(UTC).isoformat()
 def norm(x):return ' '.join(str(x).split()).casefold()
+def public_date_clause(text,day):
+    for clause in re.split(r'[.!?\n。；;]',text):
+        if day not in clause:continue
+        if re.search(r'\b(frozen|generated|collected|downloaded|accessed|snapshot|cutoff|cut-off|will|planned|scheduled|expected)\b|冻结|采集|生成|计划',clause,re.I):continue
+        if re.search(r'\b(publicly\s+(released|available)|released\s+(publicly|on)|made\s+public|public\s+release(\s+date)?|became\s+public)\b|公开发布|正式发布|对外发布',clause,re.I):return True
+    return False
 def atomic(path,value):
     path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_suffix(path.suffix+'.pending')
     with tmp.open('w',encoding='utf-8') as f:json.dump(value,f,ensure_ascii=False,separators=(',',':'));f.flush();os.fsync(f.fileno())
@@ -354,12 +360,21 @@ class Reviewer:
         if old:return 'VERIFIED_PUBLIC_BOUND','AUDITED_HISTORICAL_FACT_AND_CURRENT_SOURCE_REVALIDATED',old,1
         record=base_record(row,b,context)
         records=[b,*b.get('evidence',[])];dates=[r for r in records if r.get('date_basis')=='EXPLICIT_RELEASE' and r.get('release_date') and r.get('date_quote')]
+        seen_dates=set()
         for d in dates:
             q=d['date_quote'];day=d['release_date']
             if len(q)>=12 and norm(q)in context['normalized_text'] and norm(row['benchmark_name'])in norm(q) and day in q:
-                record['events'].append({'kind':'PUBLIC_ANNOUNCEMENT','date':day,'author_date_claim':day,'timezone':'UNSPECIFIED',
-                    'publication_verified':True,'proves_public_existence':True,'evidence':proof(record['identity_evidence']['url'],q)})
-        if record['events']:return 'SOURCE_DATE_CLAIM','EXPLICIT_SOURCE_DAY_TIMEZONE_OR_FIRSTNESS_PENDING',record,1
+                if (q,day)in seen_dates:continue
+                seen_dates.add((q,day));public=public_date_clause(q,day)
+                event={'kind':'PUBLIC_ANNOUNCEMENT'if public else 'UPDATE','date':day,'timezone':'UNSPECIFIED',
+                    'publication_verified':public,'proves_public_existence':public,
+                    'date_claim_context':'PUBLIC_RELEASE_CLAUSE'if public else 'NONPUBLIC_OR_AMBIGUOUS_LIFECYCLE_DATE',
+                    'evidence':proof(record['identity_evidence']['url'],q)}
+                if public:event['author_date_claim']=day
+                record['events'].append(event)
+        if record['events']:
+            record['review_notes']='日期引句已核对；冻结、生成、采集或计划日期不证明公开发布。只有明确公开发布语义才可形成作者日期声明，时区和首发身份仍须另证。'
+            return 'SOURCE_DATE_CLAIM','SOURCE_DATE_CONTEXT_TIMEZONE_OR_FIRSTNESS_PENDING',record,1
         if b.get('novelty')=='NEW' and b.get('tests_llms')is True and repos_for(row,b,context):
             if research:
                 label,status,reason=official_events(row,b,context,self.primary);return status,reason,label,1
