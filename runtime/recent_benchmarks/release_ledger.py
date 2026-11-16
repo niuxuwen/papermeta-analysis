@@ -11,12 +11,14 @@ from datetime import date, datetime, timedelta, timezone
 from hashlib import sha256
 import json
 from urllib.parse import urlsplit
+from .benchmark_dates import date_assessment, first_date
 
 POLICY = 'benchmark-first-publication-ledger-v1'
 BEIJING = timezone(timedelta(hours=8))
 KINDS = {'BENCHMARK', 'METRIC', 'SUBSET', 'ABLATION', 'SUBTASK', 'MIRROR', 'UNKNOWN'}
 DECISIONS = {'CONFIRMED_NEW', 'EXISTING_OR_UPDATE', 'NOT_A_BENCHMARK', 'PENDING'}
-EVENTS = {'FIRST_PUBLIC_INTRODUCTION', 'CODE_RELEASE', 'DATA_RELEASE', 'UPDATE'}
+EVENTS = {'FIRST_PUBLIC_INTRODUCTION', 'CODE_RELEASE', 'DATA_RELEASE', 'UPDATE',
+          'PUBLIC_ANNOUNCEMENT', 'KNOWN_PUBLIC_EXISTENCE', 'REPOSITORY_RECORD_CREATED'}
 FIRST_DATE_BASES = {'AUTHOR_DATED_ANNOUNCEMENT', 'PUBLISHER_RELEASE_TIMESTAMP',
                     'PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM'}
 
@@ -99,12 +101,19 @@ def validate_registry(registry):
     return bindings
 
 
-def public_event(event):
+def public_event(event, cutoff=None):
     day, issue = event_day(event)
     if (event.get('kind') == 'FIRST_PUBLIC_INTRODUCTION'
             and event.get('date_basis') not in FIRST_DATE_BASES):
         day, issue = None, 'FIRST_PUBLICATION_DATE_BASIS_UNVERIFIED'
-    return {**deepcopy(event), 'beijing_date': day, 'date_issue': issue,
+    after_cutoff=False
+    if cutoff is not None:
+        after_cutoff=bool(day and day>cutoff.astimezone(BEIJING).date().isoformat())
+        if event.get('at') and not issue:
+            after_cutoff=after_cutoff or datetime.fromisoformat(event['at'].replace('Z','+00:00'))>cutoff
+        if event.get('author_date_claim'):
+            after_cutoff=after_cutoff or event['author_date_claim']>cutoff.astimezone(BEIJING).date().isoformat()
+    return {**deepcopy(event), 'beijing_date': day, 'date_issue': issue, 'after_audit_cutoff':after_cutoff,
             'evidence_verified': evidence(event.get('evidence'))}
 
 
@@ -112,7 +121,7 @@ def source_projection(row):
     # No names/aliases are used as cross-paper identity proof.
     keys = ('paper_id', 'benchmark_id', 'benchmark_name', 'arxiv_id', 'source_url',
             'paper_first_published', 'release_date', 'date_basis', 'novelty',
-            'eligibility', 'directory_identity', 'catalog_identity')
+            'eligibility', 'directory_identity', 'catalog_identity', 'benchmark_aliases')
     result = {k: deepcopy(row[k]) for k in keys if k in row}
     result['source_claim_quote'] = str(row.get('evidence_quote') or '')[:2000]
     return result
@@ -134,6 +143,7 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
     date_bases = Counter()
     unclassified_evaluations = 0
     seen = {}
+    source_dates = []
     for source in catalog:
         if not isinstance(source, dict) or not source.get('paper_id') or not source.get('benchmark_id'):
             continue
@@ -145,6 +155,7 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
         if key in seen:
             raise ValueError('Conflicting duplicate snapshot source record')
         seen[key] = signature
+        source_dates.append({k: deepcopy(v) for k,v in row.items() if k!='source_claim_quote'})
         date_bases[str(row.get('date_basis') or 'UNKNOWN')] += 1
         entity = bindings.get(key)
         if (entity is None and row.get('novelty') not in {'NEW', 'EXISTING'}
@@ -171,10 +182,13 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
                 record.update(status='SOURCE_REPORTED_EXISTING', reasons=['NOT_A_NEW_RELEASE_CLAIM'])
         else:
             record = {k: deepcopy(v) for k, v in decision.items() if k != 'source_refs'}
-            record['events'] = [public_event(e) for e in decision.get('events', [])]
+            record['events'] = [public_event(e,cutoff=cutoff) for e in decision.get('events', [])]
             record.update(first_public_date=None, reasons=[])
             if decision['decision'] in {'EXISTING_OR_UPDATE', 'NOT_A_BENCHMARK'}:
                 record['status'] = decision['decision']
+                if decision['decision']=='EXISTING_OR_UPDATE':
+                    day, _ = first_date(record['events'], evidence(decision.get('firstness_evidence')), cutoff)
+                    record['first_public_date'] = day
             elif decision['decision'] != 'CONFIRMED_NEW':
                 record.update(status='PENDING_ENTITY_AND_FIRST_PUBLICATION', reasons=['REVIEW_INCOMPLETE'])
             else:
@@ -192,9 +206,25 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
                     record.update(status='PENDING_FIRST_PUBLICATION', reasons=['EVENT_AFTER_AUDIT_CUTOFF'])
                 else:
                     record.update(status='CONFIRMED_NEW_FIRST_PUBLIC', first_public_date=next(iter(days)))
+                if record['status']=='CONFIRMED_NEW_FIRST_PUBLIC':
+                    day, issue = first_date(record['events'], evidence(decision.get('firstness_evidence')), cutoff)
+                    if issue:
+                        record.update(status='PENDING_FIRST_PUBLICATION',first_public_date=None,reasons=[issue])
         record['source_records'] = refs
         records.append(record)
     confirmed = [r for r in records if r['status'] == 'CONFIRMED_NEW_FIRST_PUBLIC']
+    by_source={(r['paper_id'],r['benchmark_id']):record for record in records for r in record['source_records']}
+    date_overlay=[]
+    query_records=list(records)
+    for row in source_dates:
+        record=by_source.get((row['paper_id'],row['benchmark_id']))
+        if record is None:
+            record={'entity_id':'unresolved-'+digest([row['paper_id'],row['benchmark_id']])[:24],
+                'name':row.get('benchmark_name') or '名称待核','kind':'UNKNOWN','scope':'UNVERIFIED',
+                'status':'PENDING_ENTITY_AND_FIRST_PUBLICATION','first_public_date':None,
+                'events':[],'reasons':['NO_REVIEWED_BENCHMARK_DATE'],'source_records':[row]}
+            query_records.append(record)
+        date_overlay.append({**row,'entity_id':record['entity_id'],**date_assessment(record)})
     queue = [r for r in records if r['status'].startswith('PENDING')]
     by_day = defaultdict(list)
     for row in confirmed:
@@ -222,10 +252,11 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
               'pending_scope': 'ENTIRE_SOURCE_SNAPSHOT_UNALLOCATED_NOT_PERIOD_TOTAL',
               'unclassified_evaluation_records': unclassified_evaluations,
               'source_records': len(seen), 'source_date_bases': dict(sorted(date_bases.items())),
+              'benchmark_date_coverage': dict(sorted(Counter(r['benchmark_date_status'] for r in date_overlay).items())),
               'dispositions': dict(sorted(Counter(r['status'] for r in records).items())),
               'days': days,
               'notice': '只统计已核实的新benchmark首次公开事件。论文代理日期不计首发；待核不等于零。'
                         '该论文评测快照不代表全网发布量，不能据此计算真实日均。'}
-    generation = digest({'report': report, 'entities': records})[:24]
+    generation = digest({'report': report, 'entities': records, 'date_overlay': date_overlay})[:24]
     return {'generation': generation, 'daily': report, 'entities': records,
-            'review_queue': queue}
+            'review_queue': queue, 'date_overlay':date_overlay, 'query_records':query_records}

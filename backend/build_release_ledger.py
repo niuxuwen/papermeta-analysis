@@ -18,6 +18,7 @@ import tempfile
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / 'runtime'))
 from recent_benchmarks.release_ledger import BEIJING, build_ledger, digest
+from build_release_api import artifacts as api_artifacts
 
 
 def json_bytes(value):
@@ -69,7 +70,8 @@ aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style
             + '<table><thead><tr><th>日期</th><th>已核实首发下限</th><th>每日总量</th></tr></thead><tbody>'
             + rows + '</tbody></table><p>已核实条目（不代表全量）：</p><ul>' + verified + '</ul><p>数据快照：'
             + escape(d['snapshot_id']) + ' · ' + escape(d['source_generated_at'])
-            + '</p><p><a href="../../">返回总榜</a></p><p><a href="daily.json">下载统计与口径</a> · '
+            + '</p><p><a href="api/v1/judge.html">查询某个 Benchmark 的首发判断与日期</a></p><p><a href="../../">返回总榜</a></p><p><a href="daily.json">下载统计与口径</a> · '
+            + '<a href="benchmark-dates.json.gz">下载完整日期补全台账</a> · '
             + '<a href="entities.json.gz">下载实体与发布证据</a> · '
             + '<a href="review-queue.json.gz">下载待核队列</a></p></html>').encode()
 
@@ -103,8 +105,12 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
             source_generated_at=pub['generated_at'], period_start=start,
             period_end=end, as_of=as_of)
     # Renderer/producer changes also create a new immutable generation.
-    producer_hash = hashlib.sha256(Path(__file__).read_bytes() +
-        Path(sys.modules[build_ledger.__module__].__file__).read_bytes()).hexdigest()
+    producer_files=[Path(__file__), Path(sys.modules[build_ledger.__module__].__file__),
+        PROJECT/'runtime/recent_benchmarks/benchmark_dates.py',
+        PROJECT/'runtime/recent_benchmarks/release_judgment.py',
+        Path(__file__).with_name('build_release_api.py'),Path(__file__).with_name('judge-client.mjs'),
+        Path(__file__).with_name('judge.html'),Path(__file__).with_name('benchmark-date-view.mjs')]
+    producer_hash = hashlib.sha256(b''.join(p.read_bytes() for p in producer_files)).hexdigest()
     result['generation'] = digest({'evidence_generation':result['generation'],
                                    'producer_sha256':producer_hash})[:24]
     dest = output / result['generation']
@@ -112,7 +118,12 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
     files = {'daily.json': json_bytes(result['daily']),
              'entities.json.gz': gzip.compress(json_bytes(result['entities']), mtime=0),
              'review-queue.json.gz': gzip.compress(json_bytes(result['review_queue']), mtime=0),
+             'benchmark-dates.json.gz': gzip.compress(json_bytes(result['date_overlay']),mtime=0),
              'index.html': html_report(result)}
+    metadata={'snapshot_id':snapshot_id,'source_sha256':source_hash,
+              'source_generated_at':pub['generated_at'],'report_period':result['daily']['period'],
+              'registry_sha256':digest(registry),'generation':result['generation']}
+    files.update(api_artifacts(result,metadata))
     manifest = {'format': 'benchmark-first-publication-ledger-v1',
                 'generation': result['generation'], 'snapshot_id': snapshot_id,
                 'source_sha256': source_hash, 'as_of': as_of,

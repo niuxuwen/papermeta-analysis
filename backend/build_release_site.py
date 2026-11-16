@@ -34,6 +34,14 @@ def build(feed, site, registry):
         '<title>新 Benchmark 首发核验</title><meta http-equiv="refresh" content="0;url='
         + escape(target, quote=True)+'"><p><a href="'+escape(target, quote=True)
         +'">打开新 Benchmark 首发核验</a></p></html>').encode())
+    api=json.loads((root/generation/'api/v1/manifest.json').read_text(encoding='utf-8'))
+    api['api_root']='../../'+generation+'/api/v1/'
+    atomic_bytes(root/'api/v1/current.json',json.dumps(api,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode())
+    atomic_bytes(root/'api/v1/manifest.json',(root/'api/v1/current.json').read_bytes())
+    for path in api['direct_entities'].values():
+        atomic_bytes(root/'api/v1'/path,(root/generation/'api/v1'/path).read_bytes())
+    for name in ['judge.html','judge-client.mjs','benchmark-date-view.mjs']:
+        atomic_bytes(root/'api/v1'/name,(root/generation/'api/v1'/name).read_bytes())
     # This runs after edition generation so both language routes retain a link.
     for page, href in [(site/'index.html','./releases/'), (site/'zh/index.html','../releases/')]:
         if not page.exists():

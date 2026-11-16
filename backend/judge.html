@@ -1,0 +1,30 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benchmark 首发判断</title><style>
+body{font:16px/1.65 system-ui,sans-serif;color:#193347;max-width:900px;margin:36px auto;padding:0 20px}form{display:flex;gap:10px}input{flex:1;min-width:0;padding:12px;font:inherit}button{padding:10px 20px;font:inherit;cursor:pointer}article{border:1px solid #dce5ed;border-radius:12px;padding:18px;margin:18px 0}aside{background:#f0f6fb;padding:16px;border-radius:10px}dt{font-weight:600}dd{margin-left:0;margin-bottom:12px}a{color:#176dc0}pre{white-space:pre-wrap;overflow-wrap:anywhere}#state{min-height:2em}small{color:#52697b}
+</style><main><p><a href="../../index.html">返回每日首发核验</a></p><h1>Benchmark 首发判断</h1>
+<aside>查询名称、benchmark ID、论文 ID、arXiv 链接或已核实的项目链接。未命中不代表旧 benchmark；同名结果需要选择具体来源。这里只查询已有证据，不会自动联网调查新链接。</aside>
+<form id="query"><input id="term" aria-label="名称、ID或链接" maxlength="512" placeholder="例如 ToolTurns 或 DistDebug-Bench" required><button>查询</button></form>
+<p id="state" role="status" aria-live="polite"></p><section id="results"></section><details><summary>查看 JSON 返回值</summary><pre id="json"></pre></details>
+<p><small>首发日、作者日期、代码与数据发布日期分开保存。论文代理日期不作为已核实首发日。</small></p>
+</main><script type="module">
+import {judge} from './judge-client.mjs';
+const form=document.querySelector('#query'),term=document.querySelector('#term'),state=document.querySelector('#state'),results=document.querySelector('#results');let serial=0;
+const names={NEW_IN_PERIOD:'报告期间首次公开（已核实）',EXISTING_OR_OUTSIDE_PERIOD:'首发早于报告期或不在报告期内',EXISTING_OR_UPDATE:'已有 benchmark／本次为更新',NOT_A_BENCHMARK:'指标、子集或消融，不是独立 benchmark',PENDING:'首发待核'};
+function text(parent,tag,value){const e=document.createElement(tag);e.textContent=value;parent.append(e);return e;}
+function field(parent,label,value){text(parent,'dt',label);text(parent,'dd',value);}
+async function run(){const request=++serial;state.textContent='正在读取核验结果…';results.replaceChildren();
+ try{const data=await judge(term.value);if(request!==serial)return;
+ document.querySelector('#json').textContent=JSON.stringify(data,null,2);
+ state.textContent=(data.result_status==='NOT_FOUND'?'未找到已核实身份，保留为待核。':data.result_status==='AMBIGUOUS'?'有多个来源，请核对下面的具体条目。':'已读取判断。')+' 数据时间：'+data.source_generated_at;
+ for(const row of data.matches){const a=text(results,'article','');text(a,'h2',row.name);text(a,'strong',names[row.judgment]||'首发待核');const dl=text(a,'dl','');
+ field(dl,'已核实首发日',row.benchmark_first_public_date||'待核');
+ field(dl,'公开时间上界',row.first_public_on_or_before?'最迟 '+row.first_public_on_or_before+' 已公开；不等于首发日':'暂无可用证据');
+ field(dl,'代码发布日期',row.code_release_dates.join('、')||'待核');field(dl,'数据发布日期',row.data_release_dates.join('、')||'待核');
+ if(row.author_date_claims.length)field(dl,'作者日期声明',row.author_date_claims.map(e=>e.kind+'：'+(e.author_date_claim||e.date)+'（时区／首发性质见证据）').join('；'));
+ field(dl,'原始来源日期',row.source_refs.map(r=>(r.release_date||'无日期')+' ['+(r.date_basis||'UNKNOWN')+']').join('；')||'独立发布记录');
+ field(dl,'说明',row.date_review_notes||row.date_pending_reasons.join('；')||'见证据');
+ const seen=new Set();for(const p of [row.identity_evidence,row.firstness_evidence,...row.date_evidence.map(e=>e.evidence)]){if(!p?.url||seen.has(p.url))continue;const u=new URL(p.url);if(u.protocol!=='https:')continue;seen.add(p.url);const link=text(a,'a','查看原始证据');link.href=p.url;link.target='_blank';link.rel='noopener noreferrer';a.append(document.createElement('br'));}
+ }}catch(e){if(request===serial)state.textContent='查询未完成：'+e.message+'。这不代表旧 benchmark。';}}
+form.addEventListener('submit',e=>{e.preventDefault();run();});
+const q=new URL(location.href).searchParams.get('q');if(q){term.value=q;run();}
+</script></html>

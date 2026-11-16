@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewed_at": "2026-11-16T09:05:07.720422Z",
+  "reviewed_at": "2026-11-16T10:20:58.293070+00:00",
   "policy": "Review primary first-introduction evidence independently of evaluation eligibility. Pending is not zero.",
   "entities": [
     {
@@ -271,7 +271,9 @@
             "url": "https://github.com/milad621/ToolTurns/releases/tag/v1.0.0",
             "quote": "ToolTurns v1.0.0 provides the complete 2,620-problem benchmark",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
         },
         {
           "kind": "DATA_RELEASE",
@@ -282,7 +284,9 @@
             "url": "https://github.com/milad621/ToolTurns/releases/tag/v1.0.0",
             "quote": "ToolTurns v1.0.0 provides the complete 2,620-problem benchmark",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
         }
       ]
     },
@@ -290,7 +294,7 @@
       "entity_id": "review-9998c9746e6601d4",
       "name": "MemReal-Bench",
       "kind": "BENCHMARK",
-      "scope": "UNVERIFIED",
+      "scope": "LLM",
       "decision": "PENDING",
       "identity_evidence": {
         "primary": true,
@@ -305,18 +309,22 @@
           "benchmark_id": "bench-f4887b2aae88f438"
         }
       ],
-      "review_notes": "AUTHOR_ANNOUNCEMENT_SUPPORTED_EARLIER_HISTORY_NOT_EXHAUSTIVE",
+      "review_notes": "Author explicitly dates project launch November11; timezone and earliest introduction remain unresolved. Code and benchmark data are promised upon acceptance, not yet released.",
       "events": [
         {
-          "kind": "UPDATE",
-          "at": "2026-11-11T10:42:29Z",
+          "kind": "PUBLIC_ANNOUNCEMENT",
+          "date": "2026-11-11",
+          "author_date_claim": "2026-11-11",
+          "timezone": "UNSPECIFIED",
           "evidence": {
             "primary": true,
             "review_status": "VERIFIED",
             "url": "https://github.com/jiazhicheng7-ctrl/MindMem/blob/9c75a19124f357adb75893d09129ef626f202cf7/README.md",
-            "quote": "Dated News states project launched November11; code and benchmark release planned upon acceptance.",
-            "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+            "quote": "2026-11-11: Project repository launched",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
         }
       ]
     },
@@ -324,7 +332,7 @@
       "entity_id": "review-f544cb97f3ffd804",
       "name": "WorkflowArena",
       "kind": "BENCHMARK",
-      "scope": "UNVERIFIED",
+      "scope": "LLM",
       "decision": "PENDING",
       "identity_evidence": {
         "primary": true,
@@ -339,7 +347,7 @@
           "benchmark_id": "bench-ecd5e94bc6e29e3a"
         }
       ],
-      "review_notes": "PROJECT_RELEASE_EVIDENCE_FOUND_EARLIER_PUBLIC_INTRODUCTION_NOT_EXHAUSTIVE",
+      "review_notes": "Official project dates the study November10; this alone does not prove the first public announcement or its timezone. Author commit timestamp is kept separately.",
       "events": [
         {
           "kind": "DATA_RELEASE",
@@ -350,7 +358,25 @@
             "url": "https://github.com/Einsia/WorkflowArena/commit/1bc58ba33bd35b250ba0373e1b9f5e282622f1fa",
             "quote": "Author commit releases145tasks; author project page also dates study November10.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "HISTORICAL_RECORD_ONLY_NOT_PROVEN_PUBLICATION"
+        },
+        {
+          "kind": "PUBLIC_ANNOUNCEMENT",
+          "date": "2026-11-10",
+          "author_date_claim": "2026-11-10",
+          "timezone": "UNSPECIFIED",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://lab.einsia.ai/workflowarena/home.html",
+            "quote": "November 10, 2026",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false
         }
       ]
     },
@@ -358,7 +384,7 @@
       "entity_id": "review-11f85f73c557e639",
       "name": "VibePrevisBench",
       "kind": "BENCHMARK",
-      "scope": "UNVERIFIED",
+      "scope": "LLM",
       "decision": "PENDING",
       "identity_evidence": {
         "primary": true,
@@ -373,7 +399,7 @@
           "benchmark_id": "bench-865a07b0de904c32"
         }
       ],
-      "review_notes": "RELEASE_EVENT_SUPPORTED_TIMEZONE_RETAINED_NOT_PROVEN_EARLIEST_PUBLIC_MENTION",
+      "review_notes": "Author release date November11 has no timezone. Do not convert it to Beijing midnight. Historical code commit is November12 Beijing, but commit time alone is not publication time.",
       "events": [
         {
           "kind": "CODE_RELEASE",
@@ -384,7 +410,40 @@
             "url": "https://github.com/vibeprevisbench/vibeprevisbench/commit/0805ab21a9f9913838b9850959cbfecb583146fe",
             "quote": "Official News says code/data release November11 without timezone; dated code release commit and HFcreatedAt16:48UTC are November12 Beijing. Do not silently treat the date-only author notice as Beijing midnight.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "HISTORICAL_RECORD_ONLY_NOT_PROVEN_PUBLICATION"
+        },
+        {
+          "kind": "CODE_RELEASE",
+          "date": "2026-11-11",
+          "author_date_claim": "2026-11-11",
+          "timezone": "UNSPECIFIED",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://raw.githubusercontent.com/vibeprevisbench/vibeprevisbench/main/README.md",
+            "quote": "[2026.11.11] Code and data are released.",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
+        },
+        {
+          "kind": "DATA_RELEASE",
+          "date": "2026-11-11",
+          "author_date_claim": "2026-11-11",
+          "timezone": "UNSPECIFIED",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://raw.githubusercontent.com/vibeprevisbench/vibeprevisbench/main/README.md",
+            "quote": "[2026.11.11] Code and data are released.",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
         }
       ]
     },
@@ -413,7 +472,10 @@
             "url": "https://github.com/InfrathonX/Infrathon/commit/73dcb5784fa31f07cb0387267d5d2b2df81cc339",
             "quote": "Code v1 commit. Paper submitted earlier; benchmark announcement date cannot be replaced with code release day.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "HISTORICAL_RECORD_ONLY_NOT_PROVEN_PUBLICATION"
         }
       ]
     },
@@ -431,8 +493,22 @@
         "reviewed_at": "2026-11-16T09:05:07.720422Z"
       },
       "source_refs": [],
-      "review_notes": "EXCLUDE_NOV13_AS_UNSUPPORTED_FIRST_RELEASE",
-      "events": []
+      "review_notes": "Unedited public issue created November6 refers to existing benchmark. Public introduction no later than November6; actual first day still unresolved. November13 promotion is not first-release proof.",
+      "events": [
+        {
+          "kind": "KNOWN_PUBLIC_EXISTENCE",
+          "at": "2026-11-06T06:57:16Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/allenai/XYBench/issues/2",
+            "quote": "I am trying to access the XYBench dataset",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
+        }
+      ]
     },
     {
       "entity_id": "review-bef9de70b42d233f",
@@ -468,7 +544,7 @@
       "review_notes": "FIRST_OBSERVED_REPOSITORY_RECORD_NOT_PROVEN_GLOBAL_FIRST_RELEASE",
       "events": [
         {
-          "kind": "DATA_RELEASE",
+          "kind": "REPOSITORY_RECORD_CREATED",
           "at": "2026-11-14T17:16:30Z",
           "evidence": {
             "primary": true,
@@ -476,7 +552,10 @@
             "url": "https://huggingface.co/api/datasets/LucasFig0/hybrid-menu-search-benchmark",
             "quote": "Official metadata createdAt; public data card contains test queries, qrels and retrieval results. This is an IR benchmark, not proven generative LLM scope.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "REPOSITORY_CREATED_AT_NOT_FIRST_PUBLICATION"
         }
       ]
     },
@@ -497,7 +576,7 @@
       "review_notes": "PUBLIC_RECORD_DATE_ONLY_FIRST_RELEASE_UNRESOLVED",
       "events": [
         {
-          "kind": "UPDATE",
+          "kind": "REPOSITORY_RECORD_CREATED",
           "at": "2026-11-14T12:54:59Z",
           "evidence": {
             "primary": true,
@@ -505,7 +584,10 @@
             "url": "https://huggingface.co/api/datasets/medical-benchmarks/SiteShift",
             "quote": "Metadata public; description says under review and access opens upon publication; raw card401. Medical image segmentation, not established LLM scope.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "REPOSITORY_CREATED_AT_NOT_FIRST_PUBLICATION"
         }
       ]
     },
@@ -526,7 +608,7 @@
       "review_notes": "DO_NOT_COUNT_UPLOAD_AS_FIRST_BENCHMARK_RELEASE",
       "events": [
         {
-          "kind": "UPDATE",
+          "kind": "REPOSITORY_RECORD_CREATED",
           "at": "2026-11-14T17:04:41Z",
           "evidence": {
             "primary": true,
@@ -534,7 +616,10 @@
             "url": "https://huggingface.co/datasets/tower-benchmark/TOWER-Assets",
             "quote": "Versioned assets for an existing benchmark; asset upload is not automatically a new benchmark.",
             "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "REPOSITORY_CREATED_AT_NOT_FIRST_PUBLICATION"
         }
       ]
     },
@@ -557,8 +642,22 @@
         "quote": "v1.0.0",
         "reviewed_at": "2026-11-16T09:05:07.720422Z"
       },
-      "review_notes": "Official v1.0.0 published 2026-11-01T07:28:49Z; November7 is a label update. November paper date is not a new release.",
+      "review_notes": "Official release explicitly says first release, published2026-11-01T07:28:49Z. Earliest README commit and repository creation also fall on November1 Beijing; paper proxy is later. November7 changes labels and is an update, not another first release.",
       "events": [
+        {
+          "kind": "FIRST_PUBLIC_INTRODUCTION",
+          "at": "2026-11-01T07:28:49Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.0.0",
+            "quote": "First release of DistDebug-Bench",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "date_basis": "PUBLISHER_RELEASE_TIMESTAMP",
+          "publication_verified": true,
+          "proves_public_existence": true
+        },
         {
           "kind": "DATA_RELEASE",
           "at": "2026-11-01T07:28:49Z",
@@ -566,10 +665,311 @@
             "primary": true,
             "review_status": "VERIFIED",
             "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.0.0",
-            "quote": "v1.0.0",
-            "reviewed_at": "2026-11-16T09:05:07.720422Z"
-          }
+            "quote": "First release of DistDebug-Bench",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
+        },
+        {
+          "kind": "UPDATE",
+          "at": "2026-11-07T11:12:59Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.1.0",
+            "quote": "Corrects the gold labels of 13 bugs.",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": false
         }
+      ],
+      "firstness_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.0.0",
+        "quote": "First release of DistDebug-Bench",
+        "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+      }
+    },
+    {
+      "entity_id": "cogsuite",
+      "name": "CogSuite",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-48b6301855728527",
+          "benchmark_id": "bench-a438a8a610dd1966"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/sion-w/CogSuite/releases/tag/v1.0.0",
+        "quote": "Code for Imperfectly Imperfect: Evaluating Graded Cognitive Diversity in LLM Persona Simulations",
+        "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+      },
+      "events": [
+        {
+          "kind": "CODE_RELEASE",
+          "at": "2026-11-09T23:04:17Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/sion-w/CogSuite/releases/tag/v1.0.0",
+            "quote": "Code for Imperfectly Imperfect: Evaluating Graded Cognitive Diversity in LLM Persona Simulations",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": true,
+          "proves_public_existence": true
+        }
+      ],
+      "review_notes": "Official code release is November10 Beijing. README and companion human study predate it, so benchmark first introduction remains unresolved."
+    },
+    {
+      "entity_id": "date-review-9cb7ff18331b935e",
+      "name": "CARTBench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-df07014bb931d555",
+          "benchmark_id": "bench-01bb969537b71b5c"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-11-03T04:18:25Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/Da1yuqin/CARTBench/commit/158d6ca3ab37d394c37ef8b003fef5a3caf43e51",
+            "quote": "Release CARTBench",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-5e36c52fe4b20cc5",
+      "name": "HPC-Bench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-7bc8308f0eb975e7",
+          "benchmark_id": "bench-993188ffd83fef7c"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-09-27T09:29:14Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/Deep-Learning-Profiling-Tools/HPC-Bench/commit/6eb55c4ba19e3e448581397ff051a9a0010b458a",
+            "quote": "Release the NeurIPS 2026 camera-ready version of HPC-Bench\n\nReplace the 2025 snapshot with the full benchmark and evaluation pipeline\nused in the paper.\n\n- 92 C",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-bea0b8bba56aad68",
+      "name": "MemShift",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-d323094f8aa6686f",
+          "benchmark_id": "bench-a90744069ac66b29"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-10-08T12:09:41Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/zichuanxu/memshift/commit/5c0a08533093efaf6836136d02d451e0c760b0a5",
+            "quote": "MemShift: benchmark, reference layer, and runs (release 2c392cc)",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-efbe7839b1e4c76c",
+      "name": "DiagDBench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-1aefb91e48e2647c",
+          "benchmark_id": "bench-b9cc190116314119"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-09-24T02:45:39Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/RUCKBReasoning/DiagDBench/commit/5dde58fae7b81a99e8869d9e23917765ad1ae2df",
+            "quote": "Initial commit",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-8c01f63876d11912",
+      "name": "MPRBench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-e63e85cc408cd407",
+          "benchmark_id": "bench-eaeccf4fb7d99f8a"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-11-03T14:19:32Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/kkdh15/MPRBench/commit/93cb857a27b83651bec9c4c20888421fa1b85ee1",
+            "quote": "Initial commit",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-64ae50fb8eebcab1",
+      "name": "TERN",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-5a63a8398215d5bd",
+          "benchmark_id": "bench-f6b304e4dc96ea28"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-11-01T18:45:31Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/chris265100/TSSDA/commit/9a1f79471476d8dcce854ece52791bb6aa93a6ec",
+            "quote": "Add TSSDA overview and setup guide",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-f74af0afe253055d",
+      "name": "OSWorld-Tutorial",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-ba5ad859016b2894",
+          "benchmark_id": "bench-101eedffd83ea533"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-11-15T04:48:59Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/realjoenguyen/RAGPJ-official/commit/0c9d0d4f869c14c43d4f926ef9ee3ac4fec29844",
+            "quote": "Initial public release\n\nCo-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release."
+    },
+    {
+      "entity_id": "date-review-5daf626f3c5b87ed",
+      "name": "ArabGeoText",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "source_refs": [
+        {
+          "paper_id": "recent-e99064602925567a",
+          "benchmark_id": "bench-a935103dd15753d0"
+        }
+      ],
+      "events": [
+        {
+          "kind": "REPOSITORY_RECORD_CREATED",
+          "at": "2026-11-01T12:18:02Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/yakoubbazi/ArabGeoText/commit/b534e12a916c733910cbe4d2e1e758dc03b7eb6e",
+            "quote": "ArabGeoText: project page\n\nBenchmark and models for Arabic geospatial text spotting. Code, weights and data to follow.",
+            "reviewed_at": "2026-11-16T10:20:58.293070+00:00"
+          },
+          "publication_verified": false,
+          "proves_public_existence": false,
+          "timestamp_basis": "GIT_COMMIT_TIMESTAMP_NOT_PUBLICATION"
+        }
+      ],
+      "review_notes": "Historical source timestamp retained as a recheck lead; imported/private commit history and repository creation do not establish first public date. Inspect official first announcement or version release.",
+      "aliases": [
+        "ARABGEOTEXT"
       ]
     }
   ]

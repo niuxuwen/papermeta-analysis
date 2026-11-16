@@ -50,5 +50,21 @@ class ReleaseSiteTests(unittest.TestCase):
                 build(feed,site,registry)
             self.assertEqual(previous,(site/'releases/current.json').read_bytes())
 
+    def test_stable_query_api_points_to_same_immutable_generation(self):
+        from test_release_ledger import entity
+        from query_release_api import query_api
+        from urllib.parse import urlsplit
+        with tempfile.TemporaryDirectory() as d:
+            feed,site,registry=self.fixture(Path(d))
+            registry.write_text(json.dumps({'version':1,'entities':[entity()]}),encoding='utf-8')
+            manifest,_=build(feed,site,registry)
+            api=json.loads((site/'releases/api/v1/current.json').read_text(encoding='utf-8'))
+            self.assertEqual(api['generation'],manifest['generation'])
+            def fetch(url):return (site/urlsplit(url).path.removeprefix('/project/')).resolve().read_bytes()
+            r=query_api('ExampleBench','https://example.org/project/releases/api/v1/current.json',fetch=fetch)
+            self.assertEqual(r['match_count'],1);self.assertTrue(r['is_new_in_report_period'])
+            self.assertTrue((site/'releases/api/v1/judge-client.mjs').exists())
+            self.assertTrue((site/'releases/api/v1/benchmark-date-view.mjs').exists())
+
 
 if __name__=='__main__':unittest.main()
