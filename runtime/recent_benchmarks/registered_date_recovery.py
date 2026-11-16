@@ -12,9 +12,30 @@ import os
 from pathlib import Path
 import re
 import unicodedata
+import hashlib
 
 POLICY = 'user-date-register-paper-fallback-20261117-v1'
 BJ = timezone(timedelta(hours=8))
+
+
+def backlog_failure_directory(root):
+    """Give one exact user replay its own bounded failure gate, preserving successes."""
+    root = Path(root)
+    original = root / 'response-failures'
+    try:
+        ticket = json.loads((root / 'user_backlog_retry.json').read_text())
+        candidates = [json.loads(line) for line in (root / 'candidates.jsonl').read_text().splitlines() if line.strip()]
+        if (os.getenv('RADAR_ALLOW_PAPER_DATE_FALLBACK') != '1'
+                or ticket.get('version') != 1 or ticket.get('policy') != POLICY
+                or ticket.get('one_additional_attempt') is not True
+                or not re.fullmatch('[0-9a-f]{64}', str(ticket.get('request_sha256', '')))
+                or len(candidates) != 1 or not ticket.get('paper_id')
+                or ticket['paper_id'] != candidates[0].get('paper_id')):
+            return original
+        digest = hashlib.sha256(json.dumps(ticket, sort_keys=True).encode()).hexdigest()
+        return original / ('user-backlog-' + digest)
+    except (OSError, ValueError, TypeError, AttributeError):
+        return original
 
 
 def normalized(value):

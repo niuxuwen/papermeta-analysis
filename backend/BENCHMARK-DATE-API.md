@@ -209,3 +209,14 @@ binding-budget checkpoint; successful model/table decisions remain reusable.
 Run the production-schema transaction replay on a detached DB copy before
 applying a request. Never initialize this tool against a website-only repo
 or a foreign-host active shared WAL database.
+# Old-paper recovery failure gates
+
+The explicitly enabled old-paper replay uses a stable request ticket to isolate
+closed failed model requests from the previous pass. Positive response cache
+keys remain unchanged. Each ticket is restricted to one candidate paper and
+gets the ordinary finite request/correction limits in its own failure directory.
+An exact worker-side repair request can refund a pass proven to have sent zero
+HTTP requests because of an old closed gate. It checks paper identity, terminal
+state, artifact hashes, original completion interval, retry deadlines, and the
+60-day paper window; a durable per-paper marker prevents repeated refunds.
+

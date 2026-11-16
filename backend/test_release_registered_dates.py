@@ -44,6 +44,24 @@ class RegisteredDateRecoveryTests(unittest.TestCase):
 
 
 class BacklogBudgetTicketTests(unittest.TestCase):
+    def test_user_failure_namespace_is_stable_and_single_paper_bound(self):
+        import tempfile,json
+        from pathlib import Path
+        from recent_benchmarks.registered_date_recovery import backlog_failure_directory
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ, {'RADAR_ALLOW_PAPER_DATE_FALLBACK':'1'}):
+            root=Path(d)
+            self.assertEqual(backlog_failure_directory(root),root/'response-failures')
+            (root/'candidates.jsonl').write_text(json.dumps({'paper_id':'p'})+'\n')
+            ticket={'version':1,'policy':'user-date-register-paper-fallback-20261117-v1',
+                'paper_id':'p','request_sha256':'b'*64,'one_additional_attempt':True}
+            (root/'user_backlog_retry.json').write_text(json.dumps(ticket))
+            directory=backlog_failure_directory(root)
+            self.assertNotEqual(directory,root/'response-failures')
+            self.assertEqual(directory,backlog_failure_directory(root))
+            ticket['paper_id']='foreign'
+            (root/'user_backlog_retry.json').write_text(json.dumps(ticket))
+            self.assertEqual(backlog_failure_directory(root),root/'response-failures')
+
     def test_ticket_opens_one_failure_budget_without_invalidating_positive_results(self):
         import tempfile,json
         from pathlib import Path

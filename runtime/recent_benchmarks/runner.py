@@ -425,6 +425,8 @@ def candidates(args, root, manifest):
 
 
 def make_client(args, root, database, *, purpose='analysis'):
+    from .backlog_worker_repairs import apply_requested_repairs
+    apply_requested_repairs()
     # Adapt only this project's explicit settings; the vendored CLI reads legacy
     # environment defaults even when its command-line arguments override them.
     from .model_routing import selected_model, request_environment
@@ -449,14 +451,16 @@ def make_client(args, root, database, *, purpose='analysis'):
                 reasoning_effort=args.reasoning_effort, failure_policy='strict', **request_options),
                 CachedLLMDatabase(database, cache) if cache else database)
             client.cache_only = True
-            client.failure_dir = root / 'response-failures'
+            from .registered_date_recovery import backlog_failure_directory
+            client.failure_dir = backlog_failure_directory(root)
             return client
         client = pipeline.build_client(parsed, CachedLLMDatabase(database, cache) if cache else database,
                                        api_key=os.getenv("RADAR_API_KEY"))
         from dataclasses import replace
         client.settings = replace(client.settings, failure_policy=getattr(args, 'failure_policy', 'balanced'),
                                   **request_options)
-        client.failure_dir = root / "response-failures"
+        from .registered_date_recovery import backlog_failure_directory
+        client.failure_dir = backlog_failure_directory(root)
         return client
     except ValueError as exc:
         raise ValueError(str(exc).replace("DEEPSEEK_API_KEY", "RADAR_API_KEY")) from exc
