@@ -15,6 +15,15 @@ from test_release_ledger import entity
 
 
 class AutomaticEvidenceTests(unittest.TestCase):
+    def test_api_rate_limit_uses_official_atom_without_exact_first_credit(self):
+        class Cache:
+            def get(self,url):
+                if 'api.github.com'in url:raise RuntimeError('PRIMARY_HTTP_403')
+                return b'<feed xmlns="http://www.w3.org/2005/Atom"><entry><updated>2026-11-11T10:00:00Z</updated><link href="https://github.com/owner/project/releases/tag/v1"/><content>First public release of ExampleBench</content></entry></feed>'
+        records=worker.release_records('owner/project',Cache())
+        self.assertEqual(len(records),1);self.assertTrue(records[0]['_atom_only'])
+        self.assertEqual(records[0]['updated_at'],'2026-11-11T10:00:00Z')
+
     def test_historical_receipt_is_bound_only_and_tamper_protected(self):
         fact=catalog()[0]['facts'][0];p=fact_evidence(fact)
         self.assertTrue(valid_fact_evidence(p))

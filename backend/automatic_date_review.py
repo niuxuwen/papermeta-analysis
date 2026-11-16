@@ -21,6 +21,7 @@ import shlex
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote,urlsplit
 import urllib.request
+import xml.etree.ElementTree as ET
 
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'runtime'))
@@ -187,12 +188,13 @@ class PrimaryCache:
         self.opener=urllib.request.build_opener(urllib.request.ProxyHandler(proxies))
     def get(self,url):
         host=urlsplit(url).hostname
-        if host not in {'api.github.com','raw.githubusercontent.com'}:raise ValueError('Primary host not allowed')
+        if host not in {'api.github.com','raw.githubusercontent.com','github.com'}:raise ValueError('Primary host not allowed')
+        pause_key='github_pause_until'if host=='api.github.com'else 'primary_pause:'+host
         row=self.db.execute('SELECT body,status,expires FROM http_cache WHERE url=?',(url,)).fetchone()
         if row and row[2]>time.time():
             if row[1]!=200:raise RuntimeError('CACHED_HTTP_'+str(row[1]))
             return row[0]
-        pause=self.db.execute('SELECT value FROM meta WHERE key=?',('github_pause_until',)).fetchone()
+        pause=self.db.execute('SELECT value FROM meta WHERE key=?',(pause_key,)).fetchone()
         if pause and float(pause[0])>time.time():raise RuntimeError('PRIMARY_HOST_BACKOFF')
         time.sleep(max(0,3.2-(time.monotonic()-self.last)))
         req=urllib.request.Request(url,headers={'User-Agent':'benchmark-date-review/1.0','Accept':'application/vnd.github+json'})
@@ -206,16 +208,34 @@ class PrimaryCache:
             if status in {403,429}:
                 reset=e.headers.get('X-RateLimit-Reset','')
                 until=float(reset) if reset.isdigit() and float(reset)>time.time() else time.time()+3600
-                self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',('github_pause_until',str(until)))
+                self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',(pause_key,str(until)))
         except (urllib.error.URLError,TimeoutError,OSError):
             raw=b'';status=598
-            self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',('github_pause_until',str(time.time()+60)))
+            self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',(pause_key,str(time.time()+60)))
         self.last=time.monotonic();self.reads+=1
         expires=time.time()+(3600 if status in {403,429} else 86400 if status!=200 else 3600)
         self.db.execute('INSERT OR REPLACE INTO http_cache VALUES(?,?,?,?)',(url,raw,status,expires))
         self.db.commit()
         if status!=200:raise RuntimeError('PRIMARY_HTTP_'+str(status))
         return raw
+
+
+def release_records(repo,cache):
+    try:return json.loads(cache.get('https://api.github.com/repos/'+repo+'/releases?per_page=10'))
+    except RuntimeError:
+        # Official release Atom feed avoids treating an API quota as the end of
+        # source research. Its updated timestamp proves a bound, not firstness.
+        root=ET.fromstring(cache.get('https://github.com/'+repo+'/releases.atom'));ns={'a':'http://www.w3.org/2005/Atom'}
+        result=[]
+        for e in root.findall('a:entry',ns):
+            link=e.find('a:link',ns);url=link.get('href','')if link is not None else ''
+            if not url.startswith('https://github.com/'+repo+'/releases/tag/'):continue
+            stamp=e.findtext('a:updated',namespaces=ns)
+            if not stamp:continue
+            result.append({'html_url':url,'published_at':stamp,'updated_at':stamp,'_atom_only':True,
+                'tag_name':url.split('/releases/tag/',1)[1],
+                'body':e.findtext('a:content',default='',namespaces=ns)})
+        return result
 
 
 def official_events(row,b,context,cache):
@@ -225,7 +245,7 @@ def official_events(row,b,context,cache):
     found=False;errors=[]
     for repo in links:
         try:
-            releases=json.loads(cache.get('https://api.github.com/repos/'+repo+'/releases?per_page=10'))
+            releases=release_records(repo,cache)
             for release in releases:
                 if release.get('draft') or not release.get('published_at'):continue
                 tag=release.get('tag_name','')
@@ -235,7 +255,7 @@ def official_events(row,b,context,cache):
                 body=release.get('body')or''
                 if norm(row['benchmark_name'])not in norm(body):continue
                 found=True;url=release['html_url'];published=release['published_at'];at=release.get('updated_at')or published
-                unedited=at==published
+                unedited=at==published and not release.get('_atom_only')
                 body_quote=body[:1400] or release.get('name')or tag
                 record['events'].append({'kind':'CODE_RELEASE' if unedited else 'KNOWN_PUBLIC_EXISTENCE','at':at,'publication_verified':True,
                     'proves_public_existence':True,'evidence':proof(url,body_quote,'OFFICIAL_RELEASE_AND_PINNED_README'),
@@ -401,9 +421,6 @@ class Reviewer:
         done=0
         for selected in tasks:
             if limit and done>=limit:break
-            if research:
-                pause=self.db.execute('SELECT value FROM meta WHERE key=?',('github_pause_until',)).fetchone()
-                if pause and float(pause[0])>time.time():break
             task=self.db.execute('SELECT * FROM tasks WHERE key=?',(selected['key'],)).fetchone()
             try:status,reason,label,read=self.check(task,research=research)
             except Exception as e:status,reason,label,read='SOURCE_BLOCKED',type(e).__name__+':'+str(e)[:180],None,0
