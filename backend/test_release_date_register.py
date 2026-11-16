@@ -66,6 +66,13 @@ class DateRegisterTests(unittest.TestCase):
         self.assertEqual(t['summary']['dated_benchmarks'],1)
         self.assertEqual(t['summary']['period_new_benchmark_claims'],0)
 
+    def test_source_quote_matches_do_not_split_one_name_into_per_paper_entities(self):
+        r=result([row('p1'),row('p2')])
+        for i,record in enumerate(r['query_records']):record.update(entity_id='auto-source-'+str(i),identity_evidence={'quote':'verified mention'})
+        t=build_table(r);self.assertEqual(len(t['entries']),1);self.assertEqual(len(t['entries'][0]['source_refs']),2)
+        old=copy.deepcopy(t);e=old['entries'][0];old['entries']=[{**e,'benchmark_key':'entity:auto-source-0'},{**e,'benchmark_key':'entity:auto-source-1'}]
+        t2=build_table(r,old);self.assertEqual(len(t2['entries']),1)
+
     def test_later_reuse_does_not_erase_the_original_new_claim(self):
         t=build_table(result([row('p1'),row('p2',novelty='EXISTING')]))
         self.assertEqual(t['entries'][0]['newness'],'SOURCE_NEW_CLAIM')

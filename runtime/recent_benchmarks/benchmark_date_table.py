@@ -39,6 +39,37 @@ def calendar_day(value, cutoff):
         return None
 
 
+def established_identity(record):
+    # An automatic quote match proves a source mention, not a separate entity.
+    return bool(record.get('identity_evidence') and not record['entity_id'].startswith(('auto-source-', 'unresolved-')))
+
+
+def normalize_previous(entries):
+    """Consolidate old source-per-paper keys while retaining their receipts."""
+    groups = defaultdict(list)
+    for entry in entries:
+        key = entry['benchmark_key']
+        if key.startswith(('entity:auto-source-', 'entity:unresolved-', 'ambiguous:auto-source-', 'ambiguous:unresolved-')):
+            key = 'name:' + sha256(name_key(entry['name']).encode()).hexdigest()[:24]
+            entry = {**entry, 'benchmark_key': key, 'identity_basis': 'NORMALIZED_NAME_ASSUMPTION'}
+        groups[key].append(entry)
+    normalized = []
+    for key, rows in groups.items():
+        winner = min(rows, key=lambda e: (-int(e.get('excluded', False)),
+            -RANK.get(e.get('date_basis'), 0), e.get('benchmark_date') or '9999-12-31'))
+        changes = []; seen = set()
+        for row in rows:
+            for change in row.get('changes', []):
+                signature = json.dumps(change, sort_keys=True)
+                if signature not in seen:
+                    seen.add(signature); changes.append(change)
+        normalized.append({**winner, 'benchmark_key': key,
+            'aliases': sorted({a for r in rows for a in r.get('aliases', [])}),
+            'first_recorded_at': min(r['first_recorded_at'] for r in rows),
+            'changes': changes, 'revision': max(len(changes), winner.get('revision', 0))})
+    return normalized
+
+
 def build_table(result, previous=None):
     report = result['daily']; cutoff = calendar_day(report['as_of'], '9999-12-31')
     prior = previous or {'policy': POLICY, 'entries': []}
@@ -49,18 +80,18 @@ def build_table(result, previous=None):
     # an explicit operational grouping assumption, not verified global identity.
     owners = defaultdict(set)
     for r in records:
-        if r.get('identity_evidence'):
+        if established_identity(r):
             for n in [r['name'], *r.get('aliases', [])]:
                 owners[name_key(n)].add(r['entity_id'])
-    previous_entries = {e['benchmark_key']: e for e in prior['entries']}
+    previous_entries = {e['benchmark_key']: e for e in normalize_previous(prior['entries'])}
     previous_names = defaultdict(set)
-    for e in prior['entries']:
-        for n in [e['name'], *e.get('aliases', [])]:
+    for e in previous_entries.values():
+        for n in [e['name'], *(e.get('aliases', []) if e['identity_basis'] == 'REVIEWED_ENTITY' else [])]:
             previous_names[name_key(n)].add(e['benchmark_key'])
     groups = defaultdict(list); assignment = {}
     for r in records:
         n = name_key(r['name']); choices = owners.get(n, set())
-        if r.get('identity_evidence'):
+        if established_identity(r):
             prior_keys = previous_names.get(n, set())
             key = next(iter(prior_keys)) if len(prior_keys) == 1 and len(choices) <= 1 else 'entity:' + r['entity_id']
         elif len(choices) == 1:
@@ -78,7 +109,7 @@ def build_table(result, previous=None):
         current = groups.get(key, []); old = previous_entries.get(key)
         if not current:
             entries.append({**old, 'active': False}); continue
-        primary = next((r for r in current if r.get('identity_evidence')), current[0])
+        primary = next((r for r in current if established_identity(r)), current[0])
         aliases = sorted({r['name'] for r in current} | {a for r in current for a in r.get('aliases', [])})
         existing_reviewed = (old or {}).get('newness_reviewed', False)
         refs = {}; choices = []; excluded = []; new_claim = (old or {}).get('newness') == 'SOURCE_NEW_CLAIM'; existing = (old or {}).get('newness') == 'EXISTING_OR_UPDATE'
@@ -130,7 +161,7 @@ def build_table(result, previous=None):
             'excluded': is_excluded, 'exclusion_reason': reason,
             'newness': 'EXISTING_OR_UPDATE' if existing_reviewed or existing and not new_claim else 'SOURCE_NEW_CLAIM' if new_claim else 'UNCLASSIFIED',
             'newness_reviewed': existing_reviewed,
-            'identity_basis': 'REVIEWED_ENTITY' if any(r.get('identity_evidence') for r in current) or key.startswith('entity:') else
+            'identity_basis': 'REVIEWED_ENTITY' if any(established_identity(r) for r in current) or key.startswith('entity:') else
                 'AMBIGUOUS_REVIEWED_NAME' if key.startswith('ambiguous:') else 'NORMALIZED_NAME_ASSUMPTION',
             'entity_ids': sorted(r['entity_id'] for r in current),
             'source_refs': [refs[p] for p in sorted(refs)], 'active': True,
