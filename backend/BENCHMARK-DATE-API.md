@@ -89,3 +89,48 @@ and require the same score snapshot ID and exact source identity. A mismatch,
 network failure or ambiguity leaves the first date pending and score browsing
 usable. The source proxy date is labeled as a source date rather than a verified
 benchmark first publication.
+
+## Automatic evidence review and date updates
+
+`automatic_date_service.py` is a separate, resumable date worker. It reads a
+hash-verified copy of the published source under the publisher lock, then checks
+captured paper content, parser SHA-256, exact benchmark identities, evidence
+quotes, novelty decisions and historical aliases. It prioritizes the previous
+seven complete Beijing calendar days. A source scan is distinct from a verified
+first-public date; its status counters expose that difference.
+
+The SQLite checkpoint records each exact `(paper_id, benchmark_id)`, input
+signature, result, reason and research attempts. Repeated cycles retain results;
+changed source evidence requeues only affected date tasks. Existing manual
+decisions are protected. Historical audited receipts establish conservative
+public-by bounds only; variants cannot inherit a parent benchmark's date.
+
+For official GitHub sources, the worker inspects release records and tagged
+README content. Edited release bodies only establish an updated public-by bound.
+Repository creation, code release and paper submission dates alone cannot set a
+first-public day. An exact automatic first date additionally requires a pinned
+v1 source, an explicit author statement of first public introduction, matching
+identity, chronology and no captured prior-history conflict. Unknowns retain
+the missing-evidence reason. HTTP failures are cached, rate limits pause the
+host, and transient primary-fetch retries are bounded to three per input.
+
+Recurring deployment example (Linux; run through the installed project venv):
+
+```sh
+PYTHONPATH=/project/deployment/publication/deps /project/.venv/bin/python \
+  /version/backend/automatic_date_service.py --project /project \
+  --state /project/deployment/automatic-dates/state \
+  --manual /version/backend/release-evidence.json --workers 8 --publish
+```
+
+The worker lock prevents overlap. Its date publisher uses the shared publisher
+lock and a Git lease, verifies that score/source blob hashes remain unchanged,
+and adds only `feed/release-evidence.json.gz` plus the current Pages workflow.
+Normal score publications retain that feed file. The website validates each
+automatic source binding against the current source signature before applying
+it. Date decisions therefore reach detail labels, query JSON and daily release
+reports automatically, without changing scoring or the 60-day paper window.
+Each immutable generation includes `automatic-review-progress.json`; source
+checking, precise dates, bounds and remaining evidence gaps are shown separately.
+
+This process does not resume the paused manual 1,400-paper review automation.

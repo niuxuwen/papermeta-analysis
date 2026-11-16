@@ -12,6 +12,7 @@ from hashlib import sha256
 import json
 from urllib.parse import urlsplit
 from .benchmark_dates import date_assessment, first_date
+from .automatic_date_policy import valid_fact_evidence
 
 POLICY = 'benchmark-first-publication-ledger-v1'
 BEIJING = timezone(timedelta(hours=8))
@@ -38,6 +39,7 @@ def https_url(value):
 
 
 def evidence(value):
+    if valid_fact_evidence(value):return True
     return (isinstance(value, dict) and value.get('primary') is True
             and value.get('review_status') == 'VERIFIED'
             and https_url(value.get('url'))
@@ -86,6 +88,8 @@ def validate_registry(registry):
                 raise ValueError('Only reviewed LLM benchmark entities can count as new')
             if not evidence(row.get('firstness_evidence')):
                 raise ValueError('Independent first-introduction review is required')
+        if valid_fact_evidence(row.get('firstness_evidence')) or valid_fact_evidence(row.get('identity_evidence')):
+            raise ValueError('Historical upper-bound receipts cannot prove identity or first introduction')
         if row['decision'] == 'NOT_A_BENCHMARK' and row['kind'] in {'BENCHMARK', 'UNKNOWN'}:
             raise ValueError('A non-benchmark disposition needs an established entity kind')
         for ref in row.get('source_refs', []):
@@ -98,6 +102,10 @@ def validate_registry(registry):
         for event in row.get('events', []):
             if event.get('kind') not in EVENTS:
                 raise ValueError('Invalid publication event kind')
+            if valid_fact_evidence(event.get('evidence')) and (
+                    event['kind']!='KNOWN_PUBLIC_EXISTENCE'
+                    or event.get('date')!=event['evidence']['fact_receipt']['fact']['public_by']):
+                raise ValueError('Historical fact receipts are restricted to the audited public-by bound')
     return bindings
 
 

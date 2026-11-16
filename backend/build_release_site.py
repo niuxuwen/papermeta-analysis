@@ -18,7 +18,8 @@ def build(feed, site, registry):
     if (snapshot.get('snapshot_id') != publication.get('snapshot_id')
             or snapshot.get('source_sha256') != publication.get('source_sha256')):
         raise ValueError('Release report must match the public score snapshot')
-    manifest, daily = run(feed/'source.json.gz', feed/'publication.json', registry, site/'releases')
+    manifest, daily = run(feed/'source.json.gz', feed/'publication.json', registry, site/'releases',
+        automatic_path=feed/'release-evidence.json.gz')
     generation = manifest['generation']
     if not re.fullmatch('[a-f0-9]{24}', generation):
         raise ValueError('Invalid generation path')

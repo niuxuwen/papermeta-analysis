@@ -1,0 +1,776 @@
+{
+  "version": 1,
+  "revision": "2026-10-12-source-gates",
+  "date_meaning": "PUBLIC_BY_UPPER_BOUND_ONLY_NOT_FIRST_DAY",
+  "facts": [
+    {
+      "id": "c601f806d80336c5",
+      "name": "GSM8K",
+      "aliases": [
+        "GSM8K",
+        "GSM-8K"
+      ],
+      "source_url": "https://arxiv.org/abs/2110.14168v1",
+      "public_by": "2021-11-02",
+      "original_fact_public_by": "2021-10-27",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "ad8ac07c2048ea81",
+      "name": "MATH",
+      "aliases": [
+        "MATH"
+      ],
+      "source_url": "https://arxiv.org/abs/2103.03874v1",
+      "public_by": "2021-04-02",
+      "original_fact_public_by": "2021-03-05",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "7399b6275312c702",
+      "name": "MATH500",
+      "aliases": [
+        "MATH500",
+        "MATH-500",
+        "MATH 500"
+      ],
+      "source_url": "https://arxiv.org/abs/2410.12608v2",
+      "public_by": "2026-10-11",
+      "original_fact_public_by": "2024-12-17",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PREVIOUS_PRIMARY_REVIEW_CHECK_DATE_UPPER_BOUND"
+    },
+    {
+      "id": "f3062ed5516c2552",
+      "name": "DROP",
+      "aliases": [
+        "DROP"
+      ],
+      "source_url": "https://arxiv.org/abs/1903.00161v1",
+      "public_by": "2019-04-02",
+      "original_fact_public_by": "2019-03-01",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "6ee568af7bd99672",
+      "name": "MMLU",
+      "aliases": [
+        "MMLU",
+        "Massive Multitask Language Understanding"
+      ],
+      "source_url": "https://arxiv.org/abs/2009.03300v1",
+      "public_by": "2020-10-02",
+      "original_fact_public_by": "2020-09-07",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "4a4673fdbff37434",
+      "name": "MMLU-Pro",
+      "aliases": [
+        "MMLU-Pro",
+        "MMLU Pro"
+      ],
+      "source_url": "https://arxiv.org/abs/2406.01574v1",
+      "public_by": "2024-07-02",
+      "original_fact_public_by": "2024-06-03",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "eaa5efed7ef137a5",
+      "name": "ARC-Challenge",
+      "aliases": [
+        "ARC-Challenge",
+        "ARC Challenge",
+        "ARC-C"
+      ],
+      "source_url": "https://arxiv.org/abs/1803.05457v1",
+      "public_by": "2018-04-02",
+      "original_fact_public_by": "2018-03-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "ba274669e966cf7a",
+      "name": "ARC-Easy",
+      "aliases": [
+        "ARC-Easy",
+        "ARC Easy",
+        "ARC-E"
+      ],
+      "source_url": "https://arxiv.org/abs/1803.05457v1",
+      "public_by": "2018-04-02",
+      "original_fact_public_by": "2018-03-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "31c576709ddbd139",
+      "name": "CLEVRER",
+      "aliases": [
+        "CLEVRER"
+      ],
+      "source_url": "https://arxiv.org/abs/1910.01442v1",
+      "public_by": "2019-11-02",
+      "original_fact_public_by": "2019-10-03",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "5d9afdbd757195a7",
+      "name": "NExT-QA",
+      "aliases": [
+        "NExT-QA",
+        "NExTQA",
+        "NExT QA"
+      ],
+      "source_url": "https://arxiv.org/abs/2105.08276v1",
+      "public_by": "2021-06-02",
+      "original_fact_public_by": "2021-05-18",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "a2d16a8a2c5a9dc2",
+      "name": "MVBench",
+      "aliases": [
+        "MVBench"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.17005v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-11-28",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "57c714dd721f9d39",
+      "name": "HotpotQA",
+      "aliases": [
+        "HotpotQA",
+        "Hotpot QA"
+      ],
+      "source_url": "https://arxiv.org/abs/1809.09600v1",
+      "public_by": "2018-10-02",
+      "original_fact_public_by": "2018-09-25",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "6203b7a53149c328",
+      "name": "HumanEval",
+      "aliases": [
+        "HumanEval",
+        "Human Eval"
+      ],
+      "source_url": "https://arxiv.org/abs/2107.03374v1",
+      "public_by": "2021-08-02",
+      "original_fact_public_by": "2021-07-07",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "23e00678b6432c78",
+      "name": "MBPP",
+      "aliases": [
+        "MBPP",
+        "Mostly Basic Programming Problems"
+      ],
+      "source_url": "https://arxiv.org/abs/2108.07732v1",
+      "public_by": "2021-09-02",
+      "original_fact_public_by": "2021-08-16",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "e652d3090f925290",
+      "name": "ALFWorld",
+      "aliases": [
+        "ALFWorld"
+      ],
+      "source_url": "https://arxiv.org/abs/2010.03768v1",
+      "public_by": "2020-11-02",
+      "original_fact_public_by": "2020-10-08",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "bde52ba318ffc0ae",
+      "name": "WebShop",
+      "aliases": [
+        "WebShop"
+      ],
+      "source_url": "https://arxiv.org/abs/2207.01206v1",
+      "public_by": "2022-08-02",
+      "original_fact_public_by": "2022-07-04",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "08180df4440c1d31",
+      "name": "MuSiQue",
+      "aliases": [
+        "MuSiQue"
+      ],
+      "source_url": "https://arxiv.org/abs/2108.00573v1",
+      "public_by": "2021-09-02",
+      "original_fact_public_by": "2021-08-02",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "5f83200dd5438418",
+      "name": "TriviaQA",
+      "aliases": [
+        "TriviaQA",
+        "Trivia QA"
+      ],
+      "source_url": "https://arxiv.org/abs/1705.03551v1",
+      "public_by": "2017-06-02",
+      "original_fact_public_by": "2017-05-09",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "07e354b25ccfc43b",
+      "name": "AgentDojo",
+      "aliases": [
+        "AgentDojo"
+      ],
+      "source_url": "https://arxiv.org/abs/2406.13352v1",
+      "public_by": "2024-07-02",
+      "original_fact_public_by": "2024-06-19",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "240d16120267728a",
+      "name": "GPQA",
+      "aliases": [
+        "GPQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.12022v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-11-20",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "2b3b52473763d6b8",
+      "name": "GPQA-Diamond",
+      "aliases": [
+        "GPQA-Diamond",
+        "GPQA Diamond"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.12022v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-11-20",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "7023cc7087c57c52",
+      "name": "IFEval",
+      "aliases": [
+        "IFEval",
+        "Instruction-Following Eval"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.07911v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-11-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "07b9e4fd5ea766bf",
+      "name": "HellaSwag",
+      "aliases": [
+        "HellaSwag"
+      ],
+      "source_url": "https://arxiv.org/abs/1905.07830v1",
+      "public_by": "2019-06-02",
+      "original_fact_public_by": "2019-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "1a742cc8fec6c1f1",
+      "name": "PIQA",
+      "aliases": [
+        "PIQA",
+        "Physical Interaction Question Answering"
+      ],
+      "source_url": "https://arxiv.org/abs/1911.11641v1",
+      "public_by": "2019-12-02",
+      "original_fact_public_by": "2019-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "db73e14e1d6bc386",
+      "name": "MMMU",
+      "aliases": [
+        "MMMU"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.16502v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "f090c68571ca129b",
+      "name": "POPE",
+      "aliases": [
+        "POPE",
+        "Polling-based Object Probing Evaluation"
+      ],
+      "source_url": "https://arxiv.org/abs/2305.10355v1",
+      "public_by": "2023-06-02",
+      "original_fact_public_by": "2023-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "1f99cf6f462b1cee",
+      "name": "MMStar",
+      "aliases": [
+        "MMStar"
+      ],
+      "source_url": "https://arxiv.org/abs/2403.20330v1",
+      "public_by": "2024-04-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "2c00187e1030bfb9",
+      "name": "DocVQA",
+      "aliases": [
+        "DocVQA",
+        "Document VQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2007.00398v1",
+      "public_by": "2020-08-02",
+      "original_fact_public_by": "2020-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "e7ea0fed32cf73c2",
+      "name": "MedQA",
+      "aliases": [
+        "MedQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2009.13081v1",
+      "public_by": "2020-10-02",
+      "original_fact_public_by": "2020-09-28",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "94e883163928bd38",
+      "name": "BBH",
+      "aliases": [
+        "BBH",
+        "BIG-Bench Hard",
+        "Big Bench Hard"
+      ],
+      "source_url": "https://arxiv.org/abs/2210.09261v1",
+      "public_by": "2022-11-02",
+      "original_fact_public_by": "2022-10-17",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "0c65ee6704a05362",
+      "name": "TextVQA",
+      "aliases": [
+        "TextVQA",
+        "Text VQA"
+      ],
+      "source_url": "https://arxiv.org/abs/1904.08920v1",
+      "public_by": "2019-05-02",
+      "original_fact_public_by": "2019-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "97c3250ed4cc630c",
+      "name": "MME",
+      "aliases": [
+        "MME"
+      ],
+      "source_url": "https://arxiv.org/abs/2306.13394v1",
+      "public_by": "2023-07-02",
+      "original_fact_public_by": "2023-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "ec85af6fe1d8ce6c",
+      "name": "ChartQA",
+      "aliases": [
+        "ChartQA",
+        "Chart QA"
+      ],
+      "source_url": "https://arxiv.org/abs/2203.10244v1",
+      "public_by": "2022-04-02",
+      "original_fact_public_by": "2022-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "35378700676beebf",
+      "name": "LiveCodeBench",
+      "aliases": [
+        "LiveCodeBench"
+      ],
+      "source_url": "https://arxiv.org/abs/2403.07974v1",
+      "public_by": "2024-04-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "aa1406060d400bb3",
+      "name": "BoolQ",
+      "aliases": [
+        "BoolQ"
+      ],
+      "source_url": "https://arxiv.org/abs/1905.10044v1",
+      "public_by": "2019-06-02",
+      "original_fact_public_by": "2019-12-31",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "d3b9f95832e6e8ed",
+      "name": "AIME24",
+      "aliases": [
+        "AIME24",
+        "AIME 2024",
+        "AIME2024",
+        "AIME-2024",
+        "AIME'24",
+        "AIME’24"
+      ],
+      "source_url": "https://arxiv.org/abs/2505.09388v1",
+      "public_by": "2025-06-02",
+      "original_fact_public_by": "2025-05-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "2d61c17362a1b6f0",
+      "name": "AIME25",
+      "aliases": [
+        "AIME25",
+        "AIME 2025",
+        "AIME2025",
+        "AIME-2025",
+        "AIME'25",
+        "AIME’25"
+      ],
+      "source_url": "https://arxiv.org/abs/2505.09388v1",
+      "public_by": "2025-06-02",
+      "original_fact_public_by": "2025-05-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "35c66351b19faf88",
+      "name": "MBPP+",
+      "aliases": [
+        "MBPP+",
+        "MBPP-Plus"
+      ],
+      "source_url": "https://arxiv.org/abs/2505.09388v1",
+      "public_by": "2025-06-02",
+      "original_fact_public_by": "2025-05-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "45d13104dc6e05f4",
+      "name": "HumanEval+",
+      "aliases": [
+        "HumanEval+",
+        "HumanEval-Plus"
+      ],
+      "source_url": "https://arxiv.org/abs/2505.09388v1",
+      "public_by": "2025-06-02",
+      "original_fact_public_by": "2025-05-14",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "25de1e820d394402",
+      "name": "SWE-bench Verified",
+      "aliases": [
+        "SWE-bench Verified",
+        "SWE-Bench-Verified"
+      ],
+      "source_url": "https://openai.com/index/introducing-swe-bench-verified/",
+      "public_by": "2026-10-11",
+      "original_fact_public_by": "2024-08-13",
+      "checked_on": "2026-10-10",
+      "bound_basis": "PREVIOUS_PRIMARY_REVIEW_CHECK_DATE_UPPER_BOUND"
+    },
+    {
+      "id": "7ed03f764a42d46f",
+      "name": "RealWorldQA",
+      "aliases": [
+        "RealWorldQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2502.13923v1",
+      "public_by": "2025-03-02",
+      "original_fact_public_by": "2025-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "d739ecd2b3fab851",
+      "name": "Video-MME",
+      "aliases": [
+        "Video-MME"
+      ],
+      "source_url": "https://arxiv.org/abs/2502.13923v1",
+      "public_by": "2025-03-02",
+      "original_fact_public_by": "2025-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "3ef19c1854f8569b",
+      "name": "MathVista",
+      "aliases": [
+        "MathVista"
+      ],
+      "source_url": "https://arxiv.org/abs/2502.13923v1",
+      "public_by": "2025-03-02",
+      "original_fact_public_by": "2025-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "328994758583c508",
+      "name": "OCRBench",
+      "aliases": [
+        "OCRBench"
+      ],
+      "source_url": "https://arxiv.org/abs/2502.13923v1",
+      "public_by": "2025-03-02",
+      "original_fact_public_by": "2025-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "36215a21ed5b1139",
+      "name": "MMMU-Pro",
+      "aliases": [
+        "MMMU-Pro"
+      ],
+      "source_url": "https://arxiv.org/abs/2502.13923v1",
+      "public_by": "2025-03-02",
+      "original_fact_public_by": "2025-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "44d92ae52338d175",
+      "name": "TruthfulQA",
+      "aliases": [
+        "TruthfulQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2412.15115v1",
+      "public_by": "2025-01-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "dbc46ac59802b9aa",
+      "name": "WinoGrande",
+      "aliases": [
+        "WinoGrande"
+      ],
+      "source_url": "https://arxiv.org/abs/2412.15115v1",
+      "public_by": "2025-01-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "6ea93f4800fa4033",
+      "name": "MT-Bench",
+      "aliases": [
+        "MT-Bench"
+      ],
+      "source_url": "https://arxiv.org/abs/2412.15115v1",
+      "public_by": "2025-01-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "b209369c3cf089ea",
+      "name": "SearchQA",
+      "aliases": [
+        "SearchQA"
+      ],
+      "source_url": "https://arxiv.org/abs/1704.05179v1",
+      "public_by": "2017-05-02",
+      "original_fact_public_by": "2017-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "584123e241e45bb6",
+      "name": "LoCoMo",
+      "aliases": [
+        "LoCoMo"
+      ],
+      "source_url": "https://arxiv.org/abs/2402.17753v1",
+      "public_by": "2024-03-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "22da8b66dce678df",
+      "name": "AppWorld",
+      "aliases": [
+        "AppWorld"
+      ],
+      "source_url": "https://arxiv.org/abs/2407.18901v1",
+      "public_by": "2024-08-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "2b5a165f138838ee",
+      "name": "ScienceWorld",
+      "aliases": [
+        "ScienceWorld"
+      ],
+      "source_url": "https://arxiv.org/abs/2203.07540v1",
+      "public_by": "2022-04-02",
+      "original_fact_public_by": "2022-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "6eaa35fec51c4fe7",
+      "name": "OpenBookQA",
+      "aliases": [
+        "OpenBookQA"
+      ],
+      "source_url": "https://arxiv.org/abs/1809.02789v1",
+      "public_by": "2018-10-02",
+      "original_fact_public_by": "2018-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "63540801e3619692",
+      "name": "SVAMP",
+      "aliases": [
+        "SVAMP"
+      ],
+      "source_url": "https://arxiv.org/abs/2103.07191v1",
+      "public_by": "2021-04-02",
+      "original_fact_public_by": "2021-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "808c6505e61e8ccb",
+      "name": "OlympiadBench",
+      "aliases": [
+        "OlympiadBench"
+      ],
+      "source_url": "https://arxiv.org/abs/2402.14008v1",
+      "public_by": "2024-03-02",
+      "original_fact_public_by": "2024-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "ba1f776f707c541d",
+      "name": "MedMCQA",
+      "aliases": [
+        "MedMCQA"
+      ],
+      "source_url": "https://arxiv.org/abs/2203.14371v1",
+      "public_by": "2022-04-02",
+      "original_fact_public_by": "2022-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "d7b94f654547a1a6",
+      "name": "GAIA",
+      "aliases": [
+        "GAIA"
+      ],
+      "source_url": "https://arxiv.org/abs/2311.12983v1",
+      "public_by": "2023-12-02",
+      "original_fact_public_by": "2023-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "d386c6253e98ded6",
+      "name": "GQA",
+      "aliases": [
+        "GQA"
+      ],
+      "source_url": "https://arxiv.org/abs/1902.09506v1",
+      "public_by": "2019-03-02",
+      "original_fact_public_by": "2019-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "2a86e77f6bd6e005",
+      "name": "SWE-bench",
+      "aliases": [
+        "SWE-bench"
+      ],
+      "source_url": "https://arxiv.org/abs/2310.06770v1",
+      "public_by": "2023-11-02",
+      "original_fact_public_by": "2023-12-31",
+      "checked_on": "2026-10-11",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "d458d9429af055ea",
+      "name": "WikiText-103",
+      "aliases": [
+        "WikiText-103"
+      ],
+      "source_url": "https://arxiv.org/abs/1609.07843v1",
+      "public_by": "2016-10-02",
+      "original_fact_public_by": "2016-09-26",
+      "checked_on": "2026-10-12",
+      "bound_basis": "PINNED_V1_ANNOUNCEMENT_MONTH_CONSERVATIVE_BEIJING_UPPER_BOUND"
+    },
+    {
+      "id": "bbe0c02a3f423fff",
+      "name": "TinyShakespeare",
+      "aliases": [
+        "TinyShakespeare"
+      ],
+      "source_url": "https://github.com/karpathy/char-rnn/commit/370cbcd448eb7daf32f21a6be560b70e0b33c4e3",
+      "public_by": "2026-10-13",
+      "original_fact_public_by": "2015-05-21",
+      "checked_on": "2026-10-12",
+      "bound_basis": "PREVIOUS_PRIMARY_REVIEW_CHECK_DATE_UPPER_BOUND"
+    }
+  ]
+}

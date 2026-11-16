@@ -19,6 +19,8 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / 'runtime'))
 from recent_benchmarks.release_ledger import BEIJING, build_ledger, digest
 from build_release_api import artifacts as api_artifacts
+from recent_benchmarks.automatic_date_merge import merge_registries
+from recent_benchmarks.release_ledger import source_projection
 
 
 def json_bytes(value):
@@ -50,6 +52,16 @@ def file_hash(path):
 
 def html_report(result):
     d = result['daily']
+    auto=d.get('automatic_review');review=''
+    if auto:
+        review=('<aside>自动核查来源快照：'+escape(str(auto.get('snapshot_id','')))
+            +'；原文引句核对 '+str(auto.get('source_quote_checks_completed',0))
+            +' 条；自动确认精确首发日 '+str(auto.get('exact_first_day_records',0))
+            +' 条；公开时间上界 '+str(auto.get('public_bound_records',0))
+            +' 条；未读来源 '+str(auto.get('unread_source_records',0))
+            +' 条；待做原文检查 '+str(auto.get('pending_source_pass',0))
+            +' 条。检查轮次完成不代表所有首发日已核实。'
+            +'<a href="automatic-review-progress.json">查看逐类进度</a></aside>')
     rows = ''.join('<tr><td>' + escape(r['date']) + '</td><td>' + escape(r['display'])
                    + '</td><td>未核完</td></tr>' for r in d['days'])
     verified = ''.join('<li>' + escape(r['name']) + ' · ' + escape(r['first_public_date'])
@@ -67,7 +79,7 @@ aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style
             + escape(d['period']['start']) + ' 至 ' + escape(d['days'][-1]['date'])
             + ' · 北京时间</p><p>整个来源快照中尚有 ' + str(d['unallocated_pending_entities'])
             + ' 个候选身份未完成核验（含尚未跨论文去重的记录）。这是全来源待核池，不是本期新增量，不能按论文日期分配到首发日。</p>'
-            + '<table><thead><tr><th>日期</th><th>已核实首发下限</th><th>每日总量</th></tr></thead><tbody>'
+            + review + '<table><thead><tr><th>日期</th><th>已核实首发下限</th><th>每日总量</th></tr></thead><tbody>'
             + rows + '</tbody></table><p>已核实条目（不代表全量）：</p><ul>' + verified + '</ul><p>数据快照：'
             + escape(d['snapshot_id']) + ' · ' + escape(d['source_generated_at'])
             + '</p><p><a href="api/v1/judge.html">查询某个 Benchmark 的首发判断与日期</a></p><p><a href="../../">返回总榜</a></p><p><a href="daily.json">下载统计与口径</a> · '
@@ -76,7 +88,7 @@ aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style
             + '<a href="review-queue.json.gz">下载待核队列</a></p></html>').encode()
 
 
-def run(source, publication, registry_path, output, *, start=None, end=None, as_of=None):
+def run(source, publication, registry_path, output, *, start=None, end=None, as_of=None,automatic_path=None):
     try:
         import ijson
     except ImportError as e:
@@ -86,6 +98,15 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
     if source_hash != pub.get('source_sha256'):
         raise ValueError('Publication/source hash mismatch')
     registry = json.loads(registry_path.read_text(encoding='utf-8'))
+    automatic_progress=None
+    if automatic_path and automatic_path.exists():
+        envelope=json.loads(gzip.decompress(automatic_path.read_bytes()) if automatic_path.suffix=='.gz' else automatic_path.read_bytes())
+        with gzip.open(source,'rb')as f:
+            signatures={(r['paper_id'],r['benchmark_id']):digest(source_projection(r))
+                for r in ijson.items(f,'benchmarks.item',use_float=True)if r.get('paper_id')and r.get('benchmark_id')}
+        registry,merge_audit=merge_registries(registry,envelope,signatures)
+        automatic_progress={**envelope.get('progress',{}),**merge_audit,
+            'applied_to_snapshot_id':pub['snapshot_id'],'applied_source_sha256':source_hash}
     # Replaying the same source/registry must not create a new public release
     # generation every five minutes merely because the wall clock advanced.
     as_of = as_of or pub['generated_at']
@@ -104,15 +125,19 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
             snapshot_id=snapshot_id, source_sha256=source_hash,
             source_generated_at=pub['generated_at'], period_start=start,
             period_end=end, as_of=as_of)
+    if automatic_progress:result['daily']['automatic_review']=automatic_progress
     # Renderer/producer changes also create a new immutable generation.
     producer_files=[Path(__file__), Path(sys.modules[build_ledger.__module__].__file__),
         PROJECT/'runtime/recent_benchmarks/benchmark_dates.py',
         PROJECT/'runtime/recent_benchmarks/release_judgment.py',
+        PROJECT/'runtime/recent_benchmarks/automatic_date_merge.py',
+        PROJECT/'runtime/recent_benchmarks/automatic_date_policy.py',
+        PROJECT/'runtime/recent_benchmarks/audited_date_facts.json',
         Path(__file__).with_name('build_release_api.py'),Path(__file__).with_name('judge-client.mjs'),
         Path(__file__).with_name('judge.html'),Path(__file__).with_name('benchmark-date-view.mjs')]
     producer_hash = hashlib.sha256(b''.join(p.read_bytes() for p in producer_files)).hexdigest()
     result['generation'] = digest({'evidence_generation':result['generation'],
-                                   'producer_sha256':producer_hash})[:24]
+                                   'producer_sha256':producer_hash,'automatic_review':automatic_progress})[:24]
     dest = output / result['generation']
     dest.mkdir(parents=True, exist_ok=True)
     files = {'daily.json': json_bytes(result['daily']),
@@ -120,6 +145,7 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
              'review-queue.json.gz': gzip.compress(json_bytes(result['review_queue']), mtime=0),
              'benchmark-dates.json.gz': gzip.compress(json_bytes(result['date_overlay']),mtime=0),
              'index.html': html_report(result)}
+    if automatic_progress:files['automatic-review-progress.json']=json_bytes(automatic_progress)
     metadata={'snapshot_id':snapshot_id,'source_sha256':source_hash,
               'source_generated_at':pub['generated_at'],'report_period':result['daily']['period'],
               'registry_sha256':digest(registry),'generation':result['generation']}
@@ -145,9 +171,10 @@ def main():
     p.add_argument('--start', help='Inclusive Beijing calendar date')
     p.add_argument('--end', help='Exclusive Beijing calendar date')
     p.add_argument('--as-of', help='Timezone-aware audit timestamp')
+    p.add_argument('--automatic',type=Path,help='Validated automatic review envelope')
     a = p.parse_args()
     manifest, daily = run(a.source, a.publication, a.registry, a.output,
-                          start=a.start, end=a.end, as_of=a.as_of)
+                          start=a.start, end=a.end, as_of=a.as_of,automatic_path=a.automatic)
     print(json.dumps({'generation': manifest['generation'], 'snapshot_id': manifest['snapshot_id'],
                       'confirmed_minimum': daily['confirmed_minimum_in_period'],
                       'pending': daily['unallocated_pending_entities'],
