@@ -13,7 +13,7 @@ import re
 import xml.etree.ElementTree as ET
 from urllib.parse import urlencode
 
-POLICY='author-v1-actual-announcement-prior-search-v2'
+POLICY='author-v1-actual-announcement-prior-search-v3'
 
 def due(previous,signature):
     if not previous or previous['signature']!=signature:return True
@@ -28,6 +28,14 @@ def merge_events(current,older):
             event.get('timezone'),(event.get('evidence')or{}).get('url'),(event.get('evidence')or{}).get('quote')],sort_keys=True)
         if key not in seen:seen.add(key);result.append(event)
     return result
+
+def independent_clearance(clearance,source_sha):
+    from recent_benchmarks.release_ledger import evidence
+    return (clearance.get('review_status')=='VERIFIED'
+        and clearance.get('primary_projects_and_prior_publications_reconciled')is True
+        and clearance.get('earliest_source')=='THIS_ARXIV_V1'
+        and clearance.get('source_sha256')==source_sha
+        and evidence(clearance.get('primary_evidence')))
 
 
 class Announcements(HTMLParser):
@@ -105,6 +113,7 @@ def run(reviewer,limit=128):
     db.execute('''CREATE TABLE IF NOT EXISTS firstness_checks(key TEXT PRIMARY KEY,signature TEXT,status TEXT,reason TEXT,updated TEXT,attempts INTEGER DEFAULT 0)''')
     db.execute('''CREATE TABLE IF NOT EXISTS arxiv_announcements(paper TEXT,category TEXT,day TEXT,receipt TEXT,PRIMARY KEY(paper,category))''')
     manual={(ref['paper_id'],ref['benchmark_id']):e['decision']for e in reviewer.manual['entities']for ref in e.get('source_refs',[])}
+    clearances={(ref['paper_id'],ref['benchmark_id']):e.get('firstness_clearance',{})for e in reviewer.manual['entities']for ref in e.get('source_refs',[])}
     tasks=[];contexts={};categories=set()
     cutoff=(datetime.now(timezone.utc)-timedelta(days=18)).isoformat()[:10]
     rows=db.execute("SELECT * FROM tasks WHERE active=1 AND json_extract(row_json,'$.paper_first_published')>=? ORDER BY priority,json_extract(row_json,'$.paper_id'),key",(cutoff,)).fetchall()
@@ -169,16 +178,20 @@ def run(reviewer,limit=128):
                 clear,reason,raw,url=search_prior(reviewer.primary,row['benchmark_name'],pid)
                 if reason=='CURRENT_V1_NOT_PRESENT_IN_PRIOR_SEARCH':status='FETCH_BLOCKED'
                 if clear:
-                    record.update(entity_id='auto-paper-first-'+digest([pid,norm(row['benchmark_name'])])[:24],
-                        decision='CONFIRMED_NEW',firstness_evidence=proof(paper['url'],claim,'AUTHOR_NEW_BENCHMARK_CLAIM_AND_PRIMARY_PRIOR_NAME_SEARCH'),
-                        prior_search={'url':url,'sha256':hashlib.sha256(raw).hexdigest(),'scope':'arXiv exact-name scholarly metadata; current paper present and no other paper match','checked_at':now()})
-                    record['events'][0].update(kind='FIRST_PUBLIC_INTRODUCTION',date_basis='PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM')
-                    status='VERIFIED_FIRST_DAY';reason='AUTHOR_V1_NEW_BENCHMARK_CLAIM_ACTUAL_ANNOUNCEMENT_AND_PRIOR_SEARCH'
+                    record['prior_search']={'url':url,'sha256':hashlib.sha256(raw).hexdigest(),'scope':'arXiv exact-name scholarly metadata; current paper present and no other paper match','checked_at':now()}
+                    clearance=clearances.get((row['paper_id'],row['benchmark_id']),{})
+                    if independent_clearance(clearance,context['source_sha256']):
+                        record.update(entity_id='auto-paper-first-'+digest([pid,norm(row['benchmark_name'])])[:24],
+                            decision='CONFIRMED_NEW',firstness_evidence=proof(paper['url'],claim,'AUTHOR_NEW_BENCHMARK_CLAIM_AND_INDEPENDENT_PRIOR_SOURCE_REVIEW'))
+                        record['events'][0].update(kind='FIRST_PUBLIC_INTRODUCTION',date_basis='PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM')
+                        status='VERIFIED_FIRST_DAY';reason='AUTHOR_V1_NEW_CLAIM_ACTUAL_ANNOUNCEMENT_AND_INDEPENDENT_PRIOR_SOURCE_CLEARANCE'
+                    else:reason='PRIMARY_PROJECT_OR_OTHER_EARLIER_PUBLICATION_REVIEW_REQUIRED'
             except Exception as e:status='FETCH_BLOCKED';reason='PRIOR_SEARCH_'+type(e).__name__
         # Preserve any already captured earlier public event. The ledger's
         # chronology guard rejects a first day later than known public evidence.
         if task['label']:
-            old=json.loads(task['label']);record['events']=merge_events(record['events'],old.get('events',[]))
+            old=json.loads(task['label']);old_events=[e for e in old.get('events',[])if not(e['kind']=='FIRST_PUBLIC_INTRODUCTION'and e.get('evidence',{}).get('review_method')=='ACTUAL_PRIMARY_CATEGORY_DATED_ANNOUNCEMENT')]
+            record['events']=merge_events(record['events'],old_events)
         record['review_notes']='已补官方实际公告日；不是提交日代理。首发还检查v1新benchmark声明、既有身份、历史论文、正式出版及项目来源；有未决线索保留待核。'+str(reason or'')
         if status=='FIRSTNESS_REVIEW_REQUIRED':status='VERIFIED_PUBLIC_BOUND'
         db.execute('UPDATE tasks SET status=?,reason=?,label=?,source_read=1,updated=? WHERE key=?',(status,reason,json.dumps(record,ensure_ascii=False),now(),task['key']))

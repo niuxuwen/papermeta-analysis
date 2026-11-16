@@ -399,7 +399,7 @@
           "benchmark_id": "bench-865a07b0de904c32"
         }
       ],
-      "review_notes": "Author release date November11 has no timezone. Do not convert it to Beijing midnight. Historical code commit is November12 Beijing, but commit time alone is not publication time.",
+      "review_notes": "已核对成功的公开Pages部署状态及其固定SHA首页内容，最迟北京时间11月12日已公开benchmark介绍，早于11月13日论文公告。代码库另有更早公开事件，仍需核对对应内容；不能把论文公告日确认为全局首发日。",
       "events": [
         {
           "kind": "CODE_RELEASE",
@@ -444,6 +444,22 @@
           },
           "publication_verified": true,
           "proves_public_existence": true
+        },
+        {
+          "kind": "KNOWN_PUBLIC_EXISTENCE",
+          "at": "2026-11-11T17:52:19Z",
+          "publication_verified": true,
+          "proves_public_existence": true,
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://api.github.com/repos/vibeprevisbench/vibeprevisbench.github.io/deployments/7717445614/statuses",
+            "quote": "\"state\": \"success\" […] \"created_at\": \"2026-11-11T17:52:19Z\" […] \"environment_url\": \"https://vibeprevisbench.github.io/\"",
+            "reviewed_at": "2026-11-16T14:41:41.228573+00:00",
+            "review_method": "SUCCESSFUL_PUBLIC_PAGES_DEPLOYMENT_AND_PINNED_BENCHMARK_CONTENT",
+            "pinned_content_url": "https://raw.githubusercontent.com/vibeprevisbench/vibeprevisbench.github.io/c468f18c4c4f1e65ebd9b0857c241b1dd580ba18/index.html",
+            "pinned_content_sha256": "58920f835b65b48469a20eeda5d197a67ea25be47484d046c2ea3ca809253d14"
+          }
         }
       ]
     },

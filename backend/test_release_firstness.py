@@ -1,8 +1,12 @@
 import unittest
-from arxiv_firstness import Announcements,introduction,prior_search_clear,merge_events,search_prior
+from arxiv_firstness import Announcements,introduction,prior_search_clear,merge_events,search_prior,independent_clearance
 
 
 class FirstnessTests(unittest.TestCase):
+    def test_prior_arxiv_search_alone_cannot_clear_global_firstness(self):
+        self.assertFalse(independent_clearance({'review_status':'VERIFIED','source_sha256':'s'},'s'))
+        c={'review_status':'VERIFIED','source_sha256':'s','primary_projects_and_prior_publications_reconciled':True,'earliest_source':'THIS_ARXIV_V1','primary_evidence':{'primary':True,'review_status':'VERIFIED','url':'https://example.org/first-introduction','quote':'independently reviewed earliest public introduction','reviewed_at':'2026-11-16T00:00:00Z'}}
+        self.assertTrue(independent_clearance(c,'s'));self.assertFalse(independent_clearance(c,'changed'))
     def test_broken_export_api_uses_primary_search_page_and_records_actual_source(self):
         class Cache:
             def get(self,url):
