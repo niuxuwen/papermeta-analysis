@@ -187,3 +187,25 @@ date, with fallback counts alongside them. Reused/unknown assets are not all
 relabeled new merely because their dates have been filled. These are counts of
 the collected catalogue under the paper-fallback rule, not an exhaustive web census.
 Score inputs, model results and the 60-day paper selection are not changed.
+
+
+## Old-paper replay
+
+Production paper qualification can opt in with
+`RADAR_ALLOW_PAPER_DATE_FALLBACK=1` and `RADAR_BENCHMARK_DATE_TABLE`.
+The same date register is consulted before rejecting an otherwise
+source-confirmed LLM benchmark for a missing date. Register/paper dates are
+labeled `DATE_REGISTER`, retain the original novelty decision, and do not
+claim independently verified first publication. Identity, source, model and
+table-comparability checks still apply. Cached qualifications are reassessed
+locally so old date failures do not need a fresh full-text novelty model pass.
+
+The audited `replay_backlog_request.py` is a service-root startup tool. It
+accepts exact terminal IDs and failure hashes, saves original queue rows,
+checks the current 60-day window and retry deadlines, and consumes a durable
+per-paper policy marker. SCREEN has an empty pipeline_stage, as required by
+the production SQL schema. Per-run tickets reopen only the bounded failed
+binding-budget checkpoint; successful model/table decisions remain reusable.
+Run the production-schema transaction replay on a detached DB copy before
+applying a request. Never initialize this tool against a website-only repo
+or a foreign-host active shared WAL database.
