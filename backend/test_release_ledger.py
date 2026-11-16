@@ -35,6 +35,16 @@ def report(rows=(), entries=()):
 
 
 class ReleaseLedgerTests(unittest.TestCase):
+    def test_earlier_project_publication_blocks_paper_day_as_first_introduction(self):
+        registry=json.loads((HERE/'release-evidence.json').read_text(encoding='utf-8'))
+        e=copy.deepcopy(next(e for e in registry['entities']if e['name']=='VibePrevisBench'))
+        e.update(decision='CONFIRMED_NEW',scope='LLM',firstness_evidence=proof())
+        e['events'].append({'kind':'FIRST_PUBLIC_INTRODUCTION','date':'2026-11-13','timezone':'Asia/Shanghai',
+            'date_basis':'PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM','publication_verified':True,
+            'proves_public_existence':True,'evidence':proof()})
+        result=report(entries=[e]);self.assertEqual(result['daily']['confirmed_minimum_in_period'],0)
+        self.assertIsNone(result['entities'][0]['first_public_date'])
+
     def test_reviewed_real_cases_do_not_count_components_or_updates(self):
         registry = json.loads((HERE/'release-evidence.json').read_text(encoding='utf-8'))
         rows = [dict(ref, benchmark_name=e['name'], eligibility='ELIGIBLE',

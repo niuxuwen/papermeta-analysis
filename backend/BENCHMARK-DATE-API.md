@@ -143,3 +143,19 @@ busy score publisher therefore does not discard a completed date checkpoint.
 The publisher acquires the shared lock before loading the large evidence file.
 Internal freeze, collection, generation and planned dates are retained as
 nonpublic source claims, rather than credited as public release evidence.
+
+The paper-introduction stage checks actual dated primary-category arXiv
+announcement listings, pinned v1 author benchmark claims and prior-name search
+results. It does not use the submission timestamp as a public announcement.
+An arXiv-only search is insufficient to establish global first introduction:
+earlier project sites, repositories and formal publications must be reconciled
+independently. Curated `firstness_clearance` receipts may authorize automatic
+date completion only when pinned to the same source hash and accompanied by
+reviewed primary evidence. Without that clearance, the actual paper publication
+day remains a public-by bound. Existing primary evidence earlier than a claimed
+first day invalidates that first-day judgment.
+
+Source capture may proceed while the score publisher is busy only if a private
+copy matches the unchanged publication manifest and its exact source hash.
+Concurrent or incomplete writes fail closed. This prevents the shared publisher
+lock from indefinitely starving date review without changing score data.
