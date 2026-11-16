@@ -33,12 +33,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install numpy==2.2.6 scipy==1.15.3
+      - run: python -m pip install numpy==2.2.6 scipy==1.15.3 ijson==3.6.0
       - name: Build and validate latest verified public data
         if: steps.feed.outcome == 'success'
         env:
           NODE_OPTIONS: --max-old-space-size=6144
         run: |
+          python -m unittest discover -s backend -p "test_release*.py"
           node test-large-json.cjs
           python -m unittest discover -s ratings -p test_source_quality.py
           python -m unittest discover -s ratings -p test_display_coverage.py
@@ -60,6 +61,7 @@ jobs:
           python ratings/validate_common_basket_publication.py
           node refresh-elo-home.cjs
           python backend/build_editions.py
+          python backend/build_release_site.py .live-feed/feed
           node validate-live.cjs .live-feed/feed/publication.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
@@ -73,4 +75,3 @@ jobs:
           artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           # Allow bounded extra time for Pages server-side file synchronization.
           timeout: 1200000
-

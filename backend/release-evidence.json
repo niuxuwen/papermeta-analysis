@@ -1,0 +1,576 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-11-16T09:05:07.720422Z",
+  "policy": "Review primary first-introduction evidence independently of evaluation eligibility. Pending is not zero.",
+  "entities": [
+    {
+      "entity_id": "typed-7d7d2548c6fa316a",
+      "name": "RelCap-F1",
+      "kind": "METRIC",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": "RICapBench",
+      "source_refs": [
+        {
+          "paper_id": "recent-1bc3c478bfb4d4f3",
+          "benchmark_id": "bench-a6652eb957913a06"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.16413v1",
+        "quote": "Abstract: the RelCap-F1 metric",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-a26fddcdfe5dd31f",
+      "name": "RICScore",
+      "kind": "METRIC",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": "RICapBench",
+      "source_refs": [
+        {
+          "paper_id": "recent-1bc3c478bfb4d4f3",
+          "benchmark_id": "bench-51084738b6980b69"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.16413v1",
+        "quote": "Abstract: a composite metric, RICScore",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-f026e974c9727b45",
+      "name": "Schema Coverage Rate",
+      "kind": "METRIC",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-5b15aa0f1d5fdffd",
+          "benchmark_id": "bench-b45542426c427e7b"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.17044v1",
+        "quote": "Schema2Text: Schema Coverage Rate (SCR), the fraction of source table and column identifiers mentioned in T",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-43b21117956ff7e7",
+      "name": "w/o RF",
+      "kind": "ABLATION",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": "ReasonText",
+      "source_refs": [
+        {
+          "paper_id": "recent-14d4e6799a92163f",
+          "benchmark_id": "bench-7b4e9a4b35ff57cb"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.15449v1",
+        "quote": "Table C: w/o RF uses GT polygons without rotation and flipping",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-82728f681e9cca2e",
+      "name": "OCR",
+      "kind": "ABLATION",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": "ReasonText",
+      "source_refs": [
+        {
+          "paper_id": "recent-14d4e6799a92163f",
+          "benchmark_id": "bench-8cfd5b76f0eff0d8"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.15449v1",
+        "quote": "Table C: OCR detects and recognizes text end-to-end without either",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-a3120bfda083cf31",
+      "name": "B",
+      "kind": "SUBTASK",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-b9ea89707b047289",
+          "benchmark_id": "bench-89421014484e1d79"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.15325v1",
+        "quote": "Task B: Behaviour triage, 4-way",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-f2ae84bc7785b1f0",
+      "name": "C",
+      "kind": "SUBTASK",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-b9ea89707b047289",
+          "benchmark_id": "bench-7ca76d05279d07b6"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.15325v1",
+        "quote": "Task C: Ordinal grading, 24-way",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-4b06260428727bd2",
+      "name": "R1",
+      "kind": "SUBTASK",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-b9ea89707b047289",
+          "benchmark_id": "bench-41abeea5d66306eb"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.15325v1",
+        "quote": "Task R1: Finding verification, T/F",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-068a50ef089ccc5d",
+      "name": "Synthetic - full set",
+      "kind": "SUBSET",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-052270c4d4f231d6",
+          "benchmark_id": "bench-594b38857daa7133"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.10377v1",
+        "quote": "Evaluation set: Synthetic - full set; n 1808",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "typed-50ff05947cd3117d",
+      "name": "Synthetic - curated subset",
+      "kind": "SUBSET",
+      "decision": "NOT_A_BENCHMARK",
+      "scope": "EVALUATION_COMPONENT",
+      "parent_benchmark": null,
+      "source_refs": [
+        {
+          "paper_id": "recent-052270c4d4f231d6",
+          "benchmark_id": "bench-6f68c8b780d2e8b0"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.10377v1",
+        "quote": "Evaluation set: Synthetic - curated subset; n 78",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Source component, not a separately introduced benchmark. Score evidence is retained.",
+      "events": []
+    },
+    {
+      "entity_id": "toolturns",
+      "name": "ToolTurns",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "CONFIRMED_NEW",
+      "source_refs": [
+        {
+          "paper_id": "recent-25f539fd2f17ea32",
+          "benchmark_id": "bench-adb100b174a16884"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/milad621/ToolTurns/releases/tag/v1.0.0",
+        "quote": "ToolTurns v1.0.0 provides the complete 2,620-problem benchmark",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "firstness_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/html/2611.14925v1",
+        "quote": "introducing ToolTurns, a large-scale tool-calling evaluation for the multi-turn dialogue setting",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Official first version and explicit new-benchmark claim agree. v1.0.1 is a software correction, not another benchmark. This is an evidenced minimum, not an exhaustive daily census.",
+      "events": [
+        {
+          "kind": "FIRST_PUBLIC_INTRODUCTION",
+          "at": "2026-11-11T00:03:05Z",
+          "date_basis": "PUBLISHER_RELEASE_TIMESTAMP",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/milad621/ToolTurns/releases/tag/v1.0.0",
+            "quote": "ToolTurns v1.0.0 provides the complete 2,620-problem benchmark",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        },
+        {
+          "kind": "DATA_RELEASE",
+          "at": "2026-11-11T00:03:05Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/milad621/ToolTurns/releases/tag/v1.0.0",
+            "quote": "ToolTurns v1.0.0 provides the complete 2,620-problem benchmark",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-9998c9746e6601d4",
+      "name": "MemReal-Bench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/jiazhicheng7-ctrl/MindMem/blob/9c75a19124f357adb75893d09129ef626f202cf7/README.md",
+        "quote": "Dated News states project launched November11; code and benchmark release planned upon acceptance.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-6c986a9c293e8be9",
+          "benchmark_id": "bench-f4887b2aae88f438"
+        }
+      ],
+      "review_notes": "AUTHOR_ANNOUNCEMENT_SUPPORTED_EARLIER_HISTORY_NOT_EXHAUSTIVE",
+      "events": [
+        {
+          "kind": "UPDATE",
+          "at": "2026-11-11T10:42:29Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/jiazhicheng7-ctrl/MindMem/blob/9c75a19124f357adb75893d09129ef626f202cf7/README.md",
+            "quote": "Dated News states project launched November11; code and benchmark release planned upon acceptance.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-f544cb97f3ffd804",
+      "name": "WorkflowArena",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/Einsia/WorkflowArena/commit/1bc58ba33bd35b250ba0373e1b9f5e282622f1fa",
+        "quote": "Author commit releases145tasks; author project page also dates study November10.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-04dc5706a1d61cc9",
+          "benchmark_id": "bench-ecd5e94bc6e29e3a"
+        }
+      ],
+      "review_notes": "PROJECT_RELEASE_EVIDENCE_FOUND_EARLIER_PUBLIC_INTRODUCTION_NOT_EXHAUSTIVE",
+      "events": [
+        {
+          "kind": "DATA_RELEASE",
+          "at": "2026-11-10T07:38:16Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/Einsia/WorkflowArena/commit/1bc58ba33bd35b250ba0373e1b9f5e282622f1fa",
+            "quote": "Author commit releases145tasks; author project page also dates study November10.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-11f85f73c557e639",
+      "name": "VibePrevisBench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/vibeprevisbench/vibeprevisbench/commit/0805ab21a9f9913838b9850959cbfecb583146fe",
+        "quote": "Official News says code/data release November11 without timezone; dated code release commit and HFcreatedAt16:48UTC are November12 Beijing. Do not silently treat the date-only author notice as Beijing midnight.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-04591aec07f90c18",
+          "benchmark_id": "bench-865a07b0de904c32"
+        }
+      ],
+      "review_notes": "RELEASE_EVENT_SUPPORTED_TIMEZONE_RETAINED_NOT_PROVEN_EARLIEST_PUBLIC_MENTION",
+      "events": [
+        {
+          "kind": "CODE_RELEASE",
+          "at": "2026-11-11T17:11:21Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/vibeprevisbench/vibeprevisbench/commit/0805ab21a9f9913838b9850959cbfecb583146fe",
+            "quote": "Official News says code/data release November11 without timezone; dated code release commit and HFcreatedAt16:48UTC are November12 Beijing. Do not silently treat the date-only author notice as Beijing midnight.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-3d7efc907564c2b6",
+      "name": "Infrathon",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/InfrathonX/Infrathon/commit/73dcb5784fa31f07cb0387267d5d2b2df81cc339",
+        "quote": "Code v1 commit. Paper submitted earlier; benchmark announcement date cannot be replaced with code release day.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "FIRST_ANNOUNCEMENT_UNRESOLVED",
+      "events": [
+        {
+          "kind": "CODE_RELEASE",
+          "at": "2026-11-11T02:23:42Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/InfrathonX/Infrathon/commit/73dcb5784fa31f07cb0387267d5d2b2df81cc339",
+            "quote": "Code v1 commit. Paper submitted earlier; benchmark announcement date cannot be replaced with code release day.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-402a1963d34228f5",
+      "name": "XYBench",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "EXISTING_OR_UPDATE",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/allenai/XYBench/issues/2",
+        "quote": "Public issue November6 refers to existing benchmark/data link. November13 introduction is not proof of first release. September9 README was only coming soon.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "EXCLUDE_NOV13_AS_UNSUPPORTED_FIRST_RELEASE",
+      "events": []
+    },
+    {
+      "entity_id": "review-bef9de70b42d233f",
+      "name": "DexJoCo-X",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "EXISTING_OR_UPDATE",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/dexjoco-x/DexJoCo-X-public",
+        "quote": "Author News distinguishes October12 public code release from November14 added environments.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "EXCLUDE_NOV14_AS_NEW_BENCHMARK",
+      "events": []
+    },
+    {
+      "entity_id": "review-3dc06dae0163a4a5",
+      "name": "Brazilian Food Delivery Hybrid Search Benchmark",
+      "kind": "BENCHMARK",
+      "scope": "IR_SEPARATE_FROM_STRICT_LLM_COUNT",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://huggingface.co/api/datasets/LucasFig0/hybrid-menu-search-benchmark",
+        "quote": "Official metadata createdAt; public data card contains test queries, qrels and retrieval results. This is an IR benchmark, not proven generative LLM scope.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "FIRST_OBSERVED_REPOSITORY_RECORD_NOT_PROVEN_GLOBAL_FIRST_RELEASE",
+      "events": [
+        {
+          "kind": "DATA_RELEASE",
+          "at": "2026-11-14T17:16:30Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://huggingface.co/api/datasets/LucasFig0/hybrid-menu-search-benchmark",
+            "quote": "Official metadata createdAt; public data card contains test queries, qrels and retrieval results. This is an IR benchmark, not proven generative LLM scope.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-0dfb7b535ed6f01a",
+      "name": "SiteShift",
+      "kind": "BENCHMARK",
+      "scope": "VISION_SEPARATE_FROM_STRICT_LLM_COUNT",
+      "decision": "PENDING",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://huggingface.co/api/datasets/medical-benchmarks/SiteShift",
+        "quote": "Metadata public; description says under review and access opens upon publication; raw card401. Medical image segmentation, not established LLM scope.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "PUBLIC_RECORD_DATE_ONLY_FIRST_RELEASE_UNRESOLVED",
+      "events": [
+        {
+          "kind": "UPDATE",
+          "at": "2026-11-14T12:54:59Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://huggingface.co/api/datasets/medical-benchmarks/SiteShift",
+            "quote": "Metadata public; description says under review and access opens upon publication; raw card401. Medical image segmentation, not established LLM scope.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "review-9b7d05784dd7f7c4",
+      "name": "TOWER-Assets",
+      "kind": "BENCHMARK",
+      "scope": "UNVERIFIED",
+      "decision": "EXISTING_OR_UPDATE",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://huggingface.co/datasets/tower-benchmark/TOWER-Assets",
+        "quote": "Versioned assets for an existing benchmark; asset upload is not automatically a new benchmark.",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "source_refs": [],
+      "review_notes": "DO_NOT_COUNT_UPLOAD_AS_FIRST_BENCHMARK_RELEASE",
+      "events": [
+        {
+          "kind": "UPDATE",
+          "at": "2026-11-14T17:04:41Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://huggingface.co/datasets/tower-benchmark/TOWER-Assets",
+            "quote": "Versioned assets for an existing benchmark; asset upload is not automatically a new benchmark.",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    },
+    {
+      "entity_id": "distdebug-bench",
+      "name": "DistDebug-Bench",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "EXISTING_OR_UPDATE",
+      "source_refs": [
+        {
+          "paper_id": "recent-0452954134812eda",
+          "benchmark_id": "bench-279229808e5e738a"
+        }
+      ],
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.0.0",
+        "quote": "v1.0.0",
+        "reviewed_at": "2026-11-16T09:05:07.720422Z"
+      },
+      "review_notes": "Official v1.0.0 published 2026-11-01T07:28:49Z; November7 is a label update. November paper date is not a new release.",
+      "events": [
+        {
+          "kind": "DATA_RELEASE",
+          "at": "2026-11-01T07:28:49Z",
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://github.com/OrderLab/distdebug-bench/releases/tag/v1.0.0",
+            "quote": "v1.0.0",
+            "reviewed_at": "2026-11-16T09:05:07.720422Z"
+          }
+        }
+      ]
+    }
+  ]
+}
