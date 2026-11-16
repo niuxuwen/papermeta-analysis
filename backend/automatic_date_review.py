@@ -462,6 +462,9 @@ class Reviewer:
             task=self.db.execute('SELECT * FROM tasks WHERE key=?',(selected['key'],)).fetchone()
             try:status,reason,label,read=self.check(task,research=research)
             except Exception as e:status,reason,label,read='SOURCE_BLOCKED',type(e).__name__+':'+str(e)[:180],None,0
+            if research and label and task['label']:
+                from arxiv_firstness import merge_events
+                label['events']=merge_events(label.get('events',[]),json.loads(task['label']).get('events',[]))
             self.db.execute('UPDATE tasks SET status=?,reason=?,label=?,source_read=?,updated=? WHERE key=?',
                 (status,reason,json.dumps(label,ensure_ascii=False)if label else None,read,now(),task['key']))
             self.db.execute('INSERT INTO history VALUES(?,?,?,?,?)',(now(),task['key'],status,reason,task['signature']))
