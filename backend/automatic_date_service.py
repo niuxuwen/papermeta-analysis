@@ -55,14 +55,14 @@ def capture(project,state):
 def publish(project,state):
     """Publish date evidence only, keeping source and score blobs byte-identical."""
     publisher=project/'deployment/publication';feed=publisher/'feed';directory=feed/'feed'
-    envelope=json.loads((state/'registry.json').read_text())
-    from recent_benchmarks.release_ledger import validate_registry,digest
-    validate_registry(envelope['registry'])
-    # Ignore heartbeat timestamps; meaningful source/decision changes publish.
-    progress={k:v for k,v in envelope['progress'].items()if k!='updated_at'}
-    fingerprint=digest({'registry':envelope['registry'],'progress':progress})
     with locked(publisher/'publisher.lock')as acquired:
         if not acquired:return {'status':'PUBLISHER_BUSY'}
+        envelope=json.loads((state/'registry.json').read_text())
+        from recent_benchmarks.release_ledger import validate_registry,digest
+        validate_registry(envelope['registry'])
+        # Ignore heartbeat timestamps; meaningful source/decision changes publish.
+        progress={k:v for k,v in envelope['progress'].items()if k!='updated_at'}
+        fingerprint=digest({'registry':envelope['registry'],'progress':progress})
         marker=json.loads((directory/'publication.json').read_text())
         if marker.get('publisher')!='radar-publication-v1':raise ValueError('Unowned live feed')
         protected=['source.json.gz','publication.json','task-inputs.json.gz','task-measurements.json.gz']
