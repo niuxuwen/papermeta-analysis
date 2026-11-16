@@ -18,6 +18,7 @@ import sqlite3
 import sys
 import time
 import shlex
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote,urlsplit
 import urllib.request
@@ -68,6 +69,7 @@ class Sources:
         for p in (project/'data/runs').iterdir():
             if p.is_dir() and p.name.startswith('live-'):self.runs['recent-'+p.name[5:21]].append(p)
         self.documents_read=0
+        self.thread_cache=threading.local()
 
     @lru_cache(maxsize=20000)
     def stamp(self,paper_id):
@@ -78,8 +80,13 @@ class Sources:
                 s=p.stat();stamps.append((p.name,s.st_size,s.st_mtime_ns))
         return stamps
 
-    @lru_cache(maxsize=12)
     def get(self,paper_id):
+        previous=getattr(self.thread_cache,'paper',None)
+        if previous and previous[0]==paper_id:return previous[1]
+        result=self._read(paper_id);self.thread_cache.paper=(paper_id,result);return result
+
+    @lru_cache(maxsize=12)
+    def _read(self,paper_id):
         choices=[]
         for root in self.runs.get(paper_id,[]):
             p=root/'evidence'/(paper_id+'.json')
@@ -428,7 +435,8 @@ class Reviewer:
                                 (status,reason,json.dumps(label,ensure_ascii=False)if label else None,read,now(),task['key']))
                             self.db.execute('INSERT INTO history VALUES(?,?,?,?,?)',(now(),task['key'],status,reason,task['signature']))
                             done+=1
-                        if done//64!=(done-len(checked))//64:self.db.commit();print(json.dumps(self.checkpoint(),ensure_ascii=False),flush=True)
+                        interval=512 if self.work_db else 64
+                        if done//interval!=(done-len(checked))//interval:self.db.commit();print(json.dumps(self.checkpoint(),ensure_ascii=False),flush=True)
                     self.db.commit()
                     if offset%512==0:self.export()
             return self.export()
