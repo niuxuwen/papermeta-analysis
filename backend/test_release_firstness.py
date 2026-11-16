@@ -11,6 +11,8 @@ class FirstnessTests(unittest.TestCase):
         class Cache:
             def get(self,url):
                 if 'export.arxiv.org'in url:raise RuntimeError('PRIMARY_HTTP_502')
+                from urllib.parse import parse_qs,urlparse
+                assert parse_qs(urlparse(url).query)['order']==['-announced_date_first']
                 return b'<p class="list-title"><a href="https://arxiv.org/abs/2611.15189">arXiv:2611.15189</a></p>'
         clear,reason,raw,url=search_prior(Cache(),'WordInferBench','2611.15189')
         self.assertTrue(clear);self.assertIsNone(reason);self.assertTrue(url.startswith('https://arxiv.org/search/'))

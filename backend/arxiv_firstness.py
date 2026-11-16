@@ -99,7 +99,7 @@ def search_prior(cache,name,current_id):
     except (RuntimeError,ET.ParseError):
         # The public arXiv search page is a separate primary interface. A broken
         # export API must not turn every first-introduction check into a retry.
-        url='https://arxiv.org/search/?'+urlencode({'query':'"'+name+'"','searchtype':'all','abstracts':'show','order':'date'})
+        url='https://arxiv.org/search/?'+urlencode({'query':'"'+name+'"','searchtype':'all','abstracts':'show','order':'-announced_date_first'})
         raw=cache.get(url);ids=set(re.findall(rb'https?://arxiv\.org/abs/(\d{4}\.\d{4,5})',raw));ids={i.decode()for i in ids}
         clear=ids=={current_id};reason=None if clear else 'CURRENT_V1_NOT_PRESENT_IN_PRIOR_SEARCH'if current_id not in ids else 'OTHER_PAPERS_WITH_SAME_NAME_REQUIRE_IDENTITY_REVIEW'
         return clear,reason,raw,url
