@@ -64,8 +64,8 @@ table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:12px;bor
 aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style>
 <h1>新 Benchmark 首发核验</h1><aside>''' + escape(d['notice']) + '</aside><p>'
             + escape(d['period']['start']) + ' 至 ' + escape(d['days'][-1]['date'])
-            + ' · 北京时间</p><p>尚有 ' + str(d['unallocated_pending_entities'])
-            + ' 个候选身份未完成核验（含尚未跨论文去重的记录），不能按论文日期分配到首发日。</p>'
+            + ' · 北京时间</p><p>整个来源快照中尚有 ' + str(d['unallocated_pending_entities'])
+            + ' 个候选身份未完成核验（含尚未跨论文去重的记录）。这是全来源待核池，不是本期新增量，不能按论文日期分配到首发日。</p>'
             + '<table><thead><tr><th>日期</th><th>已核实首发下限</th><th>每日总量</th></tr></thead><tbody>'
             + rows + '</tbody></table><p>已核实条目（不代表全量）：</p><ul>' + verified + '</ul><p>数据快照：'
             + escape(d['snapshot_id']) + ' · ' + escape(d['source_generated_at'])

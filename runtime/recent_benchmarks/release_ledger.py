@@ -219,6 +219,7 @@ def build_ledger(catalog, registry, *, snapshot_id, source_sha256, source_genera
               'confirmed_minimum_in_period': sum(d['confirmed_minimum'] for d in days),
               'period_total': None, 'daily_average': None,
               'unallocated_pending_entities': len(queue),
+              'pending_scope': 'ENTIRE_SOURCE_SNAPSHOT_UNALLOCATED_NOT_PERIOD_TOTAL',
               'unclassified_evaluation_records': unclassified_evaluations,
               'source_records': len(seen), 'source_date_bases': dict(sorted(date_bases.items())),
               'dispositions': dict(sorted(Counter(r['status'] for r in records).items())),
