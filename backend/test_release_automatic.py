@@ -84,6 +84,15 @@ class AutomaticEvidenceTests(unittest.TestCase):
 
 @unittest.skipUnless(importlib.util.find_spec('ijson'),'streaming dependency required')
 class AutomaticQueueTests(unittest.TestCase):
+    def test_local_work_db_checkpoint_survives_process_replacement(self):
+        with tempfile.TemporaryDirectory()as t:
+            p=Path(t);(p/'data/runs').mkdir(parents=True)
+            r=worker.Reviewer(p,p/'state',{'version':1,'entities':[]},p/'scratch.sqlite')
+            r.db.execute('INSERT INTO meta VALUES(?,?)',('receipt','saved'));r.persist();r.db.close()
+            resumed=worker.Reviewer(p,p/'state',{'version':1,'entities':[]},p/'scratch2.sqlite')
+            self.assertEqual(resumed.db.execute('SELECT value FROM meta WHERE key=?',('receipt',)).fetchone()[0],'saved')
+            resumed.db.close()
+
     def test_checkpoint_resume_and_targeted_source_change(self):
         with tempfile.TemporaryDirectory()as t:
             p=Path(t);(p/'data/runs').mkdir(parents=True)

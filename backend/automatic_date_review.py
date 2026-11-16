@@ -284,9 +284,12 @@ def official_events(row,b,context,cache):
 
 
 class Reviewer:
-    def __init__(self,project,state,manual):
+    def __init__(self,project,state,manual,work_db=None):
         self.project=project;self.state=state;state.mkdir(parents=True,exist_ok=True)
-        self.db=sqlite3.connect(state/'queue.sqlite');self.db.row_factory=sqlite3.Row
+        self.durable=state/'queue.sqlite';self.work_db=work_db
+        self.db=sqlite3.connect(work_db or self.durable);self.db.row_factory=sqlite3.Row
+        if work_db and self.durable.exists():
+            previous=sqlite3.connect(self.durable);previous.backup(self.db);previous.close()
         self.db.executescript('''CREATE TABLE IF NOT EXISTS tasks(key TEXT PRIMARY KEY,signature TEXT,row_json TEXT,priority INTEGER,status TEXT,reason TEXT,label TEXT,source_read INTEGER,active INTEGER,updated TEXT);
         CREATE TABLE IF NOT EXISTS http_cache(url TEXT PRIMARY KEY,body BLOB,status INTEGER,expires REAL);
         CREATE TABLE IF NOT EXISTS history(at TEXT,key TEXT,status TEXT,reason TEXT,signature TEXT);
@@ -295,6 +298,15 @@ class Reviewer:
             self.db.execute('ALTER TABLE tasks ADD COLUMN research_attempts INTEGER NOT NULL DEFAULT 0')
         self.manual=manual;self.manual_refs={(r['paper_id'],r['benchmark_id'])for e in manual['entities']for r in e.get('source_refs',[])}
         self.sources=Sources(project);self.primary=PrimaryCache(self.db,project)
+
+    def persist(self):
+        if not self.work_db:return
+        self.db.commit();temp=self.durable.with_suffix('.checkpoint.sqlite')
+        target=sqlite3.connect(temp)
+        try:self.db.backup(target)
+        finally:target.close()
+        with temp.open('r+b')as f:os.fsync(f.fileno())
+        os.replace(temp,self.durable)
 
     def ingest(self,source,publication):
         import ijson
@@ -322,7 +334,7 @@ class Reviewer:
                     label=CASE WHEN tasks.signature=excluded.signature THEN tasks.label ELSE NULL END,
                     source_read=CASE WHEN tasks.signature=excluded.signature THEN tasks.source_read ELSE 0 END,
                     signature=excluded.signature''',(key,signature,json.dumps(value,ensure_ascii=False),priority,'PENDING','',None,0,1,now()))
-        self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',('publication',json.dumps(publication)));self.db.commit()
+        self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',('publication',json.dumps(publication)));self.db.commit();self.persist()
 
     def check(self,task,research=False):
         row=json.loads(task['row_json']);pair=row['paper_id'],row['benchmark_id']
@@ -349,6 +361,7 @@ class Reviewer:
         return 'NEEDS_PRIMARY_DATE','NO_VERIFIABLE_FIRST_PUBLIC_EVENT_IN_CAPTURED_SOURCE',record,1
 
     def export(self):
+        self.persist()
         groups={};counts=Counter();source_read=0;quote_checks=0
         for task in self.db.execute('SELECT * FROM tasks WHERE active=1'):
             counts[task['status']]+=1;source_read+=task['source_read']
@@ -377,6 +390,7 @@ class Reviewer:
         return progress
 
     def checkpoint(self):
+        self.persist()
         counts={r[0]:r[1]for r in self.db.execute('SELECT status,COUNT(*)FROM tasks WHERE active=1 GROUP BY status')}
         value={'policy':POLICY,'updated_at':now(),'states':counts,'source_records':sum(counts.values()),
             'source_artifact_checks_completed':self.db.execute('SELECT COALESCE(SUM(source_read),0)FROM tasks WHERE active=1').fetchone()[0],

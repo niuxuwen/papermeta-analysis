@@ -14,6 +14,7 @@ from pathlib import Path
 import shlex
 import shutil
 import subprocess
+import tempfile
 
 from automatic_date_review import Reviewer, atomic, now
 
@@ -128,7 +129,10 @@ def main():
             pub=(json.loads((a.state/'input/publication.json').read_text())if a.resume_input else capture(a.project,a.state))
             if pub is None:
                 atomic(a.state/'service-status.json',{'status':'WAITING_PUBLISHER_LOCK','checked_at':now()});return
-            r=Reviewer(a.project,a.state,json.loads(a.manual.read_text(encoding='utf-8')))
+            # Shared storage SQLite pays a network lock round-trip per write.
+            # Work locally and atomically back up every committed checkpoint.
+            scratch=tempfile.TemporaryDirectory(prefix='radar-date-review-')
+            r=Reviewer(a.project,a.state,json.loads(a.manual.read_text(encoding='utf-8')),Path(scratch.name)/'queue.sqlite')
             r.ingest(a.state/'input/source.json.gz',pub)
             r.run(workers=a.workers,priority=0)
             r.run(research=True,limit=a.research_limit,priority=0)
@@ -138,7 +142,7 @@ def main():
             publish_checkpoint()
             r.run(research=True,limit=a.research_limit)
             publish_checkpoint()
-            progress=r.export();r.db.close()
+            progress=r.export();r.db.close();scratch.cleanup()
             atomic(a.state/'service-status.json',{'status':'CYCLE_COMPLETED','finished_at':now(),
                 'snapshot_id':pub['snapshot_id'],'source_pass_complete':progress['source_pass_complete'],
                 'all_first_dates_resolved':progress['all_first_dates_resolved']})
