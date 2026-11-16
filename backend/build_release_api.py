@@ -23,7 +23,7 @@ def artifacts(result, metadata):
         'api_root':'./','normalization':'NFKC, trim, lowercase, collapse whitespace; arxiv URL to versionless ID',
         'lookup':{},'judgments':{},'direct_entities':{},
         'source_records':len(result['date_overlay']),'queryable_identities':len(judged),
-        'notice':'查询已有证据；未命中、日期代理或不确定匹配均返回待核，不执行联网调查。'}
+        'notice':'先查日期表；registered_date 为登记日期，缺日期采用论文首次发布日期回填。独立首发核验字段另行保留。' }
     for i in range(256):
         key=f'{i:02x}'
         for category,data in [('lookup',lookups[key]),('judgments',values[key])]:

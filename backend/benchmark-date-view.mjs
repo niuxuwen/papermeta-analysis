@@ -1,6 +1,9 @@
 import {judge} from './judge-client.mjs';
 
 export function dateLabel(row) {
+  const date=row.registered_date;
+  if(date?.excluded)return 'Benchmark 时间：已排除（'+(date.exclusion_reason||'不是独立benchmark')+'）';
+  if(date?.benchmark_date)return 'Benchmark 时间：'+date.benchmark_date+(date.date_is_fallback?'（论文日期回填）':date.date_basis==='VERIFIED_FIRST_PUBLIC'?'（已核实）':'（已有公开日期）');
   if(row.benchmark_date_status==='VERIFIED_FIRST_PUBLIC'&&row.benchmark_first_public_date)
     return 'Benchmark 首发：'+row.benchmark_first_public_date+'（已核实）';
   if(row.benchmark_date_status==='NOT_A_BENCHMARK')return '独立 Benchmark 首发日期：不适用';

@@ -159,3 +159,31 @@ Source capture may proceed while the score publisher is busy only if a private
 copy matches the unchanged publication manifest and its exact source hash.
 Concurrent or incomplete writes fail closed. This prevents the shared publisher
 lock from indefinitely starving date review without changing score data.
+
+
+## Benchmark date register (paper fallback)
+
+The primary operational view is `/releases/date-table.html`; its complete durable
+register is `/releases/date-table.json.gz`, with summary at
+`/releases/date-table-summary.json`. Entries retain date basis, fallback flag,
+source paper IDs/URLs, aliases, exclusions and revision history. The date service
+refreshes this table before optional network research and saves it outside the
+rolling paper window. Each date-only publication carries the saved table.
+
+On a table hit, reuse its date and exclusion. A stronger public date replaces a
+paper proxy; an earlier date of equal strength replaces the current one. Missing
+dates fall back to the earliest associated paper's first-publication field in
+Beijing time, explicitly labeled `PAPER_PUBLICATION_FALLBACK`. Missing or future
+paper dates stay missing rather than using ingestion time. A primary public-by
+date can be used operationally without claiming independently verified firstness.
+
+Each existing query returns `registered_date` (date, basis, fallback, exclusion,
+identity grouping and source-newness). Independently reviewed first-publication
+fields remain separate. Table grouping uses normalized exact names and reviewed
+aliases; known homonyms and distinct version suffixes are not collapsed.
+
+Daily register statistics count source-reported new benchmarks by registered
+date, with fallback counts alongside them. Reused/unknown assets are not all
+relabeled new merely because their dates have been filled. These are counts of
+the collected catalogue under the paper-fallback rule, not an exhaustive web census.
+Score inputs, model results and the 60-day paper selection are not changed.

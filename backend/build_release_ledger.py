@@ -19,6 +19,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT / 'runtime'))
 from recent_benchmarks.release_ledger import BEIJING, build_ledger, digest
 from build_release_api import artifacts as api_artifacts
+from recent_benchmarks.benchmark_date_table import build_table
 from recent_benchmarks.automatic_date_merge import merge_registries
 from recent_benchmarks.release_ledger import source_projection
 
@@ -62,6 +63,9 @@ def html_report(result):
             +' 条；待做原文检查 '+str(auto.get('pending_source_pass',0))
             +' 条。检查轮次完成不代表所有首发日已核实。'
             +'<a href="automatic-review-progress.json">查看逐类进度</a></aside>')
+    register=d['date_register']
+    registered_rows=''.join('<tr><td>'+escape(r['date'])+'</td><td>'+str(r['new_benchmark_claims'])+'</td><td>'+str(r['paper_date_fallbacks'])+'</td><td>'+str(r['primary_or_reviewed_dates'])+'</td></tr>'for r in register['days'])
+    register_html=('<h1>Benchmark 日期表</h1><aside>'+escape(register['notice'])+'</aside><p>已登记 '+str(register['active_benchmarks'])+' 个，已有日期 '+str(register['dated_benchmarks'])+' 个，论文日期回填 '+str(register['paper_date_fallbacks'])+' 个，已排除 '+str(register['excluded_benchmarks'])+' 个。</p><p><a href="date-table.html">打开可搜索日期表</a> · <a href="date-table.json.gz">下载完整日期表</a></p><table><thead><tr><th>日期</th><th>新bench（目录声明）</th><th>其中论文日期回填</th><th>已有公开日期／核实日期</th></tr></thead><tbody>'+registered_rows+'</tbody></table><details><summary>查看独立首发证据核验口径</summary>')
     rows = ''.join('<tr><td>' + escape(r['date']) + '</td><td>' + escape(r['display'])
                    + '</td><td>未核完</td></tr>' for r in d['days'])
     verified = ''.join('<li>' + escape(r['name']) + ' · ' + escape(r['first_public_date'])
@@ -71,11 +75,11 @@ def html_report(result):
         and d['period']['start'] <= r['first_public_date'] < d['period']['end_exclusive'])
     return ('''<!doctype html><html lang="zh-CN"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>新 Benchmark 首发核验</title><style>
+<title>Benchmark 日期表</title><style>
 body{font:16px/1.7 system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 20px;color:#173047}
 table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:12px;border-bottom:1px solid #dce5ed}
 aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style>
-<h1>新 Benchmark 首发核验</h1><aside>''' + escape(d['notice']) + '</aside><p>'
+''' + register_html + '<h2>独立首发证据核验</h2><aside>' + escape(d['notice']) + '</aside><p>'
             + escape(d['period']['start']) + ' 至 ' + escape(d['days'][-1]['date'])
             + ' · 北京时间</p><p>整个来源快照中尚有 ' + str(d['unallocated_pending_entities'])
             + ' 个候选身份未完成核验（含尚未跨论文去重的记录）。这是全来源待核池，不是本期新增量，不能按论文日期分配到首发日。</p>'
@@ -85,7 +89,7 @@ aside{padding:18px;background:#f1f6fb;border-radius:12px}a{color:#176dc0}</style
             + '</p><p><a href="api/v1/judge.html">查询某个 Benchmark 的首发判断与日期</a></p><p><a href="../../">返回总榜</a></p><p><a href="daily.json">下载统计与口径</a> · '
             + '<a href="benchmark-dates.json.gz">下载完整日期补全台账</a> · '
             + '<a href="entities.json.gz">下载实体与发布证据</a> · '
-            + '<a href="review-queue.json.gz">下载待核队列</a></p></html>').encode()
+            + '<a href="review-queue.json.gz">下载待核队列</a></p></details></html>').encode()
 
 
 def run(source, publication, registry_path, output, *, start=None, end=None, as_of=None,automatic_path=None):
@@ -98,12 +102,13 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
     if source_hash != pub.get('source_sha256'):
         raise ValueError('Publication/source hash mismatch')
     registry = json.loads(registry_path.read_text(encoding='utf-8'))
-    automatic_progress=None
+    automatic_progress=None; previous_table=None
     if automatic_path and automatic_path.exists():
         envelope=json.loads(gzip.decompress(automatic_path.read_bytes()) if automatic_path.suffix=='.gz' else automatic_path.read_bytes())
         with gzip.open(source,'rb')as f:
             signatures={(r['paper_id'],r['benchmark_id']):digest(source_projection(r))
                 for r in ijson.items(f,'benchmarks.item',use_float=True)if r.get('paper_id')and r.get('benchmark_id')}
+        previous_table=envelope.get('date_table')
         registry,merge_audit=merge_registries(registry,envelope,signatures)
         automatic_progress={**envelope.get('progress',{}),**merge_audit,
             'applied_to_snapshot_id':pub['snapshot_id'],'applied_source_sha256':source_hash}
@@ -125,10 +130,13 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
             snapshot_id=snapshot_id, source_sha256=source_hash,
             source_generated_at=pub['generated_at'], period_start=start,
             period_end=end, as_of=as_of)
+    build_table(result, previous_table)
     if automatic_progress:result['daily']['automatic_review']=automatic_progress
     # Renderer/producer changes also create a new immutable generation.
     producer_files=[Path(__file__), Path(sys.modules[build_ledger.__module__].__file__),
         PROJECT/'runtime/recent_benchmarks/benchmark_dates.py',
+        PROJECT/'runtime/recent_benchmarks/benchmark_date_table.py',
+        Path(__file__).with_name('date-table.html'),
         PROJECT/'runtime/recent_benchmarks/release_judgment.py',
         PROJECT/'runtime/recent_benchmarks/automatic_date_merge.py',
         PROJECT/'runtime/recent_benchmarks/automatic_date_policy.py',
@@ -137,7 +145,8 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
         Path(__file__).with_name('judge.html'),Path(__file__).with_name('benchmark-date-view.mjs')]
     producer_hash = hashlib.sha256(b''.join(p.read_bytes() for p in producer_files)).hexdigest()
     result['generation'] = digest({'evidence_generation':result['generation'],
-                                   'producer_sha256':producer_hash,'automatic_review':automatic_progress})[:24]
+                                   'producer_sha256':producer_hash,'automatic_review':automatic_progress,
+                                   'date_table':result['date_table']})[:24]
     dest = output / result['generation']
     dest.mkdir(parents=True, exist_ok=True)
     files = {'daily.json': json_bytes(result['daily']),
@@ -145,6 +154,11 @@ def run(source, publication, registry_path, output, *, start=None, end=None, as_
              'review-queue.json.gz': gzip.compress(json_bytes(result['review_queue']), mtime=0),
              'benchmark-dates.json.gz': gzip.compress(json_bytes(result['date_overlay']),mtime=0),
              'index.html': html_report(result)}
+    files.update({'date-table.json.gz':gzip.compress(json_bytes(result['date_table']),mtime=0),
+        'date-table-summary.json':json_bytes(result['daily']['date_register']),
+        'date-table-changes.json.gz':gzip.compress(json_bytes(result['date_table_changes']),mtime=0),
+        'date-table-index.json':json_bytes({'summary':result['daily']['date_register'],'entries':[{k:e[k] for k in ('benchmark_key','name','benchmark_date','date_basis','date_is_fallback','excluded','exclusion_reason','newness','identity_basis','entity_ids','active')}for e in result['date_table']['entries']if e['active']]}),
+        'date-table.html':Path(__file__).with_name('date-table.html').read_bytes()})
     if automatic_progress:files['automatic-review-progress.json']=json_bytes(automatic_progress)
     metadata={'snapshot_id':snapshot_id,'source_sha256':source_hash,
               'source_generated_at':pub['generated_at'],'report_period':result['daily']['period'],

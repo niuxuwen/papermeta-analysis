@@ -67,11 +67,13 @@ def publish(project,state):
     with locked(publisher/'publisher.lock')as acquired:
         if not acquired:return {'status':'PUBLISHER_BUSY'}
         envelope=json.loads((state/'registry.json').read_text())
+        table_path=state/'benchmark-date-table.json'
+        if table_path.exists():envelope['date_table']=json.loads(table_path.read_text())
         from recent_benchmarks.release_ledger import validate_registry,digest
         validate_registry(envelope['registry'])
         # Ignore heartbeat timestamps; meaningful source/decision changes publish.
         progress={k:v for k,v in envelope['progress'].items()if k!='updated_at'}
-        fingerprint=digest({'registry':envelope['registry'],'progress':progress})
+        fingerprint=digest({'registry':envelope['registry'],'progress':progress,'date_table':envelope.get('date_table')})
         marker=json.loads((directory/'publication.json').read_text())
         if marker.get('publisher')!='radar-publication-v1':raise ValueError('Unowned live feed')
         protected=['source.json.gz','publication.json','task-inputs.json.gz','task-measurements.json.gz']
@@ -143,6 +145,10 @@ def main():
             scratch=tempfile.TemporaryDirectory(prefix='radar-date-review-')
             r=Reviewer(a.project,a.state,json.loads(a.manual.read_text(encoding='utf-8')),Path(scratch.name)/'queue.sqlite')
             r.ingest(a.state/'input/source.json.gz',pub)
+            from update_benchmark_date_table import refresh as refresh_date_table
+            r.export()
+            print(json.dumps({'date_register':refresh_date_table(r)}),flush=True)
+            publish_checkpoint()
             r.run(workers=a.workers,priority=0)
             from arxiv_firstness import run as firstness_review
             print(json.dumps({'firstness_review':firstness_review(r,limit=64)}),flush=True)
@@ -154,7 +160,10 @@ def main():
             publish_checkpoint()
             r.run(research=True,limit=a.research_limit)
             publish_checkpoint()
-            progress=r.export();r.db.close();scratch.cleanup()
+            progress=r.export()
+            print(json.dumps({'date_register':refresh_date_table(r)}),flush=True)
+            publish_checkpoint()
+            r.db.close();scratch.cleanup()
             atomic(a.state/'service-status.json',{'status':'CYCLE_COMPLETED','finished_at':now(),
                 'snapshot_id':pub['snapshot_id'],'source_pass_complete':progress['source_pass_complete'],
                 'all_first_dates_resolved':progress['all_first_dates_resolved']})

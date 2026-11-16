@@ -1,11 +1,11 @@
 <!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Benchmark 首发判断</title><style>
 body{font:16px/1.65 system-ui,sans-serif;color:#193347;max-width:900px;margin:36px auto;padding:0 20px}form{display:flex;gap:10px}input{flex:1;min-width:0;padding:12px;font:inherit}button{padding:10px 20px;font:inherit;cursor:pointer}article{border:1px solid #dce5ed;border-radius:12px;padding:18px;margin:18px 0}aside{background:#f0f6fb;padding:16px;border-radius:10px}dt{font-weight:600}dd{margin-left:0;margin-bottom:12px}a{color:#176dc0}pre{white-space:pre-wrap;overflow-wrap:anywhere}#state{min-height:2em}small{color:#52697b}
-</style><main><p><a href="../../index.html">返回每日首发核验</a></p><h1>Benchmark 首发判断</h1>
+</style><main><p><a href="../../index.html">返回每日首发核验</a></p><h1>Benchmark 时间查询</h1><p><a href="../../date-table.html">打开完整日期表</a></p>
 <aside>查询名称、benchmark ID、论文 ID、arXiv 链接或已核实的项目链接。未命中不代表旧 benchmark；同名结果需要选择具体来源。这里只查询已有证据，不会自动联网调查新链接。</aside>
 <form id="query"><input id="term" aria-label="名称、ID或链接" maxlength="512" placeholder="例如 ToolTurns 或 DistDebug-Bench" required><button>查询</button></form>
 <p id="state" role="status" aria-live="polite"></p><section id="results"></section><details><summary>查看 JSON 返回值</summary><pre id="json"></pre></details>
-<p><small>首发日、作者日期、代码与数据发布日期分开保存。论文代理日期不作为已核实首发日。</small></p>
+<p><small>首发日、作者日期、代码与数据发布日期分开保存。缺日期按论文首次发布日期回填；回填日期与已核实首发日期分别标注。</small></p>
 </main><script type="module">
 import {judge} from './judge-client.mjs';
 const form=document.querySelector('#query'),term=document.querySelector('#term'),state=document.querySelector('#state'),results=document.querySelector('#results');let serial=0;
@@ -16,7 +16,8 @@ async function run(){const request=++serial;state.textContent='正在读取核�
  try{const data=await judge(term.value);if(request!==serial)return;
  document.querySelector('#json').textContent=JSON.stringify(data,null,2);
  state.textContent=(data.result_status==='NOT_FOUND'?'未找到已核实身份，保留为待核。':data.result_status==='AMBIGUOUS'?'有多个来源，请核对下面的具体条目。':'已读取判断。')+' 数据时间：'+data.source_generated_at;
- for(const row of data.matches){const a=text(results,'article','');text(a,'h2',row.name);text(a,'strong',names[row.judgment]||'首发待核');const dl=text(a,'dl','');
+ for(const row of data.matches){const a=text(results,'article','');text(a,'h2',row.name);text(a,'strong',row.registered_date?.excluded?'已排除':row.registered_date?.benchmark_date?'已登记：'+row.registered_date.benchmark_date+(row.registered_date.date_is_fallback?'（论文日期回填）':''):names[row.judgment]||'首发待核');const dl=text(a,'dl','');
+ const registered=row.registered_date;if(registered){field(dl,'登记日期',registered.excluded?'已排除':registered.benchmark_date||'论文日期也缺失');field(dl,'日期来源',registered.date_is_fallback?'论文首次发布日期回填':registered.date_basis);if(registered.exclusion_reason)field(dl,'排除原因',registered.exclusion_reason);}
  field(dl,'已核实首发日',row.benchmark_first_public_date||'待核');
  field(dl,'公开时间上界',row.first_public_on_or_before?'最迟 '+row.first_public_on_or_before+' 已公开；不等于首发日':'暂无可用证据');
  field(dl,'代码发布日期',row.code_release_dates.join('、')||'待核');field(dl,'数据发布日期',row.data_release_dates.join('、')||'待核');

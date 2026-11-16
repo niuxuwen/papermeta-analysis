@@ -41,6 +41,9 @@ def build(feed, site, registry):
     atomic_bytes(root/'api/v1/manifest.json',(root/'api/v1/current.json').read_bytes())
     for path in api['direct_entities'].values():
         atomic_bytes(root/'api/v1'/path,(root/generation/'api/v1'/path).read_bytes())
+    # Stable register links always point at this snapshot's completed generation.
+    for name in ['date-table.html','date-table-summary.json','date-table-index.json','date-table.json.gz']:
+        atomic_bytes(root/name,(root/generation/name).read_bytes())
     for name in ['judge.html','judge-client.mjs','benchmark-date-view.mjs']:
         atomic_bytes(root/'api/v1'/name,(root/generation/'api/v1'/name).read_bytes())
     # This runs after edition generation so both language routes retain a link.
@@ -49,7 +52,7 @@ def build(feed, site, registry):
             continue
         text = page.read_text(encoding='utf-8')
         text = re.sub(r'<p id="benchmark-release-link">.*?</p>', '', text, flags=re.S)
-        link = '<p id="benchmark-release-link"><a href="'+href+'">新 Benchmark 首发核验（每日已核实下限，待核不等于零）</a></p>'
+        link = '<p id="benchmark-release-link"><a href="'+href+'">Benchmark 日期表（缺日期按论文首发回填）</a></p>'
         if '</main>' not in text:
             raise ValueError('Public homepage has no main landmark')
         atomic_bytes(page, text.replace('</main>',link+'</main>',1).encode())

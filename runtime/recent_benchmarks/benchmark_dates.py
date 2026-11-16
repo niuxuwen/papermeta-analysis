@@ -21,6 +21,7 @@ def date_assessment(record):
             except ValueError:pass
     earliest=min([v for v in [earliest,*author_bounds] if v],default=None)
     return {
+        'registered_date': deepcopy(record.get('registered_date')),
         'benchmark_first_public_date': first,
         'benchmark_date_status': 'VERIFIED_FIRST_PUBLIC' if first else
             ('NOT_A_BENCHMARK' if record.get('status') == 'NOT_A_BENCHMARK' else
