@@ -49,6 +49,12 @@ class DateRegisterTests(unittest.TestCase):
         self.assertEqual(t2['entries'][0]['date_basis'],'PRIMARY_PUBLIC_DATE')
         self.assertFalse(t2['entries'][0]['date_is_fallback'])
 
+    def test_earlier_primary_proof_invalidates_cached_later_first_date(self):
+        r=result([row('p1')]);t=build_table(r);t['entries'][0].update(benchmark_date='2026-11-13',date_basis='VERIFIED_FIRST_PUBLIC',date_is_fallback=False)
+        r=result([row('p1')]);r['query_records'][0]['events']=[{'kind':'KNOWN_PUBLIC_EXISTENCE','beijing_date':'2026-11-05','evidence_verified':True,'publication_verified':True,'proves_public_existence':True}]
+        e=build_table(r,t)['entries'][0]
+        self.assertEqual(e['benchmark_date'],'2026-11-05');self.assertEqual(e['date_basis'],'PRIMARY_PUBLIC_DATE')
+
     def test_exclusion_is_retained_and_is_not_resurrected_by_new_paper(self):
         r=result([row('p1')]);r['query_records'][0].update(status='NOT_A_BENCHMARK',kind='METHOD')
         t=build_table(r);t2=build_table(result([row('p2')]),t)

@@ -114,6 +114,10 @@ def build_table(result, previous=None):
         # Stronger evidence replaces a proxy, even when correcting to a later
         # actual announcement day. Within the same basis the earlier date wins.
         selected = min(choices, key=lambda c: (-c[0], c[1])) if choices else None
+        if selected and selected[2] == 'VERIFIED_FIRST_PUBLIC':
+            earlier_public = [c for c in choices if c[2] == 'PRIMARY_PUBLIC_DATE' and c[1] < selected[1]]
+            if earlier_public:
+                selected = min(earlier_public, key=lambda c: c[1])
         explicit_inclusion = any(r['status'] == 'CONFIRMED_NEW_FIRST_PUBLIC' for r in current)
         is_excluded = bool(excluded or (old and old.get('excluded') and not explicit_inclusion))
         reason = ('; '.join(sorted({r.get('kind', 'UNKNOWN') + ': ' + str(r.get('review_notes') or r['status'])
