@@ -40,16 +40,25 @@ def capture(project,state):
     publisher=project/'deployment/publication';feed=publisher/'feed/feed';dest=state/'input'
     dest.mkdir(parents=True,exist_ok=True)
     with locked(publisher/'publisher.lock')as acquired:
-        if not acquired:return None
-        pub=json.loads((feed/'publication.json').read_text())
-        if pub.get('publisher')!='radar-publication-v1':raise ValueError('Unowned source publisher')
-        target=dest/'source.json.gz';temp=target.with_suffix('.pending')
-        if not target.exists()or sha(target)!=pub['source_sha256']:
-            shutil.copyfile(feed/'source.json.gz',temp)
-            if sha(temp)!=pub['source_sha256']:raise ValueError('Captured source hash mismatch')
-            os.replace(temp,target)
-        atomic(dest/'publication.json',pub)
-    return pub
+        # A read does not need to starve behind a long score publication. When
+        # its lock is busy, accept only an unchanged manifest and an exact hash-
+        # verified private copy. A concurrent feed write fails closed.
+        for attempt in range(3):
+            try:
+                pub=json.loads((feed/'publication.json').read_text())
+                if pub.get('publisher')!='radar-publication-v1':raise ValueError('Unowned source publisher')
+                target=dest/'source.json.gz';temp=target.with_suffix('.pending')
+                same=target.exists()and sha(target)==pub['source_sha256']
+                if not same:shutil.copyfile(feed/'source.json.gz',temp)
+                if (sha(target if same else temp)==pub['source_sha256']
+                        and json.loads((feed/'publication.json').read_text())==pub):
+                    if not same:os.replace(temp,target)
+                    atomic(dest/'publication.json',pub);return pub
+            except (OSError,json.JSONDecodeError):pass
+            if attempt<2:
+                import time
+                time.sleep(1)
+    return None
 
 
 def publish(project,state):
@@ -135,6 +144,9 @@ def main():
             r=Reviewer(a.project,a.state,json.loads(a.manual.read_text(encoding='utf-8')),Path(scratch.name)/'queue.sqlite')
             r.ingest(a.state/'input/source.json.gz',pub)
             r.run(workers=a.workers,priority=0)
+            from arxiv_firstness import run as firstness_review
+            print(json.dumps({'firstness_review':firstness_review(r,limit=64)}),flush=True)
+            publish_checkpoint()
             r.run(research=True,limit=a.research_limit,priority=0)
             publish_checkpoint()
             r.run(workers=a.workers)

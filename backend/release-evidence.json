@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewed_at": "2026-11-16T10:20:58.293070+00:00",
+  "reviewed_at": "2026-11-16T14:03:33.216577+00:00",
   "policy": "Review primary first-introduction evidence independently of evaluation eligibility. Pending is not zero.",
   "entities": [
     {
@@ -971,6 +971,218 @@
       "aliases": [
         "ARABGEOTEXT"
       ]
+    },
+    {
+      "entity_id": "nibench",
+      "name": "NIBench",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "CONFIRMED_NEW",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15831v1",
+        "quote": "Here we present NIBench, a neuroimaging benchmark comprising three complementary evaluations of autonomous agents.",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "firstness_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15831v1",
+        "quote": "Here we present NIBench, a neuroimaging benchmark comprising three complementary evaluations of autonomous agents.",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-3dfd74ce6fedd132",
+          "benchmark_id": "bench-03bb7a1f9daf6954"
+        }
+      ],
+      "events": [
+        {
+          "kind": "FIRST_PUBLIC_INTRODUCTION",
+          "date": "2026-11-13",
+          "timezone": "Asia/Shanghai",
+          "date_basis": "PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM",
+          "publication_verified": true,
+          "proves_public_existence": true,
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://arxiv.org/list/cs.AI/pastweek?show=2000",
+            "quote": "Fri, 13 Nov 2026 (showing 321 of 321 entries ) […] arXiv:2611.15831",
+            "reviewed_at": "2026-11-16T14:03:33.216577+00:00",
+            "review_method": "ACTUAL_PRIMARY_CATEGORY_ANNOUNCEMENT_AND_V1_NEW_BENCHMARK_CLAIM",
+            "date_heading": "Fri, 13 Nov 2026 (showing 321 of 321 entries )",
+            "listed_arxiv_id": "2611.15831",
+            "listing_sha256": "7048f0881d79404b3bbb084e1886adf473009ba4ed69c8a83cb9c0c115e9e251",
+            "day_basis": "Actual dated new-submission listing; arXiv Eastern-20h announcement is in the following Beijing day, matching the mailing-day heading. Submission timestamp is not used."
+          }
+        }
+      ],
+      "prior_release_audit": {
+        "checked_at": "2026-11-16T14:03:33.216577+00:00",
+        "scope": "Targeted benchmark-name and paper-title search; source v1 introduction, captured history, author/journal metadata and primary-source results. No earlier same-identity primary introduction found.",
+        "current_arxiv_id": "2611.15831",
+        "inference": "First scholarly public introduction supported by the author new-benchmark claim and actual dated primary-category announcement; earlier primary evidence would invalidate this date."
+      },
+      "review_notes": "已核对原文首次提出、新benchmark身份、v1及官方实际公告分组；不是将论文提交日直接充作首发日。已有更早主来源时应进入冲突复核。"
+    },
+    {
+      "entity_id": "wordinferbench",
+      "name": "WordInferBench",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "CONFIRMED_NEW",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15189v1",
+        "quote": "We introduce WordInferBench, a benchmark comprising 280 base document-editing instances, each paired with three instruction conditions",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "firstness_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15189v1",
+        "quote": "We introduce WordInferBench, a benchmark comprising 280 base document-editing instances, each paired with three instruction conditions",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-4678d7307b1e5a8f",
+          "benchmark_id": "bench-316b99dcf03d1ec0"
+        }
+      ],
+      "events": [
+        {
+          "kind": "FIRST_PUBLIC_INTRODUCTION",
+          "date": "2026-11-13",
+          "timezone": "Asia/Shanghai",
+          "date_basis": "PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM",
+          "publication_verified": true,
+          "proves_public_existence": true,
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://arxiv.org/list/cs.AI/pastweek?show=2000",
+            "quote": "Fri, 13 Nov 2026 (showing 321 of 321 entries ) […] arXiv:2611.15189",
+            "reviewed_at": "2026-11-16T14:03:33.216577+00:00",
+            "review_method": "ACTUAL_PRIMARY_CATEGORY_ANNOUNCEMENT_AND_V1_NEW_BENCHMARK_CLAIM",
+            "date_heading": "Fri, 13 Nov 2026 (showing 321 of 321 entries )",
+            "listed_arxiv_id": "2611.15189",
+            "listing_sha256": "7048f0881d79404b3bbb084e1886adf473009ba4ed69c8a83cb9c0c115e9e251",
+            "day_basis": "Actual dated new-submission listing; arXiv Eastern-20h announcement is in the following Beijing day, matching the mailing-day heading. Submission timestamp is not used."
+          }
+        }
+      ],
+      "prior_release_audit": {
+        "checked_at": "2026-11-16T14:03:33.216577+00:00",
+        "scope": "Targeted benchmark-name and paper-title search; source v1 introduction, captured history, author/journal metadata and primary-source results. No earlier same-identity primary introduction found.",
+        "current_arxiv_id": "2611.15189",
+        "inference": "First scholarly public introduction supported by the author new-benchmark claim and actual dated primary-category announcement; earlier primary evidence would invalidate this date."
+      },
+      "review_notes": "已核对原文首次提出、新benchmark身份、v1及官方实际公告分组；不是将论文提交日直接充作首发日。已有更早主来源时应进入冲突复核。"
+    },
+    {
+      "entity_id": "mvdrivebench",
+      "name": "MVDriveBench",
+      "kind": "BENCHMARK",
+      "scope": "LLM",
+      "decision": "CONFIRMED_NEW",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15225v1",
+        "quote": "we propose MVDriveBench, a high-information-density video QA benchmark for autonomous driving",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "firstness_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15225v1",
+        "quote": "we propose MVDriveBench, a high-information-density video QA benchmark for autonomous driving",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-04aa20569cbb0cc6",
+          "benchmark_id": "bench-080e29b551e6411c"
+        }
+      ],
+      "events": [
+        {
+          "kind": "FIRST_PUBLIC_INTRODUCTION",
+          "date": "2026-11-13",
+          "timezone": "Asia/Shanghai",
+          "date_basis": "PAPER_FIRST_PUBLICATION_WITH_NEW_CLAIM",
+          "publication_verified": true,
+          "proves_public_existence": true,
+          "evidence": {
+            "primary": true,
+            "review_status": "VERIFIED",
+            "url": "https://arxiv.org/list/cs.AI/pastweek?show=2000",
+            "quote": "Fri, 13 Nov 2026 (showing 321 of 321 entries ) […] arXiv:2611.15225",
+            "reviewed_at": "2026-11-16T14:03:33.216577+00:00",
+            "review_method": "ACTUAL_PRIMARY_CATEGORY_ANNOUNCEMENT_AND_V1_NEW_BENCHMARK_CLAIM",
+            "date_heading": "Fri, 13 Nov 2026 (showing 321 of 321 entries )",
+            "listed_arxiv_id": "2611.15225",
+            "listing_sha256": "7048f0881d79404b3bbb084e1886adf473009ba4ed69c8a83cb9c0c115e9e251",
+            "day_basis": "Actual dated new-submission listing; arXiv Eastern-20h announcement is in the following Beijing day, matching the mailing-day heading. Submission timestamp is not used."
+          }
+        }
+      ],
+      "prior_release_audit": {
+        "checked_at": "2026-11-16T14:03:33.216577+00:00",
+        "scope": "Targeted benchmark-name and paper-title search; source v1 introduction, captured history, author/journal metadata and primary-source results. No earlier same-identity primary introduction found.",
+        "current_arxiv_id": "2611.15225",
+        "inference": "First scholarly public introduction supported by the author new-benchmark claim and actual dated primary-category announcement; earlier primary evidence would invalidate this date."
+      },
+      "review_notes": "已核对原文首次提出、新benchmark身份、v1及官方实际公告分组；不是将论文提交日直接充作首发日。已有更早主来源时应进入冲突复核。"
+    },
+    {
+      "entity_id": "typed-fiber-stream",
+      "name": "FIBER-Stream",
+      "kind": "METHOD",
+      "scope": "METHOD_NOT_EVALUATION_ASSET",
+      "decision": "NOT_A_BENCHMARK",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15058v1",
+        "quote": "a variant called FIBER-Stream estimates class-specific score distributions from an unlabeled batch",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-f4aa3bce25828a12",
+          "benchmark_id": "bench-59ce5fc23ed7c8bf"
+        }
+      ],
+      "events": [],
+      "review_notes": "原文将其定义为方法／框架；原论文另有评测数据，不能将方法名计为新benchmark。"
+    },
+    {
+      "entity_id": "typed-em-trace",
+      "name": "EM-TRACE",
+      "kind": "FRAMEWORK",
+      "scope": "METHOD_NOT_EVALUATION_ASSET",
+      "decision": "NOT_A_BENCHMARK",
+      "identity_evidence": {
+        "primary": true,
+        "review_status": "VERIFIED",
+        "url": "https://arxiv.org/abs/2611.15655v1",
+        "quote": "we propose EM-TRACE, a stage-wise framework that decomposes AER into retrieval, affect recovery, and realization",
+        "reviewed_at": "2026-11-16T14:03:33.216577+00:00"
+      },
+      "source_refs": [
+        {
+          "paper_id": "recent-aa5a47f4c2a6a0c1",
+          "benchmark_id": "bench-d163e5ba9029260e"
+        }
+      ],
+      "events": [],
+      "review_notes": "原文将其定义为方法／框架；原论文另有评测数据，不能将方法名计为新benchmark。"
     }
   ]
 }

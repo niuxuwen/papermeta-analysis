@@ -201,7 +201,7 @@ class PrimaryCache:
         self.opener=urllib.request.build_opener(urllib.request.ProxyHandler(proxies))
     def get(self,url):
         host=urlsplit(url).hostname
-        if host not in {'api.github.com','raw.githubusercontent.com','github.com'}:raise ValueError('Primary host not allowed')
+        if host not in {'api.github.com','raw.githubusercontent.com','github.com','arxiv.org','export.arxiv.org'}:raise ValueError('Primary host not allowed')
         pause_key='github_pause_until'if host=='api.github.com'else 'primary_pause:'+host
         row=self.db.execute('SELECT body,status,expires FROM http_cache WHERE url=?',(url,)).fetchone()
         if row and row[2]>time.time():
@@ -210,7 +210,8 @@ class PrimaryCache:
         pause=self.db.execute('SELECT value FROM meta WHERE key=?',(pause_key,)).fetchone()
         if pause and float(pause[0])>time.time():raise RuntimeError('PRIMARY_HOST_BACKOFF')
         time.sleep(max(0,3.2-(time.monotonic()-self.last)))
-        req=urllib.request.Request(url,headers={'User-Agent':'benchmark-date-review/1.0','Accept':'application/vnd.github+json'})
+        accept='application/atom+xml'if host=='export.arxiv.org'else 'text/html'if host=='arxiv.org'else 'application/vnd.github+json'
+        req=urllib.request.Request(url,headers={'User-Agent':'benchmark-date-review/1.0','Accept':accept})
         self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',('primary_activity',json.dumps({'url':url,'started_at':now()})))
         self.db.commit()
         try:
@@ -226,7 +227,7 @@ class PrimaryCache:
             raw=b'';status=598
             self.db.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',(pause_key,str(time.time()+60)))
         self.last=time.monotonic();self.reads+=1
-        expires=time.time()+(3600 if status in {403,429} else 86400 if status!=200 else 3600)
+        expires=time.time()+(120 if status==598 else 300 if status>=500 else 3600 if status in {200,403,429} else 86400)
         self.db.execute('INSERT OR REPLACE INTO http_cache VALUES(?,?,?,?)',(url,raw,status,expires))
         self.db.commit()
         if status!=200:raise RuntimeError('PRIMARY_HTTP_'+str(status))

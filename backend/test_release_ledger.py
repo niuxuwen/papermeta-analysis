@@ -41,11 +41,12 @@ class ReleaseLedgerTests(unittest.TestCase):
                      date_basis='PAPER_V1_PROXY', release_date='2026-11-14')
                 for e in registry['entities'] for ref in e['source_refs']]
         r = report(rows,registry['entities'])
-        self.assertEqual(r['daily']['dispositions']['NOT_A_BENCHMARK'],10)
-        self.assertEqual(r['daily']['confirmed_minimum_in_period'],1)
+        self.assertEqual(r['daily']['dispositions']['NOT_A_BENCHMARK'],12)
+        self.assertEqual(r['daily']['confirmed_minimum_in_period'],4)
         confirmed=[e for e in r['entities'] if e['status']=='CONFIRMED_NEW_FIRST_PUBLIC']
-        self.assertEqual([(e['name'],e['first_public_date']) for e in confirmed],
-                         [('ToolTurns','2026-11-11')])
+        self.assertEqual(sorted((e['name'],e['first_public_date']) for e in confirmed),
+                         [('MVDriveBench','2026-11-13'),('NIBench','2026-11-13'),
+                          ('ToolTurns','2026-11-11'),('WordInferBench','2026-11-13')])
 
     def test_future_release_is_pending(self):
         e = entity()
