@@ -70,6 +70,58 @@ def normalize_previous(entries):
     return normalized
 
 
+def paper_counts(entries, period):
+    """Count unique introducing papers, assigning their earliest IN-period new date.
+
+    A benchmark shared by introducing and reusing papers never makes every
+    associated paper new. Earlier dates outside the report period do not remove
+    a paper that introduces another benchmark inside the period.
+    """
+    start, end = period['start'], period['end_exclusive']
+    linked = defaultdict(list)
+    candidates = defaultdict(list)
+    for entry in entries:
+        if not entry.get('active') or entry.get('excluded'):
+            continue
+        for ref in entry.get('source_refs', []):
+            identifier = ref.get('arxiv_id')
+            key = ('arxiv:' + re.sub(r'v[0-9]+$', '', identifier.strip())
+                   if identifier else 'paper:' + str(ref.get('paper_id') or ''))
+            if key == 'paper:':
+                continue
+            day = entry.get('benchmark_date')
+            linked[key].append(bool(day))
+            if (entry.get('newness') != 'SOURCE_NEW_CLAIM'
+                    or entry.get('identity_basis') == 'AMBIGUOUS_REVIEWED_NAME'
+                    or not day or not start <= day < end):
+                continue
+            if not (ref.get('novelty') == 'NEW' or ref.get('date_basis') in
+                    {'PAPER_V1_PROXY', 'FIRST_DISCLOSURE'}):
+                continue
+            candidates[key].append((day, bool(entry.get('date_is_fallback'))))
+    selected = {key: min(values) for key, values in candidates.items()}
+    counts = Counter(day for day, fallback in selected.values())
+    fallback = Counter(day for day, proxy in selected.values() if proxy)
+    days = []
+    current = date.fromisoformat(start)
+    while current.isoformat() < end:
+        day = current.isoformat()
+        days.append({'date': day, 'new_benchmark_papers': counts[day],
+                     'paper_date_fallbacks': fallback[day]})
+        current += timedelta(days=1)
+    assert sum(row['new_benchmark_papers'] for row in days) == len(selected)
+    return {'unit': 'UNIQUE_INTRODUCING_PAPERS', 'policy': 'within-period-paper-dedup-v1',
+        'period': period, 'associated_papers': len(linked),
+        'papers_all_benchmark_dates_labeled': sum(all(values) for values in linked.values()),
+        'papers_with_missing_benchmark_dates': sum(not all(values) for values in linked.values()),
+        'new_benchmark_papers': len(selected),
+        'daily_average': len(selected) / len(days) if days else None,
+        'paper_date_fallbacks': sum(proxy for day, proxy in selected.values()),
+        'days': days,
+        'notice': '论文按arXiv ID去版本去重；同篇多个新bench只计一次，按窗口内最早新bench登记日期归日。'
+                  '新建声明与独立首发核实不同；日期可含用户授权的论文日期回填。'}
+
+
 def build_table(result, previous=None):
     report = result['daily']; cutoff = calendar_day(report['as_of'], '9999-12-31')
     prior = previous or {'policy': POLICY, 'entries': []}
@@ -128,7 +180,7 @@ def build_table(result, previous=None):
             for ref in r.get('source_records', []):
                 pair = ref['paper_id'], ref['benchmark_id']
                 refs[pair] = {k: ref.get(k) for k in ('paper_id', 'benchmark_id', 'arxiv_id',
-                    'source_url', 'paper_first_published', 'date_basis')}
+                    'source_url', 'paper_first_published', 'date_basis', 'novelty')}
                 new_claim |= ref.get('novelty') == 'NEW' or ref.get('date_basis') in {'PAPER_V1_PROXY', 'FIRST_DISCLOSURE'}
                 existing |= ref.get('novelty') == 'EXISTING'
                 day = calendar_day(ref.get('paper_first_published'), cutoff)
@@ -205,6 +257,7 @@ def build_table(result, previous=None):
         'period_new_benchmark_claims': sum(d['new_benchmark_claims'] for d in days),
         'notice': '按日期表登记：先复用已有日期，缺少可用日期时采用关联论文首次发布日期。'
             '新bench按目录新建声明计数；回填、按名称合并和已核实日期分别标注，不代表全网发布总量。'}
+    summary['paper_counts'] = paper_counts(entries, report['period'])
     table = {'policy': POLICY, 'source_snapshot_id': report['snapshot_id'],
         'source_sha256': report['source_sha256'], 'summary': summary, 'entries': entries}
     result['date_table'] = table; result['date_table_changes'] = changes
