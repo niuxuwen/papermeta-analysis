@@ -7,6 +7,8 @@ from pathlib import Path
 import re
 import sys
 
+from publication_transport import materialize
+
 
 def encode(value):
     return json.dumps(value, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode()
@@ -14,9 +16,10 @@ def encode(value):
 
 def build(feed, site, rules_path):
     report = json.loads((feed / 'publication.json').read_text())
+    assert report['publisher'] == 'radar-publication-v1'
+    materialize(feed)
     raw = (feed / 'source.json.gz').read_bytes()
     rules_raw = (feed / 'task-measurements.json.gz').read_bytes()
-    assert report['publisher'] == 'radar-publication-v1'
     assert len(raw) == report['source_bytes'] and hashlib.sha256(raw).hexdigest() == report['source_sha256']
     assert len(rules_raw) == report['rules_bytes'] and hashlib.sha256(rules_raw).hexdigest() == report['rules_sha256']
     snapshot = json.loads(gzip.decompress(raw))

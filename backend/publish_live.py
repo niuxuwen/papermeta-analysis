@@ -19,6 +19,8 @@ import sys
 import time
 import urllib.request
 
+from publication_transport import stage_source
+
 REPOSITORY = 'ssh://git@ssh.github.com:443/niuxuwen/papermeta-analysis.git'
 
 
@@ -187,13 +189,16 @@ def main():
             'task_inputs_sha256': hashlib.sha256(packed_tasks).hexdigest(), 'task_inputs_bytes': len(packed_tasks),
             'task_method_version': TASK_VERSION,
             'observations': len(source['observations']), 'method_version': source['index']['method']['version'], 'model_calls': 0}
+        source_files = stage_source(directory, report)
         (directory / 'publication.json').write_bytes(encode(report))
         workflow_file = feed / '.github/workflows/pages.yml'
         workflow_file.parent.mkdir(parents=True, exist_ok=True)
         workflow_file.write_bytes(workflow)
         # A separate index and parentless feed commit keep source history and old data out of this branch.
         git('read-tree', '--empty')
-        git('add', '--', 'feed', '.github/workflows/pages.yml')
+        git('add', '--', *(f'feed/{name}' for name in source_files),
+            'feed/publication.json', 'feed/task-measurements.json.gz',
+            'feed/task-inputs.json.gz', '.github/workflows/pages.yml')
         tree = git('write-tree').stdout.decode().strip()
         revision = git('commit-tree', tree, data=('Verified public data ' + source['generated_at'] + '\n').encode()).stdout.decode().strip()
         git('push', '--force-with-lease=refs/heads/live-data:' + old_revision, 'origin', revision + ':refs/heads/live-data')

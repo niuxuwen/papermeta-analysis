@@ -20,7 +20,8 @@ class PublicationTests(unittest.TestCase):
             'status': {'counts': {'observations': 1}, 'jobs': [{'pid': 12}], 'model': 'private'},
             'benchmarks': [{'paper_id': 'p', 'benchmark_id': 'b', 'benchmark_name': 'Test',
                 'progress': {'observations': 1, 'log_path': '/private/log'}}],
-            'observations': [{'paper_id': 'p', 'benchmark_id': 'b', 'model_canonical': 'GPT-5.2', 'value_numeric': 32.5}],
+            'observations': [{'observation_id': 'o', 'paper_id': 'p', 'benchmark_id': 'b',
+                'model_canonical': 'GPT-5.2', 'value_numeric': 32.5}],
             'index': {'method': {'version': 15}, 'models': [{'model_canonical': 'GPT-5.2', 'score': 64.332318}],
                 'groups': [], 'relative_reference_audit': {'settings': [{'latent_fit': 'solver cache'}]}},
             'internal_runtime': {'credentials': 'never publish'}}
@@ -54,6 +55,8 @@ class PublicationTests(unittest.TestCase):
             build(feed,site,root/'rules.json')
             manifest=json.loads((site/'snapshot/manifest.json').read_text())
             detail=json.loads(gzip.decompress((site/next(iter(manifest['details'].values()))).read_bytes()))
+            from sample_sizes import annotate
+            annotate(source)
             self.assertEqual(detail['observations'],source['observations'])
             self.assertEqual(detail['benchmark'],source['benchmarks'][0])
             tasks=gzip.compress(encode({'format':'radar-task-inputs-v1','snapshot_id':source['snapshot_id'],
