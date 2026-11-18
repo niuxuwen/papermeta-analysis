@@ -172,11 +172,19 @@ def main():
             raise ValueError('Live publication workflow has not been installed')
         old = git('ls-remote', '--heads', 'origin', 'refs/heads/live-data').stdout.decode().split()
         old_revision = old[0] if old else ''
+        prior_date_blob = None
         if old_revision:
             git('fetch', '--depth=1', 'origin', 'live-data')
             marker = git('show', 'FETCH_HEAD:feed/publication.json', check=False)
             if marker.returncode or json.loads(marker.stdout).get('publisher') != 'radar-publication-v1':
                 raise ValueError('Existing branch is not owned by this publisher')
+            # Reapply the last published date evidence to the new source.
+            # The site builder accepts reviewed records only for matching source signatures.
+            date_entry = git('ls-tree', old_revision, '--', 'feed/release-evidence.json.gz').stdout.decode().split()
+            if date_entry:
+                mode, kind, prior_date_blob, _ = date_entry
+                if (mode, kind) != ('100644', 'blob') or not re.fullmatch(r'[a-f0-9]{40}', prior_date_blob):
+                    raise ValueError('Unexpected published date evidence object')
         directory = feed / 'feed'
         directory.mkdir(exist_ok=True)
         (directory / 'source.json.gz').write_bytes(packed)
@@ -196,6 +204,8 @@ def main():
         workflow_file.write_bytes(workflow)
         # A separate index and parentless feed commit keep source history and old data out of this branch.
         git('read-tree', '--empty')
+        if prior_date_blob:
+            git('update-index', '--add', '--cacheinfo', '100644', prior_date_blob, 'feed/release-evidence.json.gz')
         git('add', '--', *(f'feed/{name}' for name in source_files),
             'feed/publication.json', 'feed/task-measurements.json.gz',
             'feed/task-inputs.json.gz', '.github/workflows/pages.yml')
