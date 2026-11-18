@@ -109,7 +109,10 @@ def publish(project,state):
         temp.write_bytes(gzip.compress(raw,mtime=0));os.replace(temp,packed)
         wf=feed/'.github/workflows/pages.yml';wf.parent.mkdir(parents=True,exist_ok=True);wf.write_bytes(workflow)
         if hashes!={p:sha(directory/p)for p in protected}:raise ValueError('Score/source blobs changed during date publication')
-        git('read-tree','--empty');git('add','--','feed','.github/workflows/pages.yml')
+        # Keep the published source exactly as staged by its publisher,
+        # including its transport parts when the local gzip exceeds the limit.
+        git('read-tree',old)
+        git('add','--','feed/release-evidence.json.gz','.github/workflows/pages.yml')
         tree=git('write-tree').decode().strip()
         commit=git('commit-tree',tree,data=('Automatic benchmark date evidence '+now()+'\n').encode()).decode().strip()
         git('push','--force-with-lease=refs/heads/live-data:'+old,'origin',commit+':refs/heads/live-data')
