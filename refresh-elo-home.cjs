@@ -12,16 +12,18 @@ if (board.snapshot_id !== manifest.snapshot_id || board.task_inputs_sha256 !== m
 }
 const ranking = JSON.parse(zlib.gunzipSync(read(manifest.ranking.path)));
 V.setModelRegistry(ranking.model_registry);
-const top = board.models.filter(r=>!r.setting && r.papers >= (board.display_min_papers ?? 7) && Number.isFinite(r.elo_scale)).slice(0,6);
+const top = V.localElo({snapshot_id:manifest.snapshot_id},board).models.filter(r=>!r.setting).slice(0,6);
 const escape = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const buttons = top.map((r,i)=>{
   const name=escape(r.model), vendor=V.modelInfo(r.model).vendor;
   return `<button type="button" class="visitor-model-row" data-home-model="${name}"><span class="visitor-rank">${String(i+1).padStart(2,'0')}</span><span class="visitor-model-swatch" style="background:${V.vendorColor(vendor)}"></span><span class="visitor-model-name"><strong>${name}</strong><small>${escape(vendor)} · ${r.benchmarks} 项评测</small></span><strong class="visitor-model-score">${r.elo_scale.toFixed(1)}</strong></button>`;
 }).join('');
+const rankingNote=board.ranking_snapshot
+  ? '<p class="visitor-ranking-note"><a href="/wisdoc-rankings/">Wisdoc 五榜</a> · '+board.papers.toLocaleString('zh-CN')+' 篇论文参与总榜拟合</p>' : '';
 let html=read('index.html').toString();
 html=html.replace(/<script src="\.\/snapshot-elo-data\.js[^"]*"><\/script>/g,'')
   .replace('<script src="./snapshot-adapter.js','<script src="./snapshot-elo-data.js"></script><script src="./snapshot-adapter.js')
-  .replace(/(<div id="visitor-top-models"[^>]*>)[\s\S]*?(<\/div><\/section>)/,(_,a,b)=>a+buttons+b)
+  .replace(/(<div id="visitor-top-models"[^>]*>)[\s\S]*?<\/div><\/section>/,(_,open)=>open+buttons+'</div>'+rankingNote+'</section>')
   .replace('<h2>模型综合评分</h2>','<h2>综合评分</h2>')
   .replace(/(<script id="snapshot-bootstrap"[^>]*>)([\s\S]*?)(<\/script>)/,(_,a,data,b)=>{
     const boot=JSON.parse(data);

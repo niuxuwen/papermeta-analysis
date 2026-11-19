@@ -56,13 +56,17 @@
     close.type='button'; close.autofocus=true; close.setAttribute('aria-label',txt('收起榜单','Close rankings'));
     close.onclick=dismiss; head.append(title,close);
     const content = element('div',null,'ability-board-body');
-    const n = new Set(rows.flatMap(r => r.sources)).size;
-    content.append(element('p',en ? rows.length+' entries · '+n+' benchmarks' : rows.length+' 个模型及配置 · '+n+' 项计分评测','ability-board-meta'));
+    const frozen = status.narrow_display_paper_credit != null;
+    const n = frozen ? status.fitted_papers : new Set(rows.flatMap(r => r.sources)).size;
+    content.append(element('p', en ? rows.length+' entries · '+n+(frozen?' fitted papers':' benchmarks')
+      : rows.length+' 个模型及配置 · '+n+(frozen?' 篇论文参与拟合':' 项计分评测'), 'ability-board-meta'));
     const method=element('details',null,'ability-method');
     const minimum = status.min_papers ?? 5;
     method.append(element('summary',txt('评分方法','Scoring method')),element('p',txt(
       `本榜采用本领域同条件比较的加权 Bradley–Terry 拟合，直接展示 Elo。至少 ${minimum} 篇来源论文的模型才展示。`,
       `Weighted Bradley–Terry ratings from matched comparisons in this field, displayed as Elo. Entries need ${minimum} source papers for display.`)));
+    if (frozen) method.append(element('p',txt('仅有窄任务参与拟合的论文在展示门槛里按半篇计。论文数按实际篇数显示。',
+      'Papers contributing only narrow tasks count as half a paper for display eligibility. The paper column shows actual counts.')));
     method.append(element('p',txt('总榜与四个分榜采用同一组固定参照模型及权重，将参照组的加权平均 Elo 设为 1000；保留原有 Elo 分差。各榜反映对应领域内相对参照组的表现，不代表相同的绝对能力。','All five rankings use the same fixed reference models and weights, centering their weighted mean Elo at 1000 while preserving Elo differences. Ratings express performance relative to that panel within each domain, not identical absolute ability across domains.')));
     method.append(element('p',txt('对局采用分差软胜负：题目数与准确率口径经核验时使用二项近似，其余指标使用同评测、同指标的表内分差尺度；原始 Elo 指标使用 Elo 胜率公式。','Comparisons use soft outcomes from score differences: a binomial approximation for reviewed accuracy and sample counts, an empirical within-table difference scale for other metrics, and the Elo expected-score formula for Elo metrics.')));
     method.append(element('p',txt(
@@ -85,10 +89,13 @@
     }
     rows.forEach((row,i)=>{
       const tr=body.insertRow();tr.insertCell().textContent=i+1;
-      const name=tr.insertCell(), toggle=element('button',modelName(row),'ability-rank-model');toggle.type='button';toggle.setAttribute('aria-expanded','false');name.append(toggle);
+      const name=tr.insertCell();
       tr.insertCell().textContent=row.score.toFixed(1);
-      tr.insertCell().textContent=row.papers;
-      tr.insertCell().textContent=row.sources.length;
+      const paperCount=tr.insertCell();paperCount.textContent=row.papers;
+      if(frozen) paperCount.title=txt(`按展示门槛计 ${row.display_papers} 篇`, `${row.display_papers} papers for display eligibility`);
+      tr.insertCell().textContent=row.benchmarks ?? row.sources.length;
+      if (!row.sources?.length) { name.textContent=modelName(row); return; }
+      const toggle=element('button',modelName(row),'ability-rank-model');toggle.type='button';toggle.setAttribute('aria-expanded','false');name.append(toggle);
       toggle.onclick=()=>{
         const open=toggle.getAttribute('aria-expanded')==='true';
         toggle.setAttribute('aria-expanded',String(!open));
@@ -122,7 +129,7 @@
         if (!other || !(other.status==='READY' || (other.status==='INSUFFICIENT_REFERENCE_PAPERS' && data.boards[category]?.length===0)) || other.panel_sha256!==basket.panel_sha256 || other.baseline!==basket.baseline || JSON.stringify(other.references)!==JSON.stringify(basket.references)) throw Error('basket');
       }
       for(const category of ['Science','Coding','General','Agent']){
-        const rows=data.boards[category].filter(r=>r.papers >= (data.display_min_papers ?? data.status[category].min_papers ?? 5) && Number.isFinite(r.score)),card=element('button',null,'ability-board-card');card.type='button';
+        const rows=data.boards[category].filter(r=>(r.display_papers ?? r.papers) >= (data.display_min_papers ?? data.status[category].min_papers ?? 5) && Number.isFinite(r.score)),card=element('button',null,'ability-board-card');card.type='button';
         card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-expanded','false');
         const head=element('span',null,'ability-card-heading');
         const arrow=element('span','↗','ability-card-arrow');arrow.setAttribute('aria-hidden','true');head.append(element('strong',category),arrow);

@@ -60,6 +60,7 @@ jobs:
           python ratings/build_elo.py .live-feed/feed
           python ratings/build_capability_rankings.py .live-feed/feed
           python ratings/validate_common_basket_publication.py
+          python ratings/apply_wisdoc_public_snapshot.py
           node refresh-elo-home.cjs
           python backend/build_editions.py
           python backend/build_release_site.py .live-feed/feed
