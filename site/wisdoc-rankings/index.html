@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wisdoc 五榜 · PaperMeta</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f7fa; color: #172b3e; font: 15px/1.55 system-ui, sans-serif; }
+  main { width: min(960px, 100% - 32px); margin: 38px auto 64px; }
+  h1 { margin: 12px 0 2px; font-size: clamp(28px, 5vw, 38px); }
+  a { color: #206759; }
+  p { margin: 8px 0; }
+  .meta { color: #526779; }
+  .controls { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; margin: 22px 0 10px; }
+  nav { display: flex; flex-wrap: wrap; gap: 5px; }
+  button, input { font: inherit; color: inherit; background: white; border: 1px solid #cbd7e0; border-radius: 7px; padding: 7px 11px; }
+  button { cursor: pointer; }
+  button[aria-pressed="true"] { color: white; border-color: #206759; background: #206759; }
+  .table-wrap { margin-top: 14px; background: white; border: 1px solid #dbe4ec; border-radius: 10px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding: 13px 16px; text-align: right; border-bottom: 1px solid #e5ecf2; }
+  th { white-space: nowrap; background: #ecf2f6; color: #4a6175; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+  td:nth-child(3) { color: #206759; font-weight: 650; }
+  tr:last-child td { border-bottom: 0; }
+  td small { display: block; color: #526779; }
+  @media (max-width: 620px) {
+    main { margin-top: 22px; }
+    th, td { padding: 10px 8px; }
+    th { white-space: normal; }
+    input { width: 100%; }
+  }
+</style>
+<main>
+  <header>
+    <a href="/">PaperMeta 首页</a>
+    <h1>Wisdoc 五榜</h1>
+    <p class="meta" id="snapshot-date"></p>
+  </header>
+  <div class="controls">
+    <nav id="boards" aria-label="选择榜单"></nav>
+    <input type="search" id="search" aria-label="搜索模型" placeholder="搜索模型">
+  </div>
+  <p class="meta" id="status" role="status">正在加载榜单…</p>
+  <p class="meta">每篇论文按实际篇数统计。仅有窄任务证据的论文在展示门槛里按半篇计。</p>
+  <div class="table-wrap" id="ranking" hidden>
+    <table aria-label="模型排名"><thead><tr>
+      <th scope="col">名次</th><th scope="col">模型</th><th scope="col">Elo</th><th scope="col">论文数</th><th scope="col">Benchmark 数</th>
+    </tr></thead><tbody id="rows"></tbody></table>
+  </div>
+  <p><a href="rankings.json" download>下载五榜数据（JSON）</a></p>
+</main>
+<script type="module">
+  const labels = {Main: '总榜', Science: 'Science', Coding: 'Coding', General: 'General', Agent: 'Agent'};
+  const byId = id => document.getElementById(id);
+  const search = byId('search');
+  const status = byId('status');
+  function el(tag, value) {
+    const node = document.createElement(tag);
+    node.textContent = value;
+    return node;
+  }
+  try {
+    const response = await fetch('rankings.json');
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const {generated_at, boards, common_basket} = await response.json();
+    const formatDate = new Intl.DateTimeFormat('zh-CN', {dateStyle: 'long', timeZone: 'Asia/Shanghai'});
+    byId('snapshot-date').textContent = formatDate.format(new Date(generated_at)) + '试算快照';
+    let active = 'Main';
+    const buttons = Object.entries(labels).map(([key, label]) => {
+      const button = el('button', label);
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        active = key;
+        render();
+      });
+      return [key, button];
+    });
+    byId('boards').append(...buttons.map(([, button]) => button));
+    function render() {
+      for (const [key, button] of buttons) button.setAttribute('aria-pressed', key === active);
+      const board = boards[active];
+      const query = search.value.trim().toLowerCase();
+      const models = board.models.filter(model => `${model.model} ${model.setting}`.toLowerCase().includes(query));
+      status.textContent = `${board.fitted_papers.toLocaleString('zh-CN')} 篇参与拟合 · ${query ? `${models.length} / ` : ''}${board.models.length} 个模型 · 展示门槛 ${board.display_threshold} 篇 · 共用 ${common_basket.count} 个参照模型`;
+      const rows = models.map(model => {
+        const tr = document.createElement('tr');
+        const name = el('td', model.model);
+        if (model.setting) name.append(el('small', model.setting));
+        const papers = el('td', model.papers);
+        papers.title = `按展示门槛计 ${model.display_papers} 篇`;
+        tr.append(el('td', model.rank), name, el('td', model.elo.toFixed(1)), papers, el('td', model.benchmarks));
+        return tr;
+      });
+      if (!rows.length) {
+        const row = document.createElement('tr');
+        const empty = el('td', '没有匹配的模型');
+        empty.colSpan = 5;
+        row.append(empty);
+        rows.push(row);
+      }
+      byId('rows').replaceChildren(...rows);
+    }
+    search.addEventListener('input', render);
+    render();
+    byId('ranking').hidden = false;
+  } catch {
+    status.textContent = '榜单加载失败，请刷新页面重试。';
+  }
+</script>
+</html>
